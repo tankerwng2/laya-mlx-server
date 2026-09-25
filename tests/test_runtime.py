@@ -31,7 +31,29 @@ def test_all_primitives_empty_request_and_chunking(tiny_checkpoint, questions):
     together = agent.predict({"text": "hello"}, questions)
     agent.batch_size = 1
     separate = agent.predict({"text": "hello"}, questions)
-    assert together == separate
+    # Chunking changes the batch shape, so Metal reduces the act head in a different
+    # order: every decision agrees exactly, only the floats drift. CPU is bit-exact,
+    # which is why CI (LAYA_MLX_TEST_DEVICE=cpu) never sees this and why a whole-dict
+    # equality here fails 10/10 on Metal and 0/10 on CPU. Same 2e-4 tolerance this
+    # file already uses for the compiled-bucket path.
+    assert together["model"] == separate["model"]
+    assert together["usage"] == separate["usage"]
+    for qid, definition in questions.items():
+        a, b = together["answers"][qid], separate["answers"][qid]
+        assert a["type"] == b["type"] == definition["type"]
+        assert a["action"]["act_probability"] == pytest.approx(
+            b["action"]["act_probability"], abs=2e-4
+        )
+        if definition["type"] == "choice":
+            assert a["choice"] == b["choice"]
+            assert set(a["probabilities"]) == set(b["probabilities"])
+            for key, value in a["probabilities"].items():
+                assert b["probabilities"][key] == pytest.approx(value, abs=2e-4)
+        for key in ("noul", "score"):
+            if key in a:
+                assert b[key] == pytest.approx(a[key], abs=2e-4)
+        if "legend" in a:
+            assert a["legend"] == b["legend"]
     assert set(together["answers"]) == set(questions)
     assert together["usage"]["output_tokens"] == 0
     assert 0 <= together["answers"]["yes"]["noul"] <= 1
