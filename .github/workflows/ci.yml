@@ -9,10 +9,20 @@ permissions:
 
 jobs:
   test:
+    name: test (${{ matrix.device }})
     runs-on: macos-26
     timeout-minutes: 15
+    strategy:
+      # Report both devices even when one fails: the two legs disagree by design
+      # (chunked forwards drift ~1e-4 on Metal), so a single red leg must not hide
+      # whether the other one is green.
+      fail-fast: false
+      matrix:
+        # cpu is bit-exact; metal is the default device and the path real traffic
+        # takes. Pinning cpu alone once let a Metal-only failure pass CI unnoticed.
+        device: [cpu, metal]
     env:
-      LAYA_MLX_TEST_DEVICE: cpu
+      LAYA_MLX_TEST_DEVICE: ${{ matrix.device }}
       TOKENIZERS_PARALLELISM: "false"
       USE_TF: "0"
     steps:
@@ -29,3 +39,4 @@ jobs:
       - run: ruff check . && ruff format --check .
       - run: pytest -q tests server/tests
       - run: python -m build && python -m build --wheel --outdir /tmp/server-dist server
+        if: matrix.device == 'cpu'

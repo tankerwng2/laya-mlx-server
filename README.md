@@ -114,7 +114,7 @@ uv publish --publish-dir server/dist     # token generated yourself on pypi.org
 
 ## Quality gates
 
-`make test` → **150 passed, 1 skipped**, including the nine serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. Device coverage splits: CI pins `LAYA_MLX_TEST_DEVICE=cpu` in its env, so **CI only exercises CPU**, while Metal (the default device) is covered by `make test` locally -- ten consecutive runs on each device, all passing. A chunked forward drifts by 1e-4 on Metal because the act head reduces in a different order, so those assertions compare decisions strictly and floats within `2e-4`.
+`make test` → **150 passed, 1 skipped**, including the nine serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. CI runs two legs, `cpu` and `metal`, with `fail-fast: false`, and builds the wheels once on the cpu leg: cpu is bit-exact, metal is the default device and the path real traffic takes. A chunked forward drifts by 1e-4 on Metal because the act head reduces in a different order, so those assertions compare decisions strictly and floats within `2e-4`.
 
 ## Attribution and license
 
