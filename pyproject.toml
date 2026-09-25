@@ -22,6 +22,7 @@ dependencies = [
   "numpy>=1.26",
   "huggingface-hub>=0.34,<2",
   "tokenizers>=0.21,<1",
+  "httpx[socks]>=0.28.1",
 ]
 
 [project.optional-dependencies]
@@ -29,10 +30,14 @@ dev = ["pytest>=8", "ruff>=0.12", "build>=1"]
 reference = ["torch>=2.14,<3", "transformers>=5.17,<6", "safetensors>=0.6"]
 benchmark = ["matplotlib>=3.10", "pyarrow>=18"]
 demo = ["rich>=15,<16", "Pillow>=12,<13"]
+serve = ["fastapi>=0.110", "uvicorn>=0.27"]
+mcp = ["mcp>=2.2"]
 
 [project.scripts]
 laya-mlx = "laya_mlx.cli:main"
 laya-snake = "laya_mlx.snake.cli:main"
+laya-mlx-http = "laya_mlx.serve.http:main"
+laya-mlx-mcp = "laya_mlx.serve.mcp:main"
 
 [project.urls]
 Repository = "https://github.com/mizorewww/laya-mlx"
