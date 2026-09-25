@@ -31,26 +31,8 @@ def test_all_primitives_empty_request_and_chunking(tiny_checkpoint, questions):
     together = agent.predict({"text": "hello"}, questions)
     agent.batch_size = 1
     separate = agent.predict({"text": "hello"}, questions)
-    # Chunking changes the batch shape, so Metal reduces the act head in a different
-    # order: every decision-relevant field stays exact, only floats drift. Same 2e-4
-    # tolerance the compiled-bucket test in this file already uses.
-    assert together["model"] == separate["model"]
-    assert together["usage"] == separate["usage"]
+    assert together == separate
     assert set(together["answers"]) == set(questions)
-    for qid, definition in questions.items():
-        a, b = together["answers"][qid], separate["answers"][qid]
-        assert a["type"] == b["type"] == definition["type"]
-        act, other = a["action"]["act_probability"], b["action"]["act_probability"]
-        assert act == pytest.approx(other, abs=0.0002)
-        if definition["type"] == "choice":
-            assert a["choice"] == b["choice"]
-        for key in ("noul", "score"):
-            if key in a:
-                assert a[key] == pytest.approx(b[key], abs=0.0002)
-        for key, value in a.get("probabilities", {}).items():
-            assert b["probabilities"][key] == pytest.approx(value, abs=0.0002)
-        if "legend" in a:
-            assert a["legend"] == b["legend"]
     assert together["usage"]["output_tokens"] == 0
     assert 0 <= together["answers"]["yes"]["noul"] <= 1
     assert 0 <= together["answers"]["level"]["score"] <= 1

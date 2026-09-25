@@ -163,7 +163,7 @@ uv run laya-mlx convert \
 
 ## 作为服务使用（HTTP / MCP）
 
-上游只提供 Python API；这里加了两面对外接口，共用同一个运行时，仍然零 PyTorch。它们放在 `server/` 目录、打包成独立发行版 **`laya-mlx-server`**，不再往 `laya_mlx/` 里塞文件，所以将来把 `laya_mlx/` 升到上游新版时不会和这套服务代码冲突。注意本仓库的 `laya_mlx/` 目前是上游 **0.1.0** 快照，上游 main 已到 **0.2.0**（改了 `__init__`/`agent`/`common`/`email`/`lang`/`router`，新增 `shortlist.py`）。
+上游只提供 Python API；这里加了两面对外接口，共用同一个运行时，仍然零 PyTorch。它们放在 `server/` 目录、打包成独立发行版 **`laya-mlx-server`**，不再往 `laya_mlx/` 里塞文件，所以同步上游新版时不会和这套服务代码冲突。`laya_mlx/` 已同步到上游 **0.2.0**（新增 `shortlist.py`），上游 Laya 引用修订 pin 在 `573e5b6`。
 
 前提：**Apple Silicon + macOS**（`mlx` 只在 darwin/arm64 有 wheel，所以这套服务不能放进 Linux 容器；Linux 上请改用上游 `laya-serve`）。另外需要 [uv](https://docs.astral.sh/uv/) 和约 1.5 GB 磁盘。
 
