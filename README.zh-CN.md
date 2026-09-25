@@ -112,7 +112,7 @@ uv publish --publish-dir server/dist     # token 在 pypi.org 自行生成
 
 ## 质量门禁
 
-`make test` → **150 passed, 1 skipped**（含 serve 层 9 个契约测试，后者零权重、零网络：空 `HF_HOME` + 强制离线仍全过）。`make lint` 与 `ruff format --check .` 干净。CI（`.github/workflows/ci.yml`，macos runner）安装两个包并跑 `pytest tests server/tests`、构建两个 wheel。
+`make test` → **150 passed, 1 skipped**（含 serve 层 9 个契约测试，后者零权重、零网络：空 `HF_HOME` + 强制离线仍全过）。`make lint` 与 `ruff format --check .` 干净。设备覆盖要分开看：CI 在 env 里钉了 `LAYA_MLX_TEST_DEVICE=cpu`，所以 **CI 只跑 CPU**；Metal（默认设备）由本机 `make test` 覆盖，两个设备各连跑十轮均通过。分块前向在 Metal 上因归约顺序不同会有 1e-4 漂移，所以相关断言按判定严格相等、浮点容差 `2e-4` 写。
 
 ## 许可与致谢
 

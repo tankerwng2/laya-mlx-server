@@ -114,7 +114,7 @@ uv publish --publish-dir server/dist     # token generated yourself on pypi.org
 
 ## Quality gates
 
-`make test` → **150 passed, 1 skipped**, including the nine serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. CI installs both packages, runs `pytest tests server/tests` and builds both wheels.
+`make test` → **150 passed, 1 skipped**, including the nine serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. Device coverage splits: CI pins `LAYA_MLX_TEST_DEVICE=cpu` in its env, so **CI only exercises CPU**, while Metal (the default device) is covered by `make test` locally -- ten consecutive runs on each device, all passing. A chunked forward drifts by 1e-4 on Metal because the act head reduces in a different order, so those assertions compare decisions strictly and floats within `2e-4`.
 
 ## Attribution and license
 
