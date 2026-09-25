@@ -160,3 +160,50 @@ uv run laya-mlx convert \
 目前证据不支持相同检查点下普遍再快 10 倍。部分场景的逐轮配对中位加速约为 1.03–1.08 倍；误差区间、量化保真结果和自定义 Metal 核的实测详见工程报告。
 
 这是独立的 MLX 移植，模型能力及其限制来自上游；模型输出概率不等于答案必然正确。采用 Apache-2.0，原作者与移植说明见 [NOTICE](NOTICE)。
+
+## 作为服务使用（HTTP / MCP）
+
+上游只提供 Python API；这里额外内置了两个对外接口，共用同一个运行时，仍然零 PyTorch。
+
+前提：**Apple Silicon + macOS**（`mlx` 只在 darwin/arm64 有 wheel，所以这套服务不能放进 Linux 容器；Linux 上请改用上游 `laya-serve`）。另外需要 [uv](https://docs.astral.sh/uv/) 和约 1.5 GB 磁盘。
+
+```bash
+git clone git@github.com:tankerwng2/laya-mlx-server.git && cd laya-mlx-server
+make install          # 建 .venv，装 serve / mcp / dev / demo
+make prefetch        # 拉一次权重（约 678 MB），之后可全程离线
+make http            # http://127.0.0.1:8080
+```
+
+大陆网络如果 `files.pythonhosted.org` 连不上，加镜像：`make install UV_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple`；权重默认走 `hf-mirror.com`，`HF_ENDPOINT` 可覆盖。
+
+调用（`state` 可以是字符串或 JSON 对象）：
+
+```bash
+curl -X POST http://127.0.0.1:8080/v1/systemone \
+  -H "Authorization: Bearer $LAYA_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"state":{"message":"客户被重复扣款两次，要求全额退款"},
+       "questions":{"refund":{"type":"noul","instructions":"客户是否要求退款"},
+                    "dept":{"type":"choice","instructions":"归属部门","criteria":["billing","technical","sales"]}}}'
+```
+
+`type` 只有三种：`noul`（是不是）、`choice`（多选一，选项写在 `criteria`）、`score`（按档位打分，`criteria` 是从低到高的**文字**档位）。
+
+给 agent 用则走 MCP stdio，不需要端口和 token：
+
+```json
+{ "laya-mlx": { "type": "stdio", "command": "laya-mlx-mcp",
+  "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
+```
+
+工具三个：`laya_predict`、`laya_preset`（`triage` / `email` / `guard` / `moderation` / `router`）、`laya_status`。
+
+| 环境变量 | 作用 | 默认 |
+|---|---|---|
+| `LAYA_HOST` / `LAYA_PORT` | HTTP 绑定 | `127.0.0.1` / `8080` |
+| `LAYA_API_KEY` | 设置后要求 `Authorization: Bearer`；不设则无鉴权并告警 | 无 |
+| `LAYA_MODELS` | 预加载检查点，逗号分隔 | `multilingual` |
+| `LAYA_STATE_MODE` | `flatten` 把对象 state 渲染成 `key: value`；`json` 保持 upstream 原样 | `flatten` |
+| `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`；`float16`/`bfloat16`/`float32` | auto / `float16` |
+| `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | 单次前向题数 / 常驻检查点数 | `16` / `2` |
+
+**为什么默认 flatten**：Jev 客户端的 `state` 通常是对象，而 `serialize_state` 会把它变成字面 JSON 再 tokenization。短输入下这会让判定翻转——multilingual 实测 `{"message": "I was charged twice"}` 的 `noul` 是 0.16，同样的话写成 `message: I was charged twice` 是 0.69。需要与 upstream 逐字节一致时设 `LAYA_STATE_MODE=json`。

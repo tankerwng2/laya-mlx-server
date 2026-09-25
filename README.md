@@ -246,3 +246,48 @@ The preparation script checks every exported tensor against its original FP16 so
 ## Attribution and license
 
 Apache-2.0; see [LICENSE](https://github.com/mizorewww/laya-mlx/blob/main/LICENSE) and [NOTICE](https://github.com/mizorewww/laya-mlx/blob/main/NOTICE). Laya and its pretrained weights are by Convai Innovations and upstream contributors. Prompt construction, output formatting, language routing, email utilities and presets are adapted from [NandhaKishorM/laya](https://github.com/NandhaKishorM/laya) at commit `6a5819129eb220570792e417e49723d697efd76f`. The neural architecture is reimplemented in MLX following Laya and Hugging Face ModernBERT.
+
+## Serving over HTTP / MCP
+
+Upstream ships a Python API only. This fork adds two wire surfaces on one shared runtime, still with no PyTorch in the stack.
+
+Requires **Apple Silicon + macOS** (`mlx` publishes darwin/arm64 wheels only, so this server cannot run in a Linux container; on Linux use upstream `laya-serve`). Also needs [uv](https://docs.astral.sh/uv/) and roughly 1.5 GB of disk.
+
+```bash
+git clone git@github.com:tankerwng2/laya-mlx-server.git && cd laya-mlx-server
+make install          # .venv with serve / mcp / dev / demo
+make prefetch       # one-time weights (~678 MB); offline afterwards
+make http           # http://127.0.0.1:8080
+```
+
+Pass `UV_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple` (or any regional mirror) to `make install` when `files.pythonhosted.org` is unreachable. Weights default to `hf-mirror.com`, overridable via `HF_ENDPOINT`.
+
+```bash
+curl -X POST http://127.0.0.1:8080/v1/systemone \
+  -H "Authorization: Bearer $LAYA_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"state":{"message":"I was charged twice, please refund the duplicate."},
+       "questions":{"refund":{"type":"noul","instructions":"Does the customer want a refund?"},
+                    "dept":{"type":"choice","instructions":"Who should handle this?","criteria":["billing","technical","sales"]}}}'
+```
+
+`type` is one of `noul` (yes/no), `choice` (pick one, labels in `criteria`), `score` (ordinal rubric; `criteria` is an ordered list of **level descriptions**, not min/max).
+
+For agents, MCP runs over stdio with no port and no token:
+
+```json
+{ "laya-mlx": { "type": "stdio", "command": "laya-mlx-mcp",
+  "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
+```
+
+Tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `moderation` / `router`), `laya_status`.
+
+| env var | meaning | default |
+|---|---|---|
+| `LAYA_HOST` / `LAYA_PORT` | HTTP bind | `127.0.0.1` / `8080` |
+| `LAYA_API_KEY` | when set, requires `Authorization: Bearer`; unset means unauthenticated and logs a warning | none |
+| `LAYA_MODELS` | checkpoints to preload, comma separated | `multilingual` |
+| `LAYA_STATE_MODE` | `flatten` renders object state as `key: value` lines; `json` keeps upstream byte-identical | `flatten` |
+| `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`; `float16`/`bfloat16`/`float32` | auto / `float16` |
+| `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | questions per forward pass / resident checkpoints | `16` / `2` |
+
+**Why flatten is the default:** Jev clients send `state` as an object, and `serialize_state` turns it into literal JSON before tokenizing. On short input that flips the answer -- measured on multilingual, `{"message": "I was charged twice"}` scores `noul` 0.16 while `message: I was charged twice` scores 0.69. Set `LAYA_STATE_MODE=json` for byte-identical upstream parity.
