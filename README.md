@@ -249,13 +249,13 @@ Apache-2.0; see [LICENSE](https://github.com/mizorewww/laya-mlx/blob/main/LICENS
 
 ## Serving over HTTP / MCP
 
-Upstream ships a Python API only. This fork adds two wire surfaces on one shared runtime, still with no PyTorch in the stack.
+Upstream ships a Python API only. This fork adds two wire surfaces on one shared runtime, still with no PyTorch in the stack. They live in `server/` and ship as a separate distribution, **`laya-mlx-server`**, so `laya_mlx/` stays byte-identical to upstream and syncs without conflict.
 
 Requires **Apple Silicon + macOS** (`mlx` publishes darwin/arm64 wheels only, so this server cannot run in a Linux container; on Linux use upstream `laya-serve`). Also needs [uv](https://docs.astral.sh/uv/) and roughly 1.5 GB of disk.
 
 ```bash
 git clone git@github.com:tankerwng2/laya-mlx-server.git && cd laya-mlx-server
-make install          # .venv with serve / mcp / dev / demo
+make install          # .venv with laya-mlx + laya-mlx-server (mcp included)
 make prefetch       # one-time weights (~678 MB); offline afterwards
 make http           # http://127.0.0.1:8080
 ```
@@ -275,7 +275,7 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 For agents, MCP runs over stdio with no port and no token:
 
 ```json
-{ "laya-mlx": { "type": "stdio", "command": "laya-mlx-mcp",
+{ "laya-mlx-server": { "type": "stdio", "command": "laya-mlx-mcp",
   "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
 ```
 

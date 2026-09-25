@@ -5,9 +5,9 @@ Speaks MCP over stdio, so it plugs into any MCP client without a port, a token,
 or a long-lived daemon:
 
     laya-mlx-mcp
-    python -m laya_mlx.serve mcp
+    python -m laya_mlx_server mcp
 
-Environment: the ``LAYA_*`` names documented in :mod:`laya_mlx.serve.runtime`.
+Environment: the ``LAYA_*`` names documented in :mod:`laya_mlx_server.runtime`.
 Standard I/O is the transport, so startup logging goes to stderr.
 
 Tool choice mirrors upstream ``laya.mcp`` (predict / preset / status) so a client
@@ -26,7 +26,7 @@ try:
     from mcp.server.mcpserver import MCPServer
 except ImportError as exc:  # pragma: no cover - optional extra
     raise ImportError(
-        "the mcp extra is required to run the MCP server: pip install 'laya-mlx[mcp]'"
+        "laya-mlx-server[mcp] is required for the MCP surface: pip install 'laya-mlx-server[mcp]'"
     ) from exc
 
 from .runtime import Runtime, env_bool
@@ -37,9 +37,9 @@ from .runtime import Runtime, env_bool
 State = Union[str, Dict[str, Any], List[Any]]
 
 try:
-    _VERSION = _metadata.version("laya-mlx")
+    _VERSION = _metadata.version("laya-mlx-server")
 except Exception:  # running from a source checkout without install metadata
-    import laya_mlx as _laya
+    import laya_mlx_server as _laya
 
     _VERSION = getattr(_laya, "__version__", "")
 
@@ -53,7 +53,7 @@ _INSTRUCTIONS = (
     "not be used as a threshold."
 )
 
-server = MCPServer("laya-mlx", version=_VERSION, instructions=_INSTRUCTIONS)
+server = MCPServer("laya-mlx-server", version=_VERSION, instructions=_INSTRUCTIONS)
 _RUNTIME: Optional[Runtime] = None
 
 
@@ -87,7 +87,7 @@ def laya_predict(state: State, questions: Dict[str, Any], checkpoint: str = "") 
     ),
 )
 def laya_preset(preset: str, state: State, checkpoint: str = "") -> Dict[str, Any]:
-    from .. import presets
+    from laya_mlx import presets
 
     try:
         builder = getattr(presets, f"{str(preset).strip().lower()}_questions")

@@ -1,11 +1,11 @@
 # Derived from Laya (Apache-2.0); see NOTICE. Modified for laya-mlx.
-"""``python -m laya_mlx.serve {http,mcp}`` -- the two surfaces, one runtime."""
+"""``python -m laya_mlx_server {http,mcp}`` -- the two surfaces, one runtime."""
 
 import argparse
 
 
 def main(argv=None) -> None:
-    parser = argparse.ArgumentParser(prog="python -m laya_mlx.serve", description=__doc__)
+    parser = argparse.ArgumentParser(prog="python -m laya_mlx_server", description=__doc__)
     sub = parser.add_subparsers(dest="surface", required=True)
     sub.add_parser("http", help="Jev-compatible HTTP server (POST /v1/systemone)")
     sub.add_parser("mcp", help="MCP stdio server")

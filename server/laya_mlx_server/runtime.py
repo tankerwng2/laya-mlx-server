@@ -140,7 +140,7 @@ class Runtime:
             self._agents.move_to_end(repo)
             return cached
         # Import here so the runtime module stays importable without mlx on path.
-        from ..agent import load
+        from laya_mlx.agent import load
 
         agent = load(
             repo,
@@ -165,7 +165,7 @@ class Runtime:
             raise ValueError(f"at most {MAX_QUESTIONS} questions per request")
         # Validate question shapes before building a checkpoint, so a typo in a
         # client request cannot cost 600 MiB of weight loading before it fails.
-        from ..common import QTYPES
+        from laya_mlx.common import QTYPES
 
         for qid, definition in questions.items():
             if not isinstance(definition, dict) or definition.get("type") not in QTYPES:

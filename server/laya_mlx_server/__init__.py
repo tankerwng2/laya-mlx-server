@@ -1,12 +1,13 @@
 # Derived from Laya (Apache-2.0); see NOTICE. Modified for laya-mlx.
-"""HTTP and MCP surfaces for the MLX runtime.
+"""HTTP and MCP surfaces for the laya-mlx runtime, shipped as ``laya-mlx-server``.
 
-Both surfaces share one :class:`~laya_mlx.serve.runtime.Runtime`, so a checkpoint
-is built once per process no matter how many times it is named by a client.
+Both surfaces share one :class:`~laya_mlx_server.runtime.Runtime`, so a checkpoint
+is built once per process no matter how many times a client names it. The model
+itself comes from ``laya-mlx``; this package adds only the wire layers.
 
     laya-mlx-http          FastAPI, TypeSafe Jev wire compatible (POST /v1/systemone)
     laya-mlx-mcp           MCP stdio server for agent clients
-    python -m laya_mlx.serve {http,mcp}   same two entry points
+    python -m laya_mlx_server {http,mcp}   same two entry points
 """
 
 from .runtime import (
@@ -19,6 +20,8 @@ from .runtime import (
     flatten_state,
     resolve_checkpoint,
 )
+
+__version__ = "0.1.0"
 
 __all__ = [
     "Runtime",

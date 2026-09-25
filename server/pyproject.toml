@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "laya-mlx-server"
+version = "0.1.0"
+description = "Self-hosted HTTP and MCP servers for laya-mlx typed decisions on Apple silicon"
+keywords = ["mlx", "laya", "typed-decisions", "mcp", "local-ai", "apple-silicon", "jev"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+# Depends on the published model package rather than vendoring it, so a single
+# `pip install` pulls the runtime and no upstream namespace is shadowed.
+dependencies = [
+  "laya-mlx>=0.1",
+  "fastapi>=0.110",
+  "uvicorn>=0.27",
+]
+
+# Inside this monorepo the model comes from the sibling workspace member; uv
+# resolves it locally while the built metadata keeps the plain ``laya-mlx>=0.1``
+# requirement, so a published wheel installs from PyPI unchanged.
+[tool.uv.sources]
+laya-mlx = { workspace = true }
+
+[project.optional-dependencies]
+mcp = ["mcp>=2.2"]
+dev = ["pytest>=8", "ruff>=0.12"]
+
+[project.scripts]
+laya-mlx-http = "laya_mlx_server.http:main"
+laya-mlx-mcp = "laya_mlx_server.mcp:main"
+
+[project.urls]
+Repository = "https://github.com/tankerwng2/laya-mlx-server"
+Model = "https://huggingface.co/aac6fef/laya-mlx"
+
+[tool.hatch.build.targets.wheel]
+packages = ["laya_mlx_server"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/laya_mlx_server", "/pyproject.toml", "/README.md", "/LICENSE", "/NOTICE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

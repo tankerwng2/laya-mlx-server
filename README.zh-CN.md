@@ -163,18 +163,18 @@ uv run laya-mlx convert \
 
 ## 作为服务使用（HTTP / MCP）
 
-上游只提供 Python API；这里额外内置了两个对外接口，共用同一个运行时，仍然零 PyTorch。
+上游只提供 Python API；这里加了两面对外接口，共用同一个运行时，仍然零 PyTorch。它们放在 `server/` 目录、打包成独立发行版 **`laya-mlx-server`**，因此 `laya_mlx/` 与上游逐字节一致，同步 upstream 不会冲突。
 
 前提：**Apple Silicon + macOS**（`mlx` 只在 darwin/arm64 有 wheel，所以这套服务不能放进 Linux 容器；Linux 上请改用上游 `laya-serve`）。另外需要 [uv](https://docs.astral.sh/uv/) 和约 1.5 GB 磁盘。
 
 ```bash
 git clone git@github.com:tankerwng2/laya-mlx-server.git && cd laya-mlx-server
-make install          # 建 .venv，装 serve / mcp / dev / demo
+make install          # 建 .venv，装 laya-mlx + laya-mlx-server（含 mcp）
 make prefetch        # 拉一次权重（约 678 MB），之后可全程离线
 make http            # http://127.0.0.1:8080
 ```
 
-大陆网络如果 `files.pythonhosted.org` 连不上，加镜像：`make install UV_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple`；权重默认走 `hf-mirror.com`，`HF_ENDPOINT` 可覆盖。
+已经装好 `laya-mlx` 的环境可以直接 `pip install 'laya-mlx-server[mcp]'`（发布后），不必 clone 仓库。大陆网络如果 `files.pythonhosted.org` 连不上，加镜像：`make install UV_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple`；权重默认走 `hf-mirror.com`，`HF_ENDPOINT` 可覆盖。
 
 调用（`state` 可以是字符串或 JSON 对象）：
 
@@ -191,7 +191,7 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 给 agent 用则走 MCP stdio，不需要端口和 token：
 
 ```json
-{ "laya-mlx": { "type": "stdio", "command": "laya-mlx-mcp",
+{ "laya-mlx-server": { "type": "stdio", "command": "laya-mlx-mcp",
   "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
 ```
 

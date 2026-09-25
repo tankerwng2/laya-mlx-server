@@ -8,8 +8,8 @@ contract and the guards. The guard tests use a real ``Runtime`` but never reach
 import pytest
 from fastapi.testclient import TestClient
 
-from laya_mlx.serve.http import create_app
-from laya_mlx.serve.runtime import (
+from laya_mlx_server.http import create_app
+from laya_mlx_server.runtime import (
     MAX_QUESTIONS,
     MAX_STATE_CHARS,
     Runtime,

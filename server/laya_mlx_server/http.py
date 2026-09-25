@@ -13,7 +13,7 @@ adds only the HTTP layer: one route, a bearer check, and health probes.
 127.0.0.1 by default: this runtime is meant to run next to the caller, and an
 unauthenticated GPU inference endpoint should not face a network.
 
-Run with ``laya-mlx-http`` or ``python -m laya_mlx.serve http``.
+Run with ``laya-mlx-http`` or ``python -m laya_mlx_server http``.
 """
 
 import hmac
@@ -24,7 +24,7 @@ from typing import Any, Dict, Optional
 
 from .runtime import MAX_BODY_BYTES, Runtime
 
-log = logging.getLogger("laya_mlx.serve")
+log = logging.getLogger("laya_mlx_server")
 
 
 def _authorized(header: Optional[str], api_key: Optional[str]) -> bool:
@@ -41,7 +41,7 @@ def create_app(runtime: Optional[Runtime] = None):
         from fastapi.responses import JSONResponse
     except ImportError as exc:  # pragma: no cover - optional extra
         raise ImportError(
-            "the serve extra is required for the HTTP surface: pip install 'laya-mlx[serve]'"
+            "laya-mlx-server requires fastapi and uvicorn: pip install 'laya-mlx-server'"
         ) from exc
 
     rt = runtime if runtime is not None else Runtime()
@@ -49,7 +49,7 @@ def create_app(runtime: Optional[Runtime] = None):
     if not api_key:
         log.warning("LAYA_API_KEY is unset; /v1/systemone accepts unauthenticated requests")
 
-    from .. import __version__
+    from . import __version__
 
     app = FastAPI(
         title="laya-mlx",
