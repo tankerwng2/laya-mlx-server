@@ -290,4 +290,6 @@ Tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `moderation
 | `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`; `float16`/`bfloat16`/`float32` | auto / `float16` |
 | `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | questions per forward pass / resident checkpoints | `16` / `2` |
 
-**Why flatten is the default:** Jev clients send `state` as an object, and `serialize_state` turns it into literal JSON before tokenizing. On short input that flips the answer -- measured on multilingual, `{"message": "I was charged twice"}` scores `noul` 0.16 while `message: I was charged twice` scores 0.69. Set `LAYA_STATE_MODE=json` for byte-identical upstream parity.
+**Why flatten is the default:** Jev clients send `state` as an object, and `serialize_state` turns it into literal JSON before tokenizing; flattening keeps the field names and drops the punctuation. On **0.2.0** multilingual the two modes no longer flip the verdict: a three-field Chinese state measures `noul` **0.9997** flat vs **0.9966** json, both routing to `billing` (0.9937 / 0.9987). The 0.1.0-era English flip (0.16 vs 0.69) does not reproduce. Set `LAYA_STATE_MODE=json` for byte-identical upstream parity.
+
+**Picking a checkpoint:** multilingual scores English short input very low -- the same noul measures about **0.01** for `I was charged twice` against about **1.00** for `发票被重复扣款，请退款`. Use the `english` checkpoint for English traffic (`LAYA_MODELS=english`).

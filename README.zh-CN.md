@@ -206,4 +206,6 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 | `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`；`float16`/`bfloat16`/`float32` | auto / `float16` |
 | `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | 单次前向题数 / 常驻检查点数 | `16` / `2` |
 
-**为什么默认 flatten**：Jev 客户端的 `state` 通常是对象，而 `serialize_state` 会把它变成字面 JSON 再 tokenization。短输入下这会让判定翻转——multilingual 实测 `{"message": "I was charged twice"}` 的 `noul` 是 0.16，同样的话写成 `message: I was charged twice` 是 0.69。需要与 upstream 逐字节一致时设 `LAYA_STATE_MODE=json`。
+**为什么默认 flatten**：Jev 客户端的 `state` 通常是对象，而 `serialize_state` 会把它变成字面 JSON 再 tokenization；展平成 `key: value` 行保留字段名、去掉 JSON 标点。**0.2.0** 的 multilingual 上两种模式已不再翻转判定：三字段中文 state 实测 `noul` flat **0.9997** / json **0.9966**，`dept` 同为 `billing`（0.9937 / 0.9987）。0.1.0 时代英文短输入的翻转（0.16 / 0.69）在 0.2.0 不复现。需要与 upstream 逐字节一致时设 `LAYA_STATE_MODE=json`。
+
+**选检查点**：multilingual 对英文短输入给分极低——同一道 `noul`，`I was charged twice` 实测约 **0.01**，`发票被重复扣款，请退款` 约 **1.00**。英文场景用 `english` 检查点（`LAYA_MODELS=english`）。
