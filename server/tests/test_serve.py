@@ -67,7 +67,9 @@ def test_runtime_guards_reject_before_any_checkpoint_is_built():
     with pytest.raises(ValueError):
         runtime.predict("x" * (MAX_STATE_CHARS + 1), ONE)
     with pytest.raises(ValueError):
-        runtime.predict("x", {str(i): {"type": "noul", "instructions": "q"} for i in range(MAX_QUESTIONS + 1)})
+        runtime.predict(
+            "x", {str(i): {"type": "noul", "instructions": "q"} for i in range(MAX_QUESTIONS + 1)}
+        )
     assert runtime._agents == {}  # nothing was loaded while rejecting
 
 
@@ -92,9 +94,12 @@ def client(monkeypatch, stub):
 def test_http_requires_bearer(client):
     body = {"state": "x", "questions": ONE}
     assert client.post("/v1/systemone", json=body).status_code == 401
-    assert client.post(
-        "/v1/systemone", json=body, headers={"Authorization": "Bearer wrong"}
-    ).status_code == 401
+    assert (
+        client.post(
+            "/v1/systemone", json=body, headers={"Authorization": "Bearer wrong"}
+        ).status_code
+        == 401
+    )
     ok = client.post("/v1/systemone", json=body, headers={"Authorization": "Bearer sekret"})
     assert ok.status_code == 200
     assert ok.json()["answers"]["a"]["noul"] == 0.5
@@ -172,7 +177,6 @@ def test_http_resolves_the_named_checkpoint_to_its_mlx_repo(monkeypatch, fake_ag
         )
     # Every alias resolves to the same MLX repo, so only one checkpoint is ever built.
     assert set(fake_agent.repos) == {"aac6fef/laya-multilingual-mlx"}
-
 
 
 def test_health_endpoints_report_residency(client):

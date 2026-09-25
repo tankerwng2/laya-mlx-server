@@ -36,7 +36,7 @@ laya-mlx = "laya_mlx.cli:main"
 laya-snake = "laya_mlx.snake.cli:main"
 
 # The serve layer lives in server/ as its own distributable (laya-mlx-server),
-# so laya_mlx/ stays byte-identical to upstream and can be synced without conflict.
+# so nothing is grafted into laya_mlx/ and a future upstream bump stays conflict-free.
 [tool.uv.workspace]
 members = ["server"]
 

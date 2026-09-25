@@ -112,15 +112,13 @@ class Runtime:
         self.batch_size = 16 if raw_batch in (None, "") else int(raw_batch)
         if self.batch_size < 1:
             raise ValueError("LAYA_BATCH_SIZE must be a positive integer")
-        raw_max = (
-            max_loaded if max_loaded is not None else os.environ.get("LAYA_MAX_LOADED")
-        )
+        raw_max = max_loaded if max_loaded is not None else os.environ.get("LAYA_MAX_LOADED")
         self.max_loaded = 2 if raw_max in (None, "") else int(raw_max)
         if self.max_loaded < 1:
             raise ValueError("LAYA_MAX_LOADED must be a positive integer")
         self.state_mode = (
-            state_mode or os.environ.get("LAYA_STATE_MODE") or "flatten"
-        ).strip().lower()
+            (state_mode or os.environ.get("LAYA_STATE_MODE") or "flatten").strip().lower()
+        )
         if self.state_mode not in ("flatten", "json"):
             raise ValueError("LAYA_STATE_MODE must be 'flatten' or 'json'")
         self._agents: "OrderedDict[str, Any]" = OrderedDict()

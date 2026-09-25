@@ -43,4 +43,5 @@ build:
 	cd server && $(if $(UV_INDEX),UV_DEFAULT_INDEX=$(UV_INDEX) )uv build --out-dir dist
 
 clean:
-	rm -rf $(VENV) .pytest_cache **/__pycache__ laya_mlx.egg-info dist server/dist server/*.egg-info
+	rm -rf $(VENV) .pytest_cache laya_mlx.egg-info dist server/dist server/*.egg-info
+	find . -path ./.venv -prune -o -type d -name __pycache__ -exec rm -rf {} +

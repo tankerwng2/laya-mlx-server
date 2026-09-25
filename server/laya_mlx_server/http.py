@@ -88,7 +88,9 @@ def create_app(runtime: Optional[Runtime] = None):
             return JSONResponse({"error": "'state' is required"}, status_code=400)
         questions = payload.get("questions")
         if not isinstance(questions, dict) or not questions:
-            return JSONResponse({"error": "'questions' must be a non-empty object"}, status_code=400)
+            return JSONResponse(
+                {"error": "'questions' must be a non-empty object"}, status_code=400
+            )
 
         try:
             result = rt.predict(state, questions, payload.get("model"))

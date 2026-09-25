@@ -249,7 +249,7 @@ Apache-2.0; see [LICENSE](https://github.com/mizorewww/laya-mlx/blob/main/LICENS
 
 ## Serving over HTTP / MCP
 
-Upstream ships a Python API only. This fork adds two wire surfaces on one shared runtime, still with no PyTorch in the stack. They live in `server/` and ship as a separate distribution, **`laya-mlx-server`**, so `laya_mlx/` stays byte-identical to upstream and syncs without conflict.
+Upstream ships a Python API only. This fork adds two wire surfaces on one shared runtime, still with no PyTorch in the stack. They live in `server/` and ship as a separate distribution, **`laya-mlx-server`**, so nothing is grafted into `laya_mlx/` and a future upstream bump stays conflict-free. Note that this repo's `laya_mlx/` is an upstream **0.1.0** snapshot while upstream main is at **0.2.0** (six files changed, `shortlist.py` added).
 
 Requires **Apple Silicon + macOS** (`mlx` publishes darwin/arm64 wheels only, so this server cannot run in a Linux container; on Linux use upstream `laya-serve`). Also needs [uv](https://docs.astral.sh/uv/) and roughly 1.5 GB of disk.
 
