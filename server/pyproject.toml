@@ -41,7 +41,7 @@ laya-mlx-mcp = "laya_mlx_server.mcp:main"
 
 [project.urls]
 Repository = "https://github.com/tankerwng2/laya-mlx-server"
-Model = "https://huggingface.co/aac6fef/laya-mlx"
+Model = "https://huggingface.co/aac6fef/laya-multilingual-mlx"
 
 [tool.hatch.build.targets.wheel]
 packages = ["laya_mlx_server"]

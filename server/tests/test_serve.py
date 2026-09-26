@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 
 from laya_mlx_server.http import create_app
 from laya_mlx_server.runtime import (
+    MAX_BODY_BYTES,
     MAX_QUESTIONS,
     MAX_STATE_CHARS,
     Runtime,
@@ -184,3 +185,58 @@ def test_health_endpoints_report_residency(client):
     assert client.get("/health/ready").status_code == 200
     empty = TestClient(create_app(StubRuntime(loaded=())))
     assert empty.get("/health/ready").status_code == 503
+
+
+def test_http_rejects_oversized_body(monkeypatch, stub):
+    monkeypatch.setenv("LAYA_API_KEY", "sekret")
+    c = TestClient(create_app(stub))
+    auth = {"Authorization": "Bearer sekret", "Content-Type": "application/json"}
+    resp = c.post("/v1/systemone", content=b"0" * (MAX_BODY_BYTES + 1), headers=auth)
+    assert resp.status_code == 413
+    assert stub.seen == []
+
+
+def test_http_accepts_requests_without_api_key(monkeypatch, stub):
+    monkeypatch.delenv("LAYA_API_KEY", raising=False)
+    c = TestClient(create_app(stub))
+    resp = c.post("/v1/systemone", json={"state": "x", "questions": ONE})
+    assert resp.status_code == 200
+    assert resp.json()["answers"]["a"]["noul"] == 0.5
+
+
+def test_preload_honours_laya_models_list(monkeypatch):
+    class AgentStub:
+        def __init__(self, repo):
+            self.model_id = repo
+
+    seen = []
+
+    def fake_load(repo, *args, **kwargs):
+        seen.append(repo)
+        return AgentStub(repo)
+
+    monkeypatch.setattr("laya_mlx.agent.load", fake_load)
+    monkeypatch.delenv("LAYA_MODELS", raising=False)
+    assert Runtime().preload() == ["aac6fef/laya-multilingual-mlx"]
+
+    seen.clear()
+    monkeypatch.setenv("LAYA_MODELS", "english, multilingual")
+    assert Runtime().preload() == ["aac6fef/laya-mlx", "aac6fef/laya-multilingual-mlx"]
+
+
+def test_mcp_tools_answer_through_stubbed_runtime(monkeypatch):
+    mcp_mod = pytest.importorskip("laya_mlx_server.mcp")
+    stub = StubRuntime()
+    monkeypatch.setattr(mcp_mod, "_RUNTIME", stub)
+
+    out = mcp_mod.laya_predict("hello", ONE, "multilingual")
+    assert out["answers"]["a"]["noul"] == 0.5
+    assert stub.seen[-1] == ("hello", "multilingual")
+
+    out = mcp_mod.laya_preset("triage", {"message": "refund please"})
+    assert "intent" in out["answers"]
+
+    assert mcp_mod.laya_status()["loaded"] == stub.loaded
+
+    with pytest.raises(ValueError, match="unknown preset"):
+        mcp_mod.laya_preset("bogus", "x")

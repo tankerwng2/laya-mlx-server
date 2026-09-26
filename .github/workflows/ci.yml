@@ -40,3 +40,26 @@ jobs:
       - run: pytest -q tests server/tests
       - run: python -m build && python -m build --wheel --outdir /tmp/server-dist server
         if: matrix.device == 'cpu'
+  # Fails the build if the mirrored model layer drifted from mizorewww/laya-mlx
+  # main. This is the standing guarantee behind the upstream-sync workflow: even
+  # if a sync cycle is missed, the first push shows red. The pathspec must stay
+  # in lockstep with the fork-owned list in upstream-sync.yml.
+  sync-freshness:
+    name: sync freshness (mirror layer == upstream/main)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Add upstream remote (fetch-only; push is disabled in .gitconfig by remote name)
+        run: git remote add upstream https://github.com/mizorewww/laya-mlx.git
+      - run: git fetch --depth 1 upstream main
+      - name: Assert mirror paths are byte-identical to upstream/main
+        run: |
+          git diff --quiet upstream/main -- \
+            'laya_mlx' ':!laya_mlx/email.py' ':!laya_mlx/router.py' \
+            'benchmarks' 'BENCHMARKS.md' 'NOTICE' 'LICENSE' \
+            'examples' 'experiments' 'scripts' 'docs' \
+            'tests' ':!tests/test_router.py' ':!tests/test_runtime.py' \
+            || { echo "::error::the mirrored model layer has drifted from mizorewww/laya-mlx main; run the upstream-sync workflow"; exit 1; }

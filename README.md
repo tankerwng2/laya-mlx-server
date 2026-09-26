@@ -16,9 +16,9 @@ The model, weight conversion, benchmarks and the Snake demo belong to upstream a
 |---|---|
 | `server/laya_mlx_server/`: HTTP surface, MCP surface, shared runtime | `laya_mlx/`: model, tokenization, calibration, presets, router, snake |
 | `laya-mlx-http` / `laya-mlx-mcp` entry points | `laya-mlx` / `laya-snake` entry points |
-| Serve-layer contract tests (9) | Model and kernel tests |
+| Serve-layer contract tests (13) | Model and kernel tests |
 
-There is **no** serve code inside `laya_mlx/`, so syncing upstream cannot conflict with this package. Currently synced to upstream **0.2.0** (adds `shortlist.py`); the pinned upstream Laya revision is `573e5b6`.
+There is **no** serve code inside `laya_mlx/`, so syncing upstream cannot conflict with this package. Currently synced to upstream Laya **0.3.5** (opt-in embedding shortlist, temperature clamping, single-option handling); the pinned revision is `573e5b6`.
 
 ## Quick start
 
@@ -74,11 +74,15 @@ Three tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `mode
 |---|---|---|
 | `LAYA_HOST` / `LAYA_PORT` | HTTP bind | `127.0.0.1` / `8080` |
 | `LAYA_API_KEY` | when set, requires `Authorization: Bearer`; unset means unauthenticated and logs a warning at startup | none |
-| `LAYA_MODELS` | checkpoints to preload, comma separated; empty loads on first request | `multilingual` |
+| `LAYA_MODELS` | checkpoint aliases to preload, comma separated; empty preloads just `multilingual` | `multilingual` |
+| `LAYA_PRELOAD` | preload `LAYA_MODELS` at startup; `0`/`false` defers to the first request | on |
+| `LAYA_LOG_LEVEL` | log level for the HTTP surface | `info` |
 | `LAYA_STATE_MODE` | `flatten` renders object state as `key: value` lines; `json` keeps upstream byte-identical | `flatten` |
 | `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`; `float16`/`bfloat16`/`float32` | auto / `float16` |
 | `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | questions per forward pass / resident checkpoints | `16` / `2` |
 | `HF_HOME` / `HF_ENDPOINT` | checkpoint cache root / mirror endpoint | `~/.cache/huggingface` / `hf-mirror.com` (prefetch) |
+
+**Security:** the HTTP surface binds to `127.0.0.1` by design; do not expose it on a network without a reverse proxy that enforces `LAYA_API_KEY`. Note that `model` in the request body is passed through to the checkpoint loader, so an authenticated caller can name any complete local Laya checkpoint (or HF repo id) and pull it into memory — keep `LAYA_API_KEY` set whenever untrusted local callers exist.
 
 ## Measured on this machine
 
@@ -91,7 +95,7 @@ Environment: **Apple M5 Max** (`applegpu_g17s`, 128 GiB unified memory), macOS 2
 | long q=1 | **12.05 / 12.70 ms** | 82.9 q/s |
 | long q=10 | **160.21 / 469.63 ms** | 51.3 q/s |
 
-> [BENCHMARKS.md](https://github.com/mizorewww/laya-mlx/blob/main/BENCHMARKS.md) states an environment of **M3 Max / macOS 27.2 / Python 3.12.13**, which is not this machine (M5 Max, macOS 27.0, Python 3.13.15), so its figures are not interchangeable with the table above: on the same harness and method this machine measures **9.04 ms** for multilingual f16 short q=10 against 27.39 ms there.
+> [BENCHMARKS.md](https://github.com/mizorewww/laya-mlx/blob/main/BENCHMARKS.md) states an environment of **M3 Max / macOS 27.2 / Python 3.12.13**, which is not this machine (M5 Max, macOS 27.0, Python 3.13.15), so its figures are not interchangeable with the table above: on the same harness and method this machine measures **9.04 ms** for multilingual f16 short q=10 against 32.92 ms there.
 
 Serve-layer measurements, all with Chinese input on multilingual: `noul` **0.9953**, `dept` → `billing`; unauthenticated request **401**. MCP `triage`: `intent=refund`, `refund_requested` **0.9676**.
 
@@ -101,7 +105,7 @@ Multilingual scores **English** short input very low: the same noul measures abo
 
 ## flatten or json
 
-Jev clients send `state` as an object, and `serialize_state` turns it into literal JSON before tokenizing; `flatten` keeps the field names and drops the punctuation. On **0.2.0** multilingual the two modes no longer flip the verdict: a three-field Chinese state measures `noul` **0.9997** flat vs **0.9966** json, both routing to `billing`. The upstream 0.1.0-era English flip (0.16 vs 0.69) does not reproduce. Set `LAYA_STATE_MODE=json` for byte-identical upstream parity.
+Jev clients send `state` as an object, and `serialize_state` turns it into literal JSON before tokenizing; `flatten` keeps the field names and drops the punctuation. On **0.3.5** multilingual the two modes no longer flip the verdict: a three-field Chinese state measures `noul` **0.9997** flat vs **0.9966** json, both routing to `billing`. The upstream 0.1.0-era English flip (0.16 vs 0.69) does not reproduce. Set `LAYA_STATE_MODE=json` for byte-identical upstream parity.
 
 ## Installing from mainland China networks
 
@@ -122,7 +126,7 @@ uv publish --publish-dir server/dist     # token generated yourself on pypi.org
 
 ## Quality gates
 
-`make test` → **150 passed, 1 skipped**, including the nine serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. CI runs two legs, `cpu` and `metal`, with `fail-fast: false`, and builds the wheels once on the cpu leg: cpu is bit-exact, metal is the default device and the path real traffic takes. A chunked forward drifts by 1e-4 on Metal because the act head reduces in a different order, so those assertions compare decisions strictly and floats within `2e-4`.
+`make test` → **155 passed, 1 skipped**, including the thirteen serve-layer contract tests, which need no weights and no network (they pass against an empty `HF_HOME` with `HF_HUB_OFFLINE=1`). `make lint` and `ruff format --check .` are clean. CI runs two legs, `cpu` and `metal`, with `fail-fast: false`, and builds the wheels once on the cpu leg: cpu is bit-exact, metal is the default device and the path real traffic takes. A chunked forward drifts by 1e-4 on Metal because the act head reduces in a different order, so those assertions compare decisions strictly and floats within `2e-4`.
 
 ## Attribution and license
 

@@ -21,10 +21,12 @@ install:
 	# is installed explicitly into the same venv.
 	$(if $(UV_INDEX),UV_DEFAULT_INDEX=$(UV_INDEX) )uv pip install --python $(BIN)/python -e "./server[mcp]"
 
-# One-time weight fetch. Point HF_ENDPOINT at a mirror where huggingface.co is blocked.
+# One-time weight fetch for the aliases in MODELS (repo ids come from the
+# server's MLX_CHECKPOINTS table, so there is nothing to keep in sync).
+# Point HF_ENDPOINT at a mirror where huggingface.co is blocked.
 prefetch:
-	HF_ENDPOINT=$${HF_ENDPOINT:-https://hf-mirror.com} $(BIN)/python -c \
-	  "from huggingface_hub import snapshot_download; print(snapshot_download('aac6fef/laya-$${MODEL:-multilingual}-mlx'))"
+	HF_ENDPOINT=$${HF_ENDPOINT:-https://hf-mirror.com} LAYA_MODELS='$(MODELS)' $(BIN)/python -c \
+	  'import os; from laya_mlx_server.runtime import MLX_CHECKPOINTS; from huggingface_hub import snapshot_download; wanted = [n.strip() for n in os.environ["LAYA_MODELS"].split(",") if n.strip()]; unknown = [n for n in wanted if n not in MLX_CHECKPOINTS]; assert not unknown, "unknown checkpoint alias: " + ", ".join(unknown); print("\n".join(snapshot_download(MLX_CHECKPOINTS[n]) for n in wanted))'
 
 http:
 	LAYA_HOST=$(HOST) LAYA_PORT=$(PORT) LAYA_MODELS=$(MODELS) HF_HUB_OFFLINE=1 $(BIN)/laya-mlx-http
