@@ -59,3 +59,5 @@ Tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `moderation
 ## Attribution
 
 Derived from [Laya](https://github.com/NandhaKishorM/laya) and [laya-mlx](https://github.com/mizorewww/laya-mlx), Apache-2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE). Model output probabilities are not a guarantee of correctness.
+
+<!-- branch-protection smoke test: safe to remove -->
