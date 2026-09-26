@@ -49,12 +49,20 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 
 ## MCP
 
-走 stdio，不需要端口也不需要 token：
+走 stdio，不需要端口也不需要 token。
+
+从 clone 出发，让 `uv` 自己找 venv，配置里就不带任何主机路径：
 
 ```json
-{ "laya-mlx-server": { "type": "stdio", "command": "laya-mlx-mcp",
+{ "laya-mlx-server": { "type": "stdio", "command": "uv",
+  "args": ["run", "laya-mlx-mcp"], "cwd": "/path/to/laya-mlx-server",
   "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
 ```
+
+裸 `"command": "laya-mlx-mcp"` 要求 `.venv/bin` 在 `PATH` 上。`source .venv/bin/activate`
+只对你激活的那个 shell 生效；从 GUI 或 launcher 启动的客户端继承不到，spawn 只会报
+"command not found"。`uv` 形态没有这个依赖：`cwd` + `uv run` 在任意主机上都能解析到
+workspace 的 venv。
 
 工具三个：`laya_predict`、`laya_preset`（`triage` / `email` / `guard` / `moderation` / `router`）、`laya_status`。
 

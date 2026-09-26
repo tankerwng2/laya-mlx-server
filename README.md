@@ -53,10 +53,18 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 
 Stdio transport: no port, no token.
 
+From a clone, let `uv` locate the venv so the entry carries no host path:
+
 ```json
-{ "laya-mlx-server": { "type": "stdio", "command": "laya-mlx-mcp",
+{ "laya-mlx-server": { "type": "stdio", "command": "uv",
+  "args": ["run", "laya-mlx-mcp"], "cwd": "/path/to/laya-mlx-server",
   "env": { "HF_HUB_OFFLINE": "1", "LAYA_MODELS": "multilingual" } } }
 ```
+
+A bare `"command": "laya-mlx-mcp"` needs `.venv/bin` on `PATH`. `source .venv/bin/activate`
+only covers the shell you activated in; a client started from a GUI or a launcher does not
+inherit it, and the spawn fails with a plain "command not found". The `uv` form has no such
+dependency: `cwd` plus `uv run` resolves the sibling workspace venv on any host.
 
 Three tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `moderation` / `router`), `laya_status`.
 
