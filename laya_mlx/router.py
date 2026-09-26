@@ -161,7 +161,7 @@ class Router:
     request.
 
         r = Router(preload=True)                    # all three resident, routing is free
-        r = Router(preload=True, device="cuda")
+        r = Router(preload=True, device="cpu")
         r.preload(["english", "multilingual"])      # or just the two you serve
     """
 
@@ -323,7 +323,7 @@ class Router:
         if workflow and self.auto_task_detection:
             return RouteDecision(
                 model="typed-decisions",
-                repo=self.models["typed-decisions"],
+                repo=_repo_str(self.models["typed-decisions"]),
                 reason="question ids match the %r typed-decisions workflow" % workflow,
                 detection=None,
                 workflow=workflow,

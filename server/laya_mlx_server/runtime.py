@@ -12,7 +12,11 @@ and ``LAYA_MODELS`` means something slightly different here -- see the note.
 ====================  ==========================================================  =========
 env var               meaning                                                      default
 ====================  ==========================================================  =========
-``LAYA_MODELS``       comma list to preload; empty = load on first request      ``multilingual``
+``LAYA_MODELS``       comma list of aliases to preload when ``LAYA_PRELOAD``      ``multilingual``
+                      is on; empty means just ``multilingual``
+``LAYA_PRELOAD``      preload ``LAYA_MODELS`` at startup; ``0``/``false`` loads
+                      on the first request instead                               ``1`` (on)
+``LAYA_LOG_LEVEL``    log level for the HTTP surface (HTTP only)                   ``info``
 ``LAYA_DEVICE``       ``gpu`` / ``metal`` / ``cpu``                                 auto
 ``LAYA_DTYPE``        ``float16`` / ``bfloat16`` / ``float32``                    ``float16``
 ``LAYA_BATCH_SIZE``   questions per forward pass                                       ``16``
@@ -25,17 +29,17 @@ env var               meaning                                                   
 ====================  ==========================================================  =========
 
 Note on ``LAYA_MODELS``: upstream preloads *every* checkpoint when the value is
-empty. Here an empty value loads nothing, because a laptop keeps 614 MiB of
-weights per checkpoint resident on the GPU and preloading all three is a
-guaranteed memory cliff. Set it explicitly to warm more than one.
+empty. Here an empty value preloads only ``multilingual``, because a laptop
+keeps 614 MiB of weights per checkpoint resident on the GPU and preloading all
+three is a guaranteed memory cliff. Set it to a comma list to warm more than
+one, or disable preloading with ``LAYA_PRELOAD=0``.
 
 Note on ``LAYA_STATE_MODE``: Jev clients canonically send ``state`` as an object,
 and ``laya_mlx.common.serialize_state`` turns that into literal JSON before
-tokenizing. On short input the JSON punctuation flips the answer -- measured on
-the multilingual checkpoint, ``{"message": "I was charged twice"}`` scores
-``noul`` 0.16 while the same text as ``message: I was charged twice`` scores
-0.69 and keeps the field names the questions refer to. ``flatten`` renders
-``key: value`` lines instead; set ``json`` for byte-identical upstream parity.
+tokenizing. ``flatten`` renders ``key: value`` lines instead, keeping the field
+names the questions refer to. On 0.2.0 checkpoints the two modes no longer flip
+the verdict on short input (the 0.1.0-era English 0.16/0.69 flip does not
+reproduce); set ``json`` for byte-identical upstream parity.
 """
 
 import json

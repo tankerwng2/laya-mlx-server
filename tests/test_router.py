@@ -209,6 +209,21 @@ def test_english_routing_unchanged():
     assert normalise_name("ML") == "multilingual"
 
 
+def test_workflow_branch_reports_repo_as_a_string():
+    # The workflow branch used to leak the raw (repo, subfolder) spec into the
+    # decision, so the routing payload serialised the field as a JSON list.
+    qs = {
+        k: {"type": "noul"} for k in ("action", "category", "churn_risk", "needs_human", "urgency")
+    }
+    off = Router().route("please review this ticket", qs)
+    assert off.model == "english"  # workflow detection is opt-in
+    on = Router(auto_task_detection=True).route("please review this ticket", qs)
+    assert on.model == "typed-decisions"
+    assert on["workflow"] == "customer_service"
+    assert isinstance(on["repo"], str)
+    assert on["repo"] == "convaiinnovations/laya/typed-decisions"
+
+
 # --------------------------------------------------------------------- temperature clamp (#35)
 
 

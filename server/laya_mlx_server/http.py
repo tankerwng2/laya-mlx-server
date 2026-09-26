@@ -22,7 +22,7 @@ import logging
 import os
 from typing import Any, Dict, Optional
 
-from .runtime import MAX_BODY_BYTES, Runtime
+from .runtime import MAX_BODY_BYTES, Runtime, env_bool
 
 log = logging.getLogger("laya_mlx_server")
 
@@ -110,11 +110,12 @@ def main(argv: Optional[list] = None) -> None:
     logging.basicConfig(level=os.environ.get("LAYA_LOG_LEVEL", "info").upper())
     host = os.environ.get("LAYA_HOST", "127.0.0.1")
     port = int(os.environ.get("LAYA_PORT", "8080"))
+    log_level = os.environ.get("LAYA_LOG_LEVEL", "info").lower()
     runtime = Runtime()
-    if os.environ.get("LAYA_PRELOAD", "1").strip().lower() not in ("0", "false", "no"):
+    if env_bool("LAYA_PRELOAD", True):
         for repo in runtime.preload():
             log.info("preloaded %s", repo)
-    uvicorn.run(create_app(runtime), host=host, port=port, log_level="info")
+    uvicorn.run(create_app(runtime), host=host, port=port, log_level=log_level)
 
 
 if __name__ == "__main__":

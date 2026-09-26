@@ -16,9 +16,9 @@
 |---|---|
 | `server/laya_mlx_server/`：HTTP 面、MCP 面、共享运行时 | `laya_mlx/`：模型、tokenization、校准、presets、router、snake |
 | `laya-mlx-http` / `laya-mlx-mcp` 两个入口 | `laya-mlx` / `laya-snake` 两个入口 |
-| serve 层的契约测试（9 个） | 模型与内核测试 |
+| serve 层的契约测试（13 个） | 模型与内核测试 |
 
-`laya_mlx/` 里**没有**任何服务代码，所以同步上游不会与这套服务冲突。当前已同步到上游 **0.2.0**（新增 `shortlist.py`），上游 Laya 引用修订 pin 在 `573e5b6`。
+`laya_mlx/` 里**没有**任何服务代码，所以同步上游不会与这套服务冲突。当前已同步到上游 Laya **0.3.5**（opt-in 嵌入短名单、温度钳制、单选项处理），引用修订 pin 在 `573e5b6`。
 
 ## 快速开始
 
@@ -72,11 +72,15 @@ workspace 的 venv。
 |---|---|---|
 | `LAYA_HOST` / `LAYA_PORT` | HTTP 绑定地址与端口 | `127.0.0.1` / `8080` |
 | `LAYA_API_KEY` | 设定后要求 `Authorization: Bearer`；未设定则不鉴权并在启动时告警 | 无 |
-| `LAYA_MODELS` | 预加载的检查点，逗号分隔；为空则首次请求时加载 | `multilingual` |
+| `LAYA_MODELS` | 预加载的检查点别名，逗号分隔；为空则只预加载 `multilingual` | `multilingual` |
+| `LAYA_PRELOAD` | 启动时预加载 `LAYA_MODELS`；`0`/`false` 则推迟到首次请求 | 开 |
+| `LAYA_LOG_LEVEL` | HTTP 面的日志级别 | `info` |
 | `LAYA_STATE_MODE` | `flatten` 把对象 state 渲染成 `key: value` 行；`json` 与上游逐字节一致 | `flatten` |
 | `LAYA_DEVICE` / `LAYA_DTYPE` | `gpu`/`metal`/`cpu`；`float16`/`bfloat16`/`float32` | auto / `float16` |
 | `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | 单次前向题数 / 常驻检查点数 | `16` / `2` |
 | `HF_HOME` / `HF_ENDPOINT` | 权重缓存根 / 镜像端点 | `~/.cache/huggingface` / `hf-mirror.com`（prefetch） |
+
+**安全：** HTTP 面默认只绑定 `127.0.0.1`；若要对网络暴露，务必加一层强制校验 `LAYA_API_KEY` 的反向代理。注意请求体里的 `model` 会直通检查点加载器——经过鉴权的调用方可以指定任意完整的本地 Laya 检查点（或 HF 仓库 id）并将其载入内存，因此只要本机存在不可信调用方，就必须设置 `LAYA_API_KEY`。
 
 ## 本机实测
 
@@ -89,7 +93,7 @@ workspace 的 venv。
 | long q=1 | **12.05 / 12.70 ms** | 82.9 q/s |
 | long q=10 | **160.21 / 469.63 ms** | 51.3 q/s |
 
-> [BENCHMARKS.md](https://github.com/mizorewww/laya-mlx/blob/main/BENCHMARKS.md) 标注的测量环境是 **M3 Max / macOS 27.2 / Python 3.12.13**，与本机（M5 Max、macOS 27.0、Python 3.13.15）不符，不能与上表互换；同一 harness 同口径下本机 multilingual f16 short q=10 为 **9.04 ms**，该文件为 27.39 ms。
+> [BENCHMARKS.md](https://github.com/mizorewww/laya-mlx/blob/main/BENCHMARKS.md) 标注的测量环境是 **M3 Max / macOS 27.2 / Python 3.12.13**，与本机（M5 Max、macOS 27.0、Python 3.13.15）不符，不能与上表互换；同一 harness 同口径下本机 multilingual f16 short q=10 为 **9.04 ms**，该文件为 32.92 ms。
 
 服务面实测：中文 `noul` **0.9953**、`dept` → `billing`；无 token 请求 **401**。MCP `triage` 实测 `intent=refund`、`refund_requested` **0.9676**。
 
@@ -99,7 +103,7 @@ multilingual 对**英文**短输入给分极低：同一道 `noul`，`I was char
 
 ## flatten 还是 json
 
-Jev 客户端的 `state` 通常是对象，`serialize_state` 会把它变成字面 JSON 再 tokenization；`flatten` 保留字段名、去掉 JSON 标点。**0.2.0** 的 multilingual 上两种模式已不再翻转判定：三字段中文 state 实测 `noul` flat **0.9997** / json **0.9966**，`dept` 同为 `billing`。上游 0.1.0 时代英文短输入的翻转（0.16 / 0.69）在 0.2.0 不复现。需要与上游逐字节一致时设 `LAYA_STATE_MODE=json`。
+Jev 客户端的 `state` 通常是对象，`serialize_state` 会把它变成字面 JSON 再 tokenization；`flatten` 保留字段名、去掉 JSON 标点。**0.3.5** 的 multilingual 上两种模式已不再翻转判定：三字段中文 state 实测 `noul` flat **0.9997** / json **0.9966**，`dept` 同为 `billing`。上游 0.1.0 时代英文短输入的翻转（0.16 / 0.69）在 0.3.5 不复现。需要与上游逐字节一致时设 `LAYA_STATE_MODE=json`。
 
 ## 大陆网络安装（踩过的坑）
 
@@ -120,7 +124,7 @@ uv publish --publish-dir server/dist     # token 在 pypi.org 自行生成
 
 ## 质量门禁
 
-`make test` → **150 passed, 1 skipped**（含 serve 层 9 个契约测试，后者零权重、零网络：空 `HF_HOME` + 强制离线仍全过）。`make lint` 与 `ruff format --check .` 干净。CI 跑 `cpu` 与 `metal` 两条腿（`fail-fast: false`，wheel 构建只在 cpu 腿跑一次）：cpu 逐位精确，metal 是默认设备也是真实流量路径。分块前向在 Metal 上因归约顺序不同会有 1e-4 漂移，所以相关断言按判定严格相等、浮点容差 `2e-4` 写。
+`make test` → **155 passed, 1 skipped**（含 serve 层 13 个契约测试，后者零权重、零网络：空 `HF_HOME` + 强制离线仍全过）。`make lint` 与 `ruff format --check .` 干净。CI 跑 `cpu` 与 `metal` 两条腿（`fail-fast: false`，wheel 构建只在 cpu 腿跑一次）：cpu 逐位精确，metal 是默认设备也是真实流量路径。分块前向在 Metal 上因归约顺序不同会有 1e-4 漂移，所以相关断言按判定严格相等、浮点容差 `2e-4` 写。
 
 ## 许可与致谢
 

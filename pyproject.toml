@@ -42,6 +42,7 @@ members = ["server"]
 
 [project.urls]
 Repository = "https://github.com/mizorewww/laya-mlx"
+Fork = "https://github.com/tankerwng2/laya-mlx-server"
 Upstream = "https://github.com/NandhaKishorM/laya"
 Documentation = "https://github.com/mizorewww/laya-mlx#readme"
 Issues = "https://github.com/mizorewww/laya-mlx/issues"
