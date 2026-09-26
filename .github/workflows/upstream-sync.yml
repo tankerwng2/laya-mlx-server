@@ -1,0 +1,147 @@
+# Keep the mirrored model layer in lockstep with mizorewww/laya-mlx main.
+#
+# GitHub cannot subscribe to another repository's pushes, so this polls on a
+# schedule (plus manual dispatch) and is a few seconds of work while upstream
+# is unchanged. When upstream advanced, it opens a pull request:
+#
+#   - merge upstream/main into a sync branch
+#   - resolve every conflict by path policy:
+#       fork-owned files  -> keep ours
+#       everything else   -> take upstream (the mirrored model layer)
+#   - refresh uv.lock (derived, never merged by hand)
+#   - push + open the PR, labelled auto-sync
+#
+# The fork-owned list below must stay in lockstep with the sync-freshness
+# pathspec in ci.yml: the gate asserts that the complement (the mirror paths)
+# is byte-identical to upstream/main on every push.
+
+name: upstream-sync
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/mizorewww/laya-mlx.git
+      - run: git fetch upstream main
+      - name: Count new upstream commits
+        id: ahead
+        run: |
+          n=$(git rev-list --count HEAD..upstream/main)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          echo "upstream is $n commit(s) ahead"
+      - name: Merge upstream with the path policy
+        if: steps.ahead.outputs.count > 0
+        run: |
+          git config user.name "laya-mlx sync"
+          git config user.email "laya-mlx-sync@users.noreply.github.com"
+          git checkout -b "sync/upstream-$(git rev-parse --short upstream/main)"
+          # Fork-owned: the serve layer and its config. The list must stay in
+          # lockstep with the sync-freshness pathspec in ci.yml.
+          is_fork_owned() {
+            case "$1" in
+              Makefile | README.md | README.zh-CN.md | pyproject.toml | uv.lock \
+              | .github/* | server/* | tests/test_router.py | tests/test_runtime.py \
+              | laya_mlx/email.py | laya_mlx/router.py) return 0 ;;
+              *) return 1 ;;
+            esac
+          }
+          # Even non-conflicting upstream changes to fork-owned files are
+          # reverted, so the fork surface only changes through our own commits.
+          restore_fork_owned() {
+            for f in Makefile README.md README.zh-CN.md pyproject.toml uv.lock \
+              .github/workflows/ci.yml tests/test_router.py tests/test_runtime.py \
+              laya_mlx/email.py laya_mlx/router.py; do
+              git cat-file -e "upstream/main:$f" 2>/dev/null || continue
+              if ! git diff --quiet main upstream/main -- "$f"; then
+                git checkout main -- "$f"
+                echo "::warning::upstream modified fork-owned $f; reverted to the fork version, review the discarded delta"
+              fi
+            done
+          }
+          git merge --no-edit upstream/main || true
+          if test -f .git/MERGE_HEAD; then
+            # Three-way merge: resolve conflicts by path policy.
+            git diff --name-only --diff-filter=U | while IFS= read -r f; do
+              if is_fork_owned "$f"; then
+                git checkout --ours -- "$f"
+                echo "fork-owned, kept ours: $f"
+              elif git cat-file -e "upstream/main:$f" 2>/dev/null; then
+                git checkout --theirs -- "$f"
+                echo "mirrored, took upstream: $f"
+              else
+                git rm -f -q -- "$f"
+                echo "mirrored, deleted by upstream: $f"
+              fi
+            done
+            restore_fork_owned
+            git add -A
+            git commit --no-edit --allow-empty
+          else
+            # Fast-forward: content moved wholesale; enforce fork ownership.
+            restore_fork_owned
+            if ! git diff --quiet HEAD; then
+              git add -A
+              git commit -m "sync: restore fork-owned files after fast-forward"
+            fi
+          fi
+          git diff --quiet upstream/main -- \
+            'laya_mlx' ':!laya_mlx/email.py' ':!laya_mlx/router.py' \
+            'benchmarks' 'BENCHMARKS.md' 'NOTICE' 'LICENSE' \
+            'examples' 'experiments' 'scripts' 'docs' \
+            'tests' ':!tests/test_router.py' ':!tests/test_runtime.py' \
+            || { echo "::error::mirror layer still differs from upstream after sync"; exit 1; }
+      - name: Refresh lockfile
+        if: steps.ahead.outputs.count > 0
+        run: |
+          python -m pip install uv
+          uv lock
+          git diff --quiet || git commit -am "chore: refresh uv.lock after upstream sync"
+      - name: Push and open pull request
+        if: steps.ahead.outputs.count > 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD
+          files=$(git diff --name-only main..HEAD | tr '\n' ' ')
+          upstreams=$(git log --oneline main..upstream/main | tr '\n' '; ')
+          gh label create auto-sync --force 2>/dev/null || true
+          gh pr create --title "sync: upstream/main @ $(git rev-parse --short upstream/main)" \
+            --label auto-sync \
+            --body "Automatic sync of mizorewww/laya-mlx.
+
+          Upstream commits: ${upstreams}
+          Files changed: \`${files}\`
+
+          Policy: mirrored paths (laya_mlx/, benchmarks/, docs, tests) take
+          upstream; fork-owned files (server/, Makefile, pyproject.toml,
+          READMEs, ci, uv.lock, test_router, test_runtime, email.py, router.py)
+          keep ours. Check the warnings above for upstream edits to fork-owned
+          files. Merge after the CI checks (including sync-freshness) are green."
+      # Enable once main requires the CI checks as status checks and 2-3 sync
+      # cycles have merged cleanly:
+      # - name: Auto-merge
+      #   if: steps.ahead.outputs.count > 0
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     pr=$(gh pr list --head "$(git branch --show-current)" --json number -q .[0].number)
+      #     gh pr merge "$pr" --auto --delete-branch
