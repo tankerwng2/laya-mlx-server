@@ -136,8 +136,14 @@ jobs:
           READMEs, ci, uv.lock, test_router, test_runtime, email.py, router.py)
           keep ours. Check the warnings above for upstream edits to fork-owned
           files. Merge after the CI checks (including sync-freshness) are green."
-      # Enable once main requires the CI checks as status checks and 2-3 sync
-      # cycles have merged cleanly:
+      # Auto-merge stays off until the main-protection ruleset is ACTIVE and
+      # 2-3 sync cycles have merged cleanly. The ruleset is configured (test
+      # cpu/metal + sync freshness, up-to-date, force-push/deletion blocked)
+      # but GitHub Free cannot enforce rulesets on private repos, so it sits
+      # Disabled. --auto without enforcement merges the instant a PR opens,
+      # skipping red checks: strictly worse than manual merge. Upgrade the
+      # plan (or make the repo public), flip the ruleset to Active, then
+      # uncomment this step.
       # - name: Auto-merge
       #   if: steps.ahead.outputs.count > 0
       #   env:
