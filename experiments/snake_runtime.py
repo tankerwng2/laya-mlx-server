@@ -7,47 +7,27 @@ These experimental wrappers do not cache model outputs or alter model weights.
 import argparse
 import json
 import time
-from collections import OrderedDict, deque
+from collections import deque
 from pathlib import Path
 
 import mlx.core as mx
 import numpy as np
 
-from laya_mlx.common import QTYPES, build_sequence, render_options, serialize_state
+from laya_mlx.prepared import PrefixCache
 from laya_mlx.snake.game import SnakeGame
 from laya_mlx.snake.policy import LayaPolicy
 from laya_mlx.snake.replay import load_record
 
 
 class PrefixPreparation:
+    """Use runtime preparation so this ablation shares truncation and usage semantics."""
+
     def __init__(self, agent):
         self.agent = agent
-        self.cache = OrderedDict()
+        self.cache = PrefixCache()
 
     def __call__(self, state, questions):
-        agent, tok = self.agent, self.agent.tok
-        max_len, head_len = agent.cfg["max_len"], agent.cfg["head_max_len"]
-        state_ids = tok(
-            serialize_state(state).replace(tok.mask_token, " "), add_special_tokens=False
-        )["input_ids"]
-        items, internal = [], []
-        for qid, definition in questions.items():
-            q = agent._to_internal(definition)
-            key = (id(tok), max_len, head_len, json.dumps(q, ensure_ascii=False))
-            if key not in self.cache:
-                ids, markers = build_sequence(tok, "", q, max_len, head_len)
-                if len(markers) != len(render_options(q)):
-                    raise ValueError(f"Question {qid!r} exceeds token budget")
-                self.cache[key] = (ids[:-1], markers)
-                if len(self.cache) > 128:
-                    self.cache.popitem(last=False)
-            self.cache.move_to_end(key)
-            prefix, markers = self.cache[key]
-            room = max(0, max_len - len(prefix) - 1)
-            ids = (prefix + state_ids[:room] + [tok.sep_token_id])[:max_len]
-            items.append({"ids": ids, "markers": list(markers), "qtype": QTYPES[q["t"]]})
-            internal.append(q)
-        return items, internal
+        return self.cache.prepare(self.agent, state, questions)
 
 
 def main():

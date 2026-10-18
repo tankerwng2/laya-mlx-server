@@ -104,6 +104,7 @@ def test_analyse_reports_the_same_keys_from_every_branch():
         "language_undecided",
         "diacritic_rate",
         "non_latin_fraction",
+        "mixed_segment",
     }
     for text in (
         "Please refund the duplicate charge",
@@ -204,24 +205,10 @@ def test_english_routing_unchanged():
     assert (
         router.route("Please refund the duplicate charge on invoice 4411 today.").model == "english"
     )
-    assert router.route("refund me").model == "english"
+    assert router.route("refund me").model == "multilingual"  # short text is undecided
+    assert Router(default="english").route("refund me").model == "english"
     assert router.route("Հայերեն", model="english").model == "english"
     assert normalise_name("ML") == "multilingual"
-
-
-def test_workflow_branch_reports_repo_as_a_string():
-    # The workflow branch used to leak the raw (repo, subfolder) spec into the
-    # decision, so the routing payload serialised the field as a JSON list.
-    qs = {
-        k: {"type": "noul"} for k in ("action", "category", "churn_risk", "needs_human", "urgency")
-    }
-    off = Router().route("please review this ticket", qs)
-    assert off.model == "english"  # workflow detection is opt-in
-    on = Router(auto_task_detection=True).route("please review this ticket", qs)
-    assert on.model == "typed-decisions"
-    assert on["workflow"] == "customer_service"
-    assert isinstance(on["repo"], str)
-    assert on["repo"] == "convaiinnovations/laya/typed-decisions"
 
 
 # --------------------------------------------------------------------- temperature clamp (#35)
@@ -321,3 +308,18 @@ def test_concurrent_hotpath_keeps_lru_consistent(monkeypatch):
     assert len(router._order) == 1
     assert len(router._agents) == 1
     assert router._order == ["english"]
+
+
+def test_workflow_branch_reports_repo_as_a_string():
+    # The workflow branch used to leak the raw (repo, subfolder) spec into the
+    # decision, so the routing payload serialised the field as a JSON list.
+    qs = {
+        k: {"type": "noul"} for k in ("action", "category", "churn_risk", "needs_human", "urgency")
+    }
+    off = Router().route("please review this ticket", qs)
+    assert off.model == "english"  # workflow detection is opt-in
+    on = Router(auto_task_detection=True).route("please review this ticket", qs)
+    assert on.model == "typed-decisions"
+    assert on["workflow"] == "customer_service"
+    assert isinstance(on["repo"], str)
+    assert on["repo"] == "convaiinnovations/laya/typed-decisions"

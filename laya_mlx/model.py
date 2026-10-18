@@ -9,6 +9,8 @@ from dataclasses import dataclass, fields
 import mlx.core as mx
 import mlx.nn as nn
 
+from .common import uses_parallel_layout
+
 
 @dataclass
 class EncoderConfig:
@@ -85,12 +87,20 @@ class EncoderAttention(nn.Module):
         self.Wqkv = nn.Linear(cfg.hidden_size, 3 * cfg.hidden_size, bias=cfg.attention_bias)
         self.Wo = nn.Linear(cfg.hidden_size, cfg.hidden_size, bias=cfg.attention_bias)
 
-    def __call__(self, x, mask):
+    def __call__(self, x, mask, position_ids=None):
         b, length, _ = x.shape
         qkv = self.Wqkv(x).reshape(b, length, 3, self.num_heads, self.head_dim)
         q, k, v = [qkv[:, :, i].transpose(0, 2, 1, 3) for i in range(3)]
-        q = mx.fast.rope(q, self.head_dim, traditional=False, base=self.base, scale=1.0, offset=0)
-        k = mx.fast.rope(k, self.head_dim, traditional=False, base=self.base, scale=1.0, offset=0)
+        if position_ids is None:
+            q = mx.fast.rope(
+                q, self.head_dim, traditional=False, base=self.base, scale=1.0, offset=0
+            )
+            k = mx.fast.rope(
+                k, self.head_dim, traditional=False, base=self.base, scale=1.0, offset=0
+            )
+        else:
+            q = rotary_positions(q, position_ids, self.base)
+            k = rotary_positions(k, position_ids, self.base)
         out = mx.fast.scaled_dot_product_attention(q, k, v, scale=self.head_dim**-0.5, mask=mask)
         return self.Wo(out.transpose(0, 2, 1, 3).reshape(b, length, -1))
 
@@ -119,9 +129,34 @@ class EncoderLayer(nn.Module):
         self.mlp_norm = nn.LayerNorm(cfg.hidden_size, eps=cfg.norm_eps, bias=cfg.norm_bias)
         self.mlp = EncoderMLP(cfg)
 
-    def __call__(self, x, mask):
-        x = x + self.attn(self.attn_norm(x), mask)
+    def __call__(self, x, mask, position_ids=None):
+        x = x + self.attn(self.attn_norm(x), mask, position_ids)
         return x + self.mlp(self.mlp_norm(x))
+
+
+def rotary_positions(x, positions, base):
+    """Non-interleaved RoPE for explicit, possibly repeated option positions."""
+    half = x.shape[-1] // 2
+    inv_freq = 1.0 / (base ** (mx.arange(half, dtype=mx.float32) / half))
+    angles = positions.astype(mx.float32)[:, None, :, None] * inv_freq
+    cos, sin = mx.cos(angles).astype(x.dtype), mx.sin(angles).astype(x.dtype)
+    first, second = x[..., :half], x[..., half:]
+    return mx.concatenate([first * cos - second * sin, second * cos + first * sin], axis=-1)
+
+
+def parallel_option_masks(attention_mask, position_ids, option_ids, window):
+    """Isolate option spans; local distance is measured in shared position IDs."""
+    valid = attention_mask.astype(mx.bool_)
+    other = (
+        (option_ids[:, :, None] > 0)
+        & (option_ids[:, None, :] > 0)
+        & (option_ids[:, :, None] != option_ids[:, None, :])
+    )
+    full = valid[:, None, :] & ~other
+    near = mx.abs(position_ids[:, :, None] - position_ids[:, None, :]) <= window // 2
+    # Padded queries are unused; allowing real keys avoids all-masked softmax rows.
+    local = full & (near | ~valid[:, :, None])
+    return {"full_attention": full[:, None], "sliding_attention": local[:, None]}
 
 
 def attention_masks(attention_mask, window):
@@ -146,11 +181,23 @@ class ModernBert(nn.Module):
         self.layers = [EncoderLayer(cfg, i) for i in range(cfg.num_hidden_layers)]
         self.final_norm = nn.LayerNorm(cfg.hidden_size, eps=cfg.norm_eps, bias=cfg.norm_bias)
 
-    def __call__(self, input_ids, attention_mask):
+    def __call__(self, input_ids, attention_mask, position_ids=None, option_ids=None):
+        if (position_ids is None) != (option_ids is None):
+            raise ValueError("position_ids and option_ids must be provided together")
         x = self.embeddings(input_ids)
-        masks = attention_masks(attention_mask, self.config.local_attention)
+        if option_ids is not None and mx.default_device() == mx.cpu:
+            # Hosted macOS 26 can abort in the CPU FP16 parallel-attention path.
+            # Keep parameter storage precision but use FP32 intermediate math on
+            # CPU; GPU execution retains the checkpoint's requested precision.
+            x = x.astype(mx.float32)
+        if option_ids is None:
+            masks = attention_masks(attention_mask, self.config.local_attention)
+        else:
+            masks = parallel_option_masks(
+                attention_mask, position_ids, option_ids, self.config.local_attention
+            )
         for layer in self.layers:
-            x = layer(x, masks[layer.attention_type])
+            x = layer(x, masks[layer.attention_type], position_ids)
         return self.final_norm(x)
 
 
@@ -202,6 +249,7 @@ class DecisionHead(nn.Module):
 class DecisionModel(nn.Module):
     def __init__(self, encoder_config: EncoderConfig, agent_config: dict):
         super().__init__()
+        self.parallel = uses_parallel_layout(agent_config)
         dims = encoder_config.hidden_size
         self.encoder = ModernBert(encoder_config)
         self.head = DecisionHead(dims, agent_config.get("head_layers", 2))
@@ -216,12 +264,33 @@ class DecisionModel(nn.Module):
         )
         self.temperature = mx.ones((3,))  # checkpoint buffer; calibration uses the JSON config
 
-    def __call__(self, input_ids, attention_mask, marker_pos, marker_mask, qtype):
-        h = self.encoder(input_ids, attention_mask)
+    def __call__(
+        self,
+        input_ids,
+        attention_mask,
+        marker_pos,
+        marker_mask,
+        qtype,
+        position_ids=None,
+        option_ids=None,
+    ):
+        if self.parallel != (option_ids is not None):
+            raise ValueError("Batch option layout does not match checkpoint option_layout")
+        h = self.encoder(input_ids, attention_mask, position_ids, option_ids)
         h = h + self.type_emb(qtype)[:, None, :]
         h = self.head(h, attention_mask[:, None, None, :].astype(mx.bool_))
         markers = h[mx.arange(h.shape[0])[:, None], mx.maximum(marker_pos, 0)]
-        logits = self.scorer(markers).squeeze(-1).astype(mx.float32)
+        if self.parallel:
+            # Accumulate the one-channel projection in FP32. MLX 0.32 CPU FP16
+            # matmul can mix adjacent rows here, breaking permutation equivariance
+            # even when every encoder/head hidden state is exactly equivariant.
+            norm, hidden, activation, output = self.scorer.layers
+            features = activation(hidden(norm(markers))).astype(mx.float32)
+            logits = (
+                features @ output.weight.astype(mx.float32).T + output.bias.astype(mx.float32)
+            ).squeeze(-1)
+        else:
+            logits = self.scorer(markers).squeeze(-1).astype(mx.float32)
         logits = mx.where(marker_mask, logits, -1e4)
         p = mx.softmax(logits, axis=-1)
         k = mx.maximum(marker_mask.sum(axis=-1), 2).astype(mx.float32)
@@ -230,7 +299,16 @@ class DecisionModel(nn.Module):
         top = mx.sort(p, axis=-1)[:, -2:]
         features = mx.stack([top[:, 1], top[:, 1] - top[:, 0], entropy, k / 255.0], axis=-1)
         pooled = mx.concatenate([h[:, 0].astype(mx.float32), features], axis=-1)
-        action = self.act_head(pooled.astype(self.act_head.layers[0].weight.dtype))
+        if self.parallel and mx.default_device() == mx.cpu:
+            # Do not cast back to FP16 at the action head: its narrow CPU
+            # projections can hit the same native half-precision failure.
+            first, activation, last = self.act_head.layers
+            hidden = activation(
+                pooled @ first.weight.astype(mx.float32).T + first.bias.astype(mx.float32)
+            )
+            action = hidden @ last.weight.astype(mx.float32).T + last.bias.astype(mx.float32)
+        else:
+            action = self.act_head(pooled.astype(self.act_head.layers[0].weight.dtype))
         return logits, action.astype(mx.float32)
 
 
