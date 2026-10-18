@@ -2,7 +2,7 @@
 
 # laya-mlx-server
 
-A service layer on top of [laya-mlx](https://github.com/mizorewww/laya-mlx): **HTTP** speaking the TypeSafe Jev wire protocol, plus **MCP over stdio**, shipped as its own distribution, `laya-mlx-server`. One forward pass per batch of questions, **0 output tokens**, fully local — no PyTorch runtime, no cloud API.
+A service layer on top of [laya-mlx](https://github.com/mizorewww/laya-mlx): **HTTP** speaking the TypeSafe Jev wire protocol, plus **MCP over stdio**, shipped as its own distribution, `laya-mlx-server`. One forward pass per batch of questions, **0 output tokens**, fully local — no PyTorch runtime, no cloud API（人话：对外接口）.
 
 The model, weight conversion, benchmarks and the Snake demo belong to upstream and are deliberately not copied here:
 
@@ -53,7 +53,7 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 
 Stdio transport: no port, no token.
 
-From a clone, let `uv` locate the venv so the entry carries no host path:
+From a clone, let `uv` locate the venv（人话：隔离的 Python 小环境） so the entry carries no host path:
 
 ```json
 { "laya-mlx-server": { "type": "stdio", "command": "uv",
@@ -82,7 +82,7 @@ Three tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `mode
 | `LAYA_BATCH_SIZE` / `LAYA_MAX_LOADED` | questions per forward pass / resident checkpoints | `16` / `2` |
 | `HF_HOME` / `HF_ENDPOINT` | checkpoint cache root / mirror endpoint | `~/.cache/huggingface` / `hf-mirror.com` (prefetch) |
 
-**Security:** the HTTP surface binds to `127.0.0.1` by design; do not expose it on a network without a reverse proxy that enforces `LAYA_API_KEY`. Note that `model` in the request body is passed through to the checkpoint loader, so an authenticated caller can name any complete local Laya checkpoint (or HF repo id) and pull it into memory — keep `LAYA_API_KEY` set whenever untrusted local callers exist.
+**Security:** the HTTP surface binds to `127.0.0.1` by design; do not expose it on a network without a reverse proxy（人话：代理转发） that enforces `LAYA_API_KEY`. Note that `model` in the request body is passed through to the checkpoint loader, so an authenticated caller can name any complete local Laya checkpoint (or HF repo id) and pull it into memory — keep `LAYA_API_KEY` set whenever untrusted local callers exist.
 
 ## Measured on this machine
 

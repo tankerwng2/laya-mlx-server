@@ -8,7 +8,7 @@ These are ready-to-share files and draft text. No social-media post has been sub
 | [README GIF](assets/snake-demo.gif) | 1040-pixel-wide animated GIF | 15 seconds, original wall-clock speed |
 | [Maximum-speed video](assets/snake-fast.mp4) | 1920 × 1080, H.264, 30 video FPS | 15 seconds, original speed, optimized live run |
 | [Poster](assets/snake-preview.png) | 1920 × 1080 PNG | Actual recorded state at approximately 85 seconds |
-| [Source recording](../benchmarks/results/snake-showcase.jsonl) | JSONL | Entire 100-second actual TTY run |
+| [Source recording](../benchmarks/results/snake-showcase.jsonl) | JSONL（人话：一行一条的 JSON 文件） | Entire 100-second actual TTY run |
 | [Provenance](assets/snake-demo.json) | JSON | Source hash, model, timestamps and renderer hash |
 
 The source run reached score 40 and length 46, with 1,144 real inference-driven moves, zero deaths and zero safety interventions. Its target was 12 decisions/second for legibility. The video is a render of the recorded terminal cells, identified on-screen as `RECORDED RUN · 1×`.
@@ -19,9 +19,9 @@ The extra maximum-speed clip comes from a separate 20.01-second truecolor TTY ru
 
 > A local AI that returns probabilities, not generated text.
 >
-> Laya-MLX runs open-weight typed decision models on Apple Silicon. Watch a 322M model play Snake with a visible cycle safety layer: real probabilities, measured latency, 0 output tokens, no inference API.
+> Laya-MLX runs open-weight typed decision models on Apple Silicon. Watch a 322M model play Snake with a visible cycle safety layer: real probabilities, measured latency, 0 output tokens, no inference API（人话：对外接口）.
 >
-> One-question API benchmark: 7.39 ms p50 on M3 Max.
+> One-question API benchmark: 7.39 ms p50（人话：一半请求比这快） on M3 Max.
 >
 > `pip install laya-mlx`
 >

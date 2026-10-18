@@ -2,7 +2,7 @@
 
 # laya-mlx-server
 
-在 [laya-mlx](https://github.com/mizorewww/laya-mlx) 之上加一层对外服务：**HTTP**（兼容 TypeSafe Jev 线协议）与 **MCP stdio**，打包成独立发行版 `laya-mlx-server`。一次前向传播给出结构化判定，**0 个输出 token**，全程本地推理，无 PyTorch、无云端 API。
+在 [laya-mlx](https://github.com/mizorewww/laya-mlx) 之上加一层对外服务：**HTTP**（兼容 TypeSafe Jev 线协议）与 **MCP stdio**，打包成独立发行版 `laya-mlx-server`。一次前向传播给出结构化判定，**0 个输出 token（人话：模型眼里的词块）**，全程本地推理，无 PyTorch、无云端 API（人话：对外接口）。
 
 模型内核、权重转换、benchmark、Snake demo 仍归上游，本仓库不再复制那些内容：
 
@@ -49,9 +49,9 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 
 ## MCP
 
-走 stdio，不需要端口也不需要 token。
+走 stdio，不需要端口（人话：程序的门牌号）也不需要 token。
 
-从 clone 出发，让 `uv` 自己找 venv，配置里就不带任何主机路径：
+从 clone 出发，让 `uv` 自己找 venv（人话：隔离的 Python 小环境），配置里就不带任何主机路径：
 
 ```json
 { "laya-mlx-server": { "type": "stdio", "command": "uv",

@@ -6,7 +6,7 @@ The first experiments should be whole-model compilation and representative batch
 
 ## What the existing measurements establish
 
-The following are existing **end-to-end median latencies**, including prompt preparation and result formatting, with synchronized GPU completion, five warmups, and 50 measured iterations. Model loading and downloads are excluded. The benchmark allows a batch of 64 questions; the public runtime default is 16, so the 50-question result is not the default API configuration.
+The following are existing **end-to-end median latencies**, including prompt preparation and result formatting, with synchronized GPU completion, five warmups, and 50 measured iterations. Model loading and downloads are excluded. The benchmark allows a batch of 64 questions; the public runtime default is 16, so the 50-question result is not the default API（人话：对外接口） configuration.
 
 | Checkpoint / precision | Short 1 question | Short 10 questions | Short 50 questions | Long 1 question | Long 10 questions |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -17,9 +17,9 @@ The following are existing **end-to-end median latencies**, including prompt pre
 | Multilingual MLX FP32 | 7.988 ms | 32.337 ms | 151.387 ms | 47.208 ms | 451.331 ms |
 | Multilingual stock Torch MPS FP32 | 19.349 ms | 43.158 ms | 194.171 ms | 52.939 ms | 534.492 ms |
 
-Sources: [Laya FP16](../benchmarks/results/laya-mlx-float16.json), [Laya FP32](../benchmarks/results/laya-mlx-float32.json), [Laya MPS](../benchmarks/results/laya-torch-mps-float32.json), [multilingual FP16](../benchmarks/results/laya-multilingual-mlx-float16.json), [multilingual FP32](../benchmarks/results/laya-multilingual-mlx-float32.json), and [multilingual MPS](../benchmarks/results/laya-multilingual-torch-mps-float32.json). Long inputs contain 512 tokens for Laya and 1024 for multilingual; comparing their long-input latencies is therefore not a comparison at equal sequence length. Short padded lengths are 93 and 91, respectively. Torch comparisons must retain the FP32 label: they combine a backend change with a precision change when compared against MLX FP16.
+Sources: [Laya FP16](../benchmarks/results/laya-mlx-float16.json), [Laya FP32](../benchmarks/results/laya-mlx-float32.json), [Laya MPS](../benchmarks/results/laya-torch-mps-float32.json), [multilingual FP16](../benchmarks/results/laya-multilingual-mlx-float16.json), [multilingual FP32](../benchmarks/results/laya-multilingual-mlx-float32.json), and [multilingual MPS](../benchmarks/results/laya-multilingual-torch-mps-float32.json). Long inputs contain 512 token（人话：模型眼里的词块）s for Laya and 1024 for multilingual; comparing their long-input latencies is therefore not a comparison at equal sequence length. Short padded lengths are 93 and 91, respectively. Torch comparisons must retain the FP32 label: they combine a backend change with a precision change when compared against MLX FP16.
 
-There is meaningful run variability. For example, the multilingual FP16 long 10-question run has p50 389.487 ms, p95 462.319 ms, and maximum 619.663 ms. Its short single-question forward median is 8.023 ms while the independently measured end-to-end median is 7.390 ms. Subtracting those medians would produce a nonsensical negative preprocessing time. The current files do **not** isolate tokenizer, Python dispatch, individual GPU kernels, or synchronization costs. They establish useful baselines, not a kernel-level bottleneck diagnosis.
+There is meaningful run variability. For example, the multilingual FP16 long 10-question run has p50（人话：一半请求比这快） 389.487 ms, p95（人话：100 次里最慢的 5 次之外） 462.319 ms, and maximum 619.663 ms. Its short single-question forward median is 8.023 ms while the independently measured end-to-end median is 7.390 ms. Subtracting those medians would produce a nonsensical negative preprocessing time. The current files do **not** isolate tokenizer, Python dispatch, individual GPU kernels, or synchronization costs. They establish useful baselines, not a kernel-level bottleneck diagnosis.
 
 The [validation reports](../benchmarks/results/) record 63/63 argmax agreement for each of three checkpoints in FP32 and FP16, and 100 finite, deterministic repeated calls per variant: 378/378 answer agreements and 600 repeated calls altogether. These are regression checks over a small fixture corpus, including repeated questions. They are not evidence that future quantization or architecture changes preserve general task accuracy.
 
@@ -33,7 +33,7 @@ dense FLOPs per batch ~= 2 * B * L * A
 dense attention FLOPs ~= 4 * B * (N + H) * L^2 * D
 ```
 
-These estimates count multiply and add separately and exclude normalization, activations, embeddings, scoring, masking, memory movement, and kernel overhead. They are an arithmetic model, not a runtime profile.
+These estimates count multiply and add separately and exclude normalization, activations, embeddings（人话：把文字变成一串数字，算像不像）, scoring, masking, memory movement, and kernel overhead. They are an arithmetic model, not a runtime profile.
 
 | Checkpoint family | D / I / encoder layers | Token embedding weights | Main token-wise matrix weights A | Encoder global / local layers |
 | --- | --- | ---: | ---: | --- |

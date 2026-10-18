@@ -69,7 +69,7 @@ uv run --extra demo laya-snake export artifacts/snake/run.jsonl \
   --start 85 --output artifacts/snake/poster.png
 ```
 
-MP4 export defaults to 1920 × 1080, 30 video frames/second, H.264, and original wall-clock speed. It renders the same terminal cells from the recorded data; it is a rendered replay, rather than a screen capture. A visible `RECORDED RUN · 1×` label and a JSON sidecar identify this. Exporting at 30 FPS does not turn a 12-decision/second game into a 30-decision/second game. At each video timestamp the exporter uses the most recent actual source frame. Fast recordings may have more decisions than the chosen video frame rate can display.
+MP4 export defaults to 1920 × 1080, 30 video frames/second, H.264, and original wall-clock speed. It renders the same terminal cells from the recorded data; it is a rendered replay, rather than a screen capture. A visible `RECORDED RUN · 1×` label and a JSON sidecar（人话：附属的小数据包） identify this. Exporting at 30 FPS does not turn a 12-decision/second game into a 30-decision/second game. At each video timestamp the exporter uses the most recent actual source frame. Fast recordings may have more decisions than the chosen video frame rate can display.
 
 Use `--headless` when recording without an attached terminal. Model inference still happens for every move; live terminal drawing is omitted. Output files are not overwritten. Start a new recording when changing the presentation or speed rather than mixing pauses or resets into a short social excerpt.
 
@@ -88,7 +88,7 @@ One `Agent.predict` call batches three real questions per move:
 | NEXT MOVE | Laya `choice` probabilities over the four described directions |
 | DEAD-END RISK | `1 − P(safe route available)`, from a Laya `noul` answer |
 | FOOD REACHABLE | Laya `noul` answer about the supplied current empty-cell reachability summary |
-| INFERENCE | Synchronized `Agent.predict` wall time, including tokenization and result conversion |
+| INFERENCE | Synchronized `Agent.predict` wall time, including token（人话：模型眼里的词块）ization and result conversion |
 | DECISIONS | Recent measured completed-decision rate |
 | NETWORK OFFLINE | Local checkpoint loading and local inference with Hub offline mode; this does not switch off the Mac's Wi-Fi |
 
