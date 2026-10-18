@@ -3,11 +3,29 @@ name: CI
 on:
   push:
   pull_request:
+  # release.yml calls this file as a reusable workflow (jobs.test.uses). Without
+  # workflow_call, GitHub rejects the release file at parse time: zero jobs, no
+  # log. Release has never been tagged, so nothing surfaced it (actionlint, 10-18).
+  workflow_call: {}
 
 permissions:
   contents: read
 
 jobs:
+  workflow-lint:
+    name: workflow lint (schema + expressions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        run: |
+          # GitHub rejects a workflow file whose schema is invalid only at RUN time:
+          # the run gets zero jobs, no log, and CI stays green because ci.yml parses
+          # fine. A bad `permissions:` key in upstream-sync.yml silently killed the
+          # whole sync schedule that way, so validate every workflow file here.
+          bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash) >/dev/null
+          ./actionlint -color
   test:
     name: test (${{ matrix.device }})
     runs-on: macos-26

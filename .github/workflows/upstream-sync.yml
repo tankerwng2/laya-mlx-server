@@ -25,10 +25,11 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  # Upstream edits to .github/workflows/* are part of the mirrored layer; GitHub
-  # refuses App-token pushes that create/update workflow files without this scope,
-  # which made every scheduled sync fail since upstream touched release.yml.
-  workflows: write
+  # NOTE (2026-10-18): `workflows: write` is NOT a valid permission scope in the
+  # current workflow schema. Declaring it makes GitHub fail to parse this whole
+  # file (422 "Unexpected value 'workflows'"), so every run ends with zero jobs,
+  # no log and the workflow name degrading to its path. Pushing workflow files
+  # under GITHUB_TOKEN works with contents: write alone.
 
 concurrency:
   group: upstream-sync
@@ -71,7 +72,8 @@ jobs:
           # reverted, so the fork surface only changes through our own commits.
           restore_fork_owned() {
             for f in Makefile README.md README.zh-CN.md pyproject.toml uv.lock \
-              .github/workflows/ci.yml tests/test_router.py tests/test_runtime.py; do
+              .github/workflows/ci.yml .github/workflows/release.yml \
+              tests/test_router.py tests/test_runtime.py; do
               git cat-file -e "upstream/main:$f" 2>/dev/null || continue
               if ! git diff --quiet main upstream/main -- "$f"; then
                 git checkout main -- "$f"
