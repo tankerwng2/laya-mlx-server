@@ -30,9 +30,13 @@ synthetic workflows and should not be a silent default.
 """
 
 import os
+import re
 import threading
 from typing import Any, Dict, List, Optional, Union
 
+import mlx.core as mx
+
+from .confidence import apply_confidence_gate, check_min_confidence
 from .lang import analyse
 
 # The hub repo bundles all three checkpoints; only the requested subfolder is downloaded.
@@ -143,6 +147,54 @@ def match_typed_decisions_workflow(questions: Dict[str, Any]) -> Optional[str]:
     return None
 
 
+_ENGLISH_SUBTAGS = ("en", "eng", "english")
+
+# Codes that are valid `$LANG` values but name no language, so they answer nothing about the
+# state. `C`, `POSIX` and `C.UTF-8` are what minimal images ship -- `C.UTF-8` is the default
+# `LANG` in the official Python image, which is where `laya-serve` runs -- and the ISO 639-2
+# special codes say the same thing in the standard's own vocabulary: `und` undetermined,
+# `zxx` no linguistic content, `mul` multiple languages. They abstain, which is what the blank
+# case below already does, rather than forcing the multilingual checkpoint on English text.
+_LANGUAGE_AGNOSTIC_CODES = ("c", "posix", "und", "zxx", "mul")
+
+
+def _english_from_code(value: Any) -> Optional[bool]:
+    """True/False for a language code, or None when the code identifies nothing.
+
+    Accepts the forms a caller is likely to have to hand: `"en"`, `"EN"`, `"en-US"`, the
+    POSIX `"en_US"` (which `$LANG` holds), and `"en_US.UTF-8"`. `None` here means "no usable
+    hint", which is what lets a language-identification model abstain -- and it is also what a
+    code that names no language returns, so `LANG=C` falls through to detection instead of
+    pinning every request to one checkpoint.
+    """
+    if value is None:
+        return None
+    code = str(value).strip().lower()
+    if not code:
+        return None
+    code = code.split(".", 1)[0]  # en_US.UTF-8 -> en_US
+    primary = code.replace("_", "-").split("-", 1)[0]  # en_US -> en
+    if not primary or primary in _LANGUAGE_AGNOSTIC_CODES:
+        return None
+    return primary in _ENGLISH_SUBTAGS
+
+
+def canonical_name(name):
+    if not isinstance(name, str):
+        raise ValueError("Checkpoint name must be a string")
+    key = name.strip().lower()
+    key = _ALIASES.get(key, key)
+    if key == "auto" or not re.fullmatch(r"[a-z0-9][a-z0-9._-]*", key):
+        raise ValueError(f"Invalid checkpoint name: {name!r}")
+    return key
+
+
+class _InFlightBuild:
+    def __init__(self):
+        self.done = threading.Event()
+        self.error = None
+
+
 class Router:
     """Lazily loads Laya checkpoints and sends each request to the right one.
 
@@ -161,7 +213,7 @@ class Router:
     request.
 
         r = Router(preload=True)                    # all three resident, routing is free
-        r = Router(preload=True, device="cpu")
+        r = Router(preload=True, device="gpu")
         r.preload(["english", "multilingual"])      # or just the two you serve
     """
 
@@ -171,118 +223,251 @@ class Router:
         device: Optional[str] = None,
         token: Optional[str] = None,
         max_loaded: int = 1,
-        default: str = "english",
+        default: str = "multilingual",
         auto_task_detection: bool = False,
         standalone_repos: bool = False,
         preload: bool = False,
         dtype: str = "float16",
     ):
+        self._lock = threading.RLock()
+        self._build_lock = threading.Lock()
+        self._loading = {}
+        self._generation = {}
+        self.descriptions = {}
         self.models = dict(STANDALONE_MODELS if standalone_repos else DEFAULT_MODELS)
-        if models:
-            self.models.update({normalise_name(k): v for k, v in models.items()})
+        for name, source in (models or {}).items():
+            self.models[canonical_name(name)] = self._source(source)
         self.dtype = dtype
         self.device = device
         self.token = token or os.environ.get("HF_TOKEN")
         self.max_loaded = max(1, int(max_loaded))
-        self.default = normalise_name(default)
+        self.default = self.resolve(default)
         self.auto_task_detection = bool(auto_task_detection)
         self._agents: Dict[str, Any] = {}
         self._order: List[str] = []  # least-recently-used first
-        # Re-entrant lock guarding model lifecycle (load/unload/attach/preload) and the
-        # LRU bookkeeping. RLock so the public methods can call the private `_touch`/`_evict`
-        # helpers without deadlocking. Inference (`Agent.system_one`) is deliberately left
-        # outside the lock so concurrent predictions share a checkpoint without serialising.
-        self._lock = threading.RLock()
+        # Shared state only: never hold this lock while constructing or waiting.
+        # A separate build lock serializes allocations, preserving peak memory bounds.
         if preload:
             self.preload()
 
-    # ------------------------------------------------------------------ loading
-    def load(self, name: str):
-        """Return the Agent for `name`, downloading and building it on first use.
+    # ------------------------------------------------------------------ registry
+    @staticmethod
+    def _source(source):
+        if source is None:
+            return None  # attach-only registration
+        if isinstance(source, os.PathLike):
+            source = os.fspath(source)
+        if isinstance(source, str) and source.strip():
+            return os.path.expanduser(source)
+        if isinstance(source, (tuple, list)) and len(source) == 2:
+            repo, sub = source
+            if isinstance(repo, os.PathLike):
+                repo = os.fspath(repo)
+            if isinstance(repo, str) and repo.strip() and (sub is None or isinstance(sub, str)):
+                return (os.path.expanduser(repo), sub)
+        raise ValueError("Checkpoint source must be a nonempty repo/path or (repo, subfolder) pair")
 
-        Concurrent callers share a single Agent instead of building duplicates.
-        """
-        key = normalise_name(name)
+    def resolve(self, name):
+        """Resolve a built-in alias or a checkpoint registered on this Router."""
+        key = canonical_name(name)
         with self._lock:
-            if key in self._agents:
-                self._touch(key)
-                return self._agents[key]
-            from .agent import Agent
+            if key not in self.models:
+                raise ValueError(f"unknown model {name!r}; choose one of {sorted(self.models)}")
+        return key
 
-            repo, sub = _split(self.models[key])
-            agent = Agent(
-                repo, device=self.device, token=self.token, subfolder=sub, dtype=self.dtype
-            )
-            self._agents[key] = agent
-            self._order.append(key)
-            self._evict()
-            return agent
+    def register(self, name, source, description=None):
+        """Register a source lazily; replacing it invalidates resident and in-flight old builds."""
+        key, source = canonical_name(name), self._source(source)
+        if description is not None:
+            description = str(description)
+        with self._lock:
+            changed = key not in self.models or self.models[key] != source
+            self.models[key] = source
+            if description is not None:
+                self.descriptions[key] = description
+            freed = False
+            if changed:
+                self._generation[key] = self._generation.get(key, 0) + 1
+                freed = self._drop_locked(key)
+        if freed:
+            mx.clear_cache()
+        return key
 
-    def _touch(self, key: str):
+    def unregister(self, name):
+        """Remove a custom checkpoint; built-ins and the current default cannot be removed."""
+        with self._lock:
+            key = self.resolve(name)
+            if key in DEFAULT_MODELS or key == self.default:
+                raise ValueError("Cannot unregister a built-in or the default checkpoint")
+            del self.models[key]
+            self.descriptions.pop(key, None)
+            self._generation[key] = self._generation.get(key, 0) + 1
+            freed = self._drop_locked(key)
+        if freed:
+            mx.clear_cache()
+
+    @property
+    def registered(self):
+        with self._lock:
+            return {
+                key: {
+                    "source": _repo_str(source) if source is not None else None,
+                    "description": self.descriptions.get(key),
+                }
+                for key, source in self.models.items()
+                if key not in DEFAULT_MODELS
+            }
+
+    # ------------------------------------------------------------------ loading
+    def load(self, name):
+        """Share builds per checkpoint without blocking resident checkpoints or status reads."""
+        while True:
+            with self._lock:
+                key = self.resolve(name)
+                if key in self._agents:
+                    self._touch(key)
+                    return self._agents[key]
+                inflight = self._loading.get(key)
+                if inflight is None:
+                    inflight = self._loading[key] = _InFlightBuild()
+                    break
+            inflight.done.wait()
+            if inflight.error is not None:
+                raise inflight.error
+
+        try:
+            with self._build_lock:
+                while True:
+                    with self._lock:
+                        self.resolve(key)
+                        if key in self._agents:
+                            self._touch(key)
+                            return self._agents[key]
+                        source = self.models[key]
+                        if source is None:
+                            raise ValueError(
+                                f"Checkpoint {key!r} has no source; attach or register it again"
+                            )
+                        generation = self._generation.get(key, 0)
+                        repo, sub = _split(source)
+                        kwargs = dict(
+                            device=self.device, token=self.token, subfolder=sub, dtype=self.dtype
+                        )
+                    from .agent import Agent
+
+                    built = Agent(repo, **kwargs)
+                    with self._lock:
+                        self.resolve(key)  # unregister during construction must not resurrect it
+                        if key in self._agents:  # attach during construction takes precedence
+                            self._touch(key)
+                            return self._agents[key]
+                        stale = generation != self._generation.get(key, 0)
+                        if not stale:
+                            self._agents[key] = built
+                            self._touch(key)
+                            freed = self._evict_locked()
+                    if stale:
+                        del built
+                        mx.clear_cache()
+                        continue
+                    if freed:
+                        mx.clear_cache()
+                    return built
+        except BaseException as error:
+            inflight.error = error
+            raise
+        finally:
+            with self._lock:
+                self._loading.pop(key, None)
+                inflight.done.set()
+
+    def _touch(self, key):
         with self._lock:
             if key in self._order:
                 self._order.remove(key)
             self._order.append(key)
 
+    def _drop_locked(self, key):
+        existed = key in self._agents
+        self._agents.pop(key, None)
+        if key in self._order:
+            self._order.remove(key)
+        return existed
+
+    def _evict_locked(self):
+        freed = False
+        while len(self._order) > self.max_loaded:
+            freed = self._drop_locked(self._order[0]) or freed
+        return freed
+
     def _evict(self):
         with self._lock:
-            while len(self._order) > self.max_loaded:
-                victim = self._order.pop(0)
-                self._agents.pop(victim, None)
-            if len(self._order) < len(self._agents):  # keep the two views consistent
-                for k in list(self._agents):
-                    if k not in self._order:
-                        self._agents.pop(k, None)
+            freed = self._evict_locked()
+        if freed:
+            mx.clear_cache()
 
-    def attach(self, name: str, agent: Any):
-        """Register an already-built Agent under `name` instead of loading a second copy.
-
-        Useful when the process has a checkpoint loaded for other reasons: a demo that already
-        built `convaiinnovations/laya` can hand it to the router rather than pay for -- and hold
-        in memory -- a duplicate 421M parameters.
-        """
-        key = normalise_name(name)
+    def attach(self, name, agent):
+        """Attach an existing Agent, registering an unknown name without a reload source."""
+        key = canonical_name(name)
         with self._lock:
+            self.models.setdefault(key, None)
+            replaced = key in self._agents
             self._agents[key] = agent
             self._touch(key)
             self.max_loaded = max(self.max_loaded, len(self._agents))
+        if replaced:
+            mx.clear_cache()
         return agent
 
-    def preload(self, names: Optional[List[str]] = None):
-        """Download and build checkpoints up front so no request ever pays a model load.
-
-        A cold load costs seconds; language detection costs microseconds. With every
-        checkpoint resident, routing is effectively free -- which is what you want in a
-        server or a demo. `max_loaded` is raised to fit whatever is preloaded, otherwise
-        the LRU would immediately evict what this just built.
-        """
-        names = [normalise_name(n) for n in (names or list(self.models))]
+    def preload(self, names=None):
+        """Preload incrementally without holding the lifecycle lock over cold builds."""
         with self._lock:
-            self.max_loaded = max(self.max_loaded, len(names), len(self._agents))
-            for n in names:
-                if n not in self._agents:  # an attached agent is already built
-                    self.load(n)
+            if names is None:
+                names = [key for key, source in self.models.items() if source is not None]
+            names = [self.resolve(name) for name in names]
+            self.max_loaded = max(self.max_loaded, len(set(names) | set(self._agents)))
+        for name in names:
+            self.load(name)
         return self
 
-    def unload(self, name: Optional[str] = None):
-        """Free one model, or all of them."""
-        with self._lock:
-            if name is None:
-                self._agents.clear()
-                self._order.clear()
-            else:
-                key = normalise_name(name)
-                self._agents.pop(key, None)
-                if key in self._order:
-                    self._order.remove(key)
+    def unload(self, name=None):
+        """Drop router references, waiting only for the requested checkpoint's builds.
+
+        In-flight predictions retain their own Agent reference. Clearing MLX's free-buffer
+        cache never invalidates their arrays or agents still held by callers.
+        """
+        key = self.resolve(name) if name is not None else None
+        while True:
+            with self._lock:
+                pending = (
+                    ([self._loading[key]] if key in self._loading else [])
+                    if key
+                    else list(self._loading.values())
+                )
+                if not pending:
+                    if key is None:
+                        freed = bool(self._agents)
+                        self._agents.clear()
+                        self._order.clear()
+                    else:
+                        freed = self._drop_locked(key)
+                    break
+            for inflight in pending:
+                inflight.done.wait()
+        if freed:
+            mx.clear_cache()
 
     @property
-    def loaded(self) -> List[str]:
+    def loaded(self):
         with self._lock:
             return list(self._order)
 
     # ------------------------------------------------------------------ routing
-    def route(
+    def route(self, state, questions=None, model=None, task=None, lang=None):
+        with self._lock:
+            return self._route(state, questions, model, task, lang)
+
+    def _route(
         self,
         state: Union[str, dict, list, None],
         questions: Optional[Dict[str, Any]] = None,
@@ -296,7 +481,7 @@ class Router:
         explicit `lang` > detected script/language > default.
         """
         if model is not None:
-            key = normalise_name(model)
+            key = self.resolve(model)
             return RouteDecision(
                 model=key,
                 repo=_repo_str(self.models[key]),
@@ -306,7 +491,7 @@ class Router:
             )
 
         if task is not None:
-            key = normalise_name(
+            key = self.resolve(
                 "typed-decisions"
                 if str(task).lower().replace("-", "_") == "typed_decisions"
                 else task
@@ -329,12 +514,9 @@ class Router:
                 workflow=workflow,
             )
 
-        if lang is not None:
-            key = (
-                "english"
-                if str(lang).lower().split("-")[0] in ("en", "eng", "english")
-                else "multilingual"
-            )
+        resolved = _english_from_code(lang)
+        if resolved is not None:
+            key = "english" if resolved else "multilingual"
             return RouteDecision(
                 model=key,
                 repo=_repo_str(self.models[key]),
@@ -364,6 +546,9 @@ class Router:
                     "Latin script, language not identified but %.0f%% non-English letters; "
                     "not safe for the English checkpoint" % (100 * float(det["diacritic_rate"]))
                 )
+        elif det["language_undecided"]:
+            key = self.default
+            reason = "Latin language undecided; using default (%s)" % key
         else:
             key = "english"
             reason = "English Latin text"
@@ -383,14 +568,19 @@ class Router:
         model: Optional[str] = None,
         task: Optional[str] = None,
         lang: Optional[str] = None,
+        *,
+        min_confidence=None,
     ) -> Dict[str, Any]:
         """Route, then answer every question in one forward pass on the chosen checkpoint.
 
         The result is the usual `system_one` payload plus a `routing` key recording the decision.
         """
+        if min_confidence is not None:
+            min_confidence = check_min_confidence(min_confidence)
         decision = self.route(state, questions, model=model, task=task, lang=lang)
         agent = self.load(decision["model"])
         result = agent.system_one(state, questions)
+        apply_confidence_gate([result], min_confidence)
         result["routing"] = dict(decision)
         return result
 

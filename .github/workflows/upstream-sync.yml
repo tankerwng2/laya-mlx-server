@@ -59,8 +59,7 @@ jobs:
           is_fork_owned() {
             case "$1" in
               Makefile | README.md | README.zh-CN.md | pyproject.toml | uv.lock \
-              | .github/* | server/* | tests/test_router.py | tests/test_runtime.py \
-              | laya_mlx/email.py | laya_mlx/router.py) return 0 ;;
+              | .github/* | server/* | tests/test_router.py | tests/test_runtime.py) return 0 ;;
               *) return 1 ;;
             esac
           }
@@ -68,8 +67,7 @@ jobs:
           # reverted, so the fork surface only changes through our own commits.
           restore_fork_owned() {
             for f in Makefile README.md README.zh-CN.md pyproject.toml uv.lock \
-              .github/workflows/ci.yml tests/test_router.py tests/test_runtime.py \
-              laya_mlx/email.py laya_mlx/router.py; do
+              .github/workflows/ci.yml tests/test_router.py tests/test_runtime.py; do
               git cat-file -e "upstream/main:$f" 2>/dev/null || continue
               if ! git diff --quiet main upstream/main -- "$f"; then
                 git checkout main -- "$f"
