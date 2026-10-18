@@ -68,17 +68,20 @@ jobs:
               *) return 1 ;;
             esac
           }
-          # Even non-conflicting upstream changes to fork-owned files are
-          # reverted, so the fork surface only changes through our own commits.
+          # Even non-conflicting upstream changes to fork-owned files are reverted,
+          # so the fork surface only changes through our own commits. Enumerate the
+          # main..upstream delta through is_fork_owned (one source of truth): the old
+          # hard-coded list missed .github/workflows/upstream-sync.yml, so upstream's
+          # copy of that very workflow overwrote ours on every sync.
           restore_fork_owned() {
-            for f in Makefile README.md README.zh-CN.md pyproject.toml uv.lock \
-              .github/workflows/ci.yml .github/workflows/release.yml \
-              tests/test_router.py tests/test_runtime.py; do
-              git cat-file -e "upstream/main:$f" 2>/dev/null || continue
-              if ! git diff --quiet main upstream/main -- "$f"; then
+            git diff --name-only -z main upstream/main | while IFS= read -r -d '' f; do
+              is_fork_owned "$f" || continue
+              if git cat-file -e "main:$f" 2>/dev/null; then
                 git checkout main -- "$f"
-                echo "::warning::upstream modified fork-owned $f; reverted to the fork version, review the discarded delta"
+              else
+                git rm -f -q -- "$f"
               fi
+              echo "::warning::upstream modified fork-owned $f; reverted to the fork version, review the discarded delta"
             done
           }
           git merge --no-edit upstream/main || true
@@ -113,14 +116,30 @@ jobs:
             'examples' 'experiments' 'scripts' 'docs' \
             'tests' ':!tests/test_router.py' ':!tests/test_runtime.py' \
             || { echo "::error::mirror layer still differs from upstream after sync"; exit 1; }
-      - name: Refresh lockfile
+      - name: Judge by content, not by commit ancestry
         if: steps.ahead.outputs.count > 0
+        id: delta
+        run: |
+          # A squash-merged sync leaves upstream's content inside main while its
+          # commits never become ancestors of main, so rev-list stays > 0 forever
+          # and every 6h cycle re-proposes an empty sync (observed 10-18: it pushed
+          # sync/upstream-9f00d59 with zero content delta, then died on gh pr
+          # create). Judge the merge by what it changed, not by commit graph.
+          if git diff --quiet main HEAD; then
+            echo "merged tree equals main: nothing to propose"
+            echo "delta=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "content delta vs main: $(git diff --name-only main HEAD | tr '\n' ' ')"
+            echo "delta=1" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Refresh lockfile
+        if: steps.ahead.outputs.count > 0 && steps.delta.outputs.delta == '1'
         run: |
           python -m pip install uv
           uv lock
           git diff --quiet || git commit -am "chore: refresh uv.lock after upstream sync"
       - name: Push and open pull request
-        if: steps.ahead.outputs.count > 0
+        if: steps.ahead.outputs.count > 0 && steps.delta.outputs.delta == '1'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -128,7 +147,8 @@ jobs:
           files=$(git diff --name-only main..HEAD | tr '\n' ' ')
           upstreams=$(git log --oneline main..upstream/main | tr '\n' '; ')
           gh label create auto-sync --force 2>/dev/null || true
-          gh pr create --title "sync: upstream/main @ $(git rev-parse --short upstream/main)" \
+          gh pr create --base main --head "$(git branch --show-current)" \
+            --title "sync: upstream/main @ $(git rev-parse --short upstream/main)" \
             --label auto-sync \
             --body "Automatic sync of mizorewww/laya-mlx.
 
