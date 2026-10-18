@@ -83,7 +83,9 @@ def validate_model(name, root, repeats, optimize=False):
         expected = {}
         for entry in prepared:
             items, _ = agent.prepare(entry["state"], entry["questions"])
-            assert items == entry["items"], f"Tokenizer mismatch: {name}/{entry['name']}"
+            # Diagnostics are additive; compare every tensor input against the pinned reference.
+            inputs = [{key: item[key] for key in ("ids", "markers", "qtype")} for item in items]
+            assert inputs == entry["items"], f"Tokenizer mismatch: {name}/{entry['name']}"
             batch = collate_items(
                 items,
                 agent.tok.pad_token_id,
@@ -102,7 +104,8 @@ def validate_model(name, root, repeats, optimize=False):
             )
             action_error = float(np.max(np.abs(softmax(act) - softmax(entry["act"]))))
             result = agent.predict(entry["state"], entry["questions"])
-            assert result["usage"] == entry["result"]["usage"]
+            for key in ("input_tokens", "output_tokens"):
+                assert result["usage"][key] == entry["result"]["usage"][key]
             expected[entry["name"]] = digest(result)
             cases.append(
                 {

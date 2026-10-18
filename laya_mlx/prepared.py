@@ -2,20 +2,31 @@
 
 from collections import OrderedDict
 from dataclasses import dataclass
+from threading import RLock
 
-from .common import QTYPES, build_prefix, render_options, serialize_state
+from .common import (
+    QTYPES,
+    build_prefix,
+    finish_sequence,
+    parallel_layout,
+    render_options,
+    serialize_state,
+    uses_parallel_layout,
+)
 
 
 @dataclass(frozen=True)
 class PreparedQuestion:
     ids: tuple
     markers: tuple
+    option_stats: tuple
 
 
 class PrefixCache:
     def __init__(self, capacity=128):
         self.capacity = capacity
         self.entries = OrderedDict()
+        self._lock = RLock()
 
     def prepare(self, agent, state, questions):
         if not isinstance(questions, dict):
@@ -29,7 +40,7 @@ class PrefixCache:
         )["input_ids"]
         items, internal = [], []
         for qid, definition in questions.items():
-            q = agent._to_internal(definition)
+            q = agent._question(qid, definition)
             options = render_options(q)
             key = (
                 id(tok),
@@ -42,18 +53,34 @@ class PrefixCache:
                 q["ins"],
                 tuple(options),
             )
-            if key not in self.entries:
-                ids, markers = build_prefix(tok, q, head_len)
-                self.entries[key] = PreparedQuestion(tuple(ids), tuple(markers))
-                if len(self.entries) > self.capacity:
-                    self.entries.popitem(last=False)
-            self.entries.move_to_end(key)
-            prefix = self.entries[key]
-            room = max(0, max_len - len(prefix.ids) - 1)
-            ids = (list(prefix.ids) + state_ids[:room] + [tok.sep_token_id])[:max_len]
-            markers = [m for m in prefix.markers if m < max_len]
+            with self._lock:
+                if key not in self.entries:
+                    ids, markers, stats = build_prefix(tok, q, head_len, return_stats=True)
+                    self.entries[key] = PreparedQuestion(
+                        tuple(ids), tuple(markers), tuple(stats.items())
+                    )
+                    if len(self.entries) > self.capacity:
+                        self.entries.popitem(last=False)
+                self.entries.move_to_end(key)
+                prefix = self.entries[key]
+            ids, markers, state_stats = finish_sequence(
+                tok, prefix.ids, prefix.markers, state_ids, max_len, isinstance(state, list)
+            )
             if len(markers) != len(options):
                 raise ValueError(f"Question {qid!r} has too many options for the token budget")
-            items.append({"ids": ids, "markers": markers, "qtype": QTYPES[q["t"]]})
+            items.append(
+                {
+                    "ids": ids,
+                    "markers": markers,
+                    "qtype": QTYPES[q["t"]],
+                    "options": dict(prefix.option_stats),
+                    "state_stats": state_stats,
+                }
+            )
+            if uses_parallel_layout(agent.cfg):
+                layout = parallel_layout(
+                    list(prefix.markers), len(prefix.ids), max(len(prefix.ids), len(ids))
+                )
+                items[-1]["layout"] = {k: v[: len(ids)] for k, v in layout.items()}
             internal.append(q)
         return items, internal

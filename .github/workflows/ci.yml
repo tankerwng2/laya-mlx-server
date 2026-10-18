@@ -58,7 +58,7 @@ jobs:
       - name: Assert mirror paths are byte-identical to upstream/main
         run: |
           git diff --quiet upstream/main -- \
-            'laya_mlx' ':!laya_mlx/email.py' ':!laya_mlx/router.py' \
+            'laya_mlx' \
             'benchmarks' 'BENCHMARKS.md' 'NOTICE' 'LICENSE' \
             'examples' 'experiments' 'scripts' 'docs' \
             'tests' ':!tests/test_router.py' ':!tests/test_runtime.py' \
