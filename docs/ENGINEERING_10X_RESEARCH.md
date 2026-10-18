@@ -45,14 +45,14 @@ The confirmation script [paired.py](../experiments/engineering/paired.py):
   answers, deduplicate questions, or reuse contextual encoder states.
 - Evaluates results and synchronizes the GPU before stopping each timer. It
   measures both prepared forward calls and the public prediction path, including
-  token（人话：模型眼里的词块）ization and output formatting. Model loading is excluded.
+  tokenization and output formatting. Model loading is excluded.
 - Runs 32 measured rounds for the English head/compile experiment and 16 for the
   multilingual and custom-Metal experiments, after warmup. Each candidate sees
   the same round count and input sequence.
 
 These inputs differ from the published baseline fixtures. The comparisons below
 are **within the research experiment**, not before/after comparisons obtained by
-dividing unrelated tables. The research batch limit is 64, while the released API（人话：对外接口）
+dividing unrelated tables. The research batch limit is 64, while the released API
 defaults to 16. Repeated state variants are intentional repeat measurements; there
 is no result cache.
 
@@ -61,7 +61,7 @@ is no result cache.
 intervals for their median, using 2,000 resamples of round indices. Those intervals
 do not account for every source of operating-system noise or serial correlation
 and are not a substitute for multi-session replication. A ratio of independently
-computed p50（人话：一半请求比这快） values can differ from the median paired ratio.
+computed p50 values can differ from the median paired ratio.
 
 Raw JSON includes all timings, input hashes, environment metadata, parity
 metrics, and the source fingerprint recorded at measurement time. The experiment

@@ -1,6 +1,6 @@
 # Optimizing the actual Snake workload
 
-The adopted opt-in path combines MLX compilation, 16-token（人话：模型眼里的词块） length buckets and a bounded tokenized-question-prefix cache. It does **not** change weights, quantize the model, cache predictions, or reuse bidirectional encoder hidden states across questions.
+The adopted opt-in path combines MLX compilation, 16-token length buckets and a bounded tokenized-question-prefix cache. It does **not** change weights, quantize the model, cache predictions, or reuse bidirectional encoder hidden states across questions.
 
 In a paired complete-loop test, the shipped optimized path achieved **75.40 moves/second** over 2,400 moves, versus **70.82 moves/second** for eager inference in the same test: **1.065×**, or about 6.5%. Both had zero deaths, 2 safety interventions, and identical executed actions on 2,400/2,400 steps. Combined active MLX memory growth after warmup and cache clearing was **0 bytes**.
 
@@ -11,7 +11,7 @@ laya-snake --optimize
 laya-snake --optimize --max-speed
 ```
 
-The general API（人话：对外接口） exposes the same opt-in controls:
+The general API exposes the same opt-in controls:
 
 ```python
 import laya_mlx as laya
@@ -38,7 +38,7 @@ This demo asks three questions per move: direction, safe-route estimate and food
 
 Candidates ran in rotating order within each identical state, after visiting every measured shape once. The table contains synchronized `Agent.predict` latency including tokenization and output conversion, and excludes planner/UI work and initial shape warmup.
 
-| Variant | Multilingual p50（人话：一半请求比这快） / p95（人话：100 次里最慢的 5 次之外） (ms) | English p50 / p95 (ms) |
+| Variant | Multilingual p50 / p95 (ms) | English p50 / p95 (ms) |
 | --- | --- | --- |
 | Eager | 9.12 / 10.21 | 21.83 / 26.73 |
 | Prefix reuse only | 8.95 / 9.75 | 21.60 / 25.23 |
@@ -98,4 +98,4 @@ Run GPU measurements sequentially. Download the two local model directories firs
 
 The earlier [compact versus detailed prompt comparison](../benchmarks/results/snake-prompt-comparison.json) alternated prompt order on 64 states and found 11.80 → 9.29 ms median after discarding the first 8 warmup iterations. Its original ad-hoc record did not store board snapshots, so it is supporting evidence rather than the primary reproducible ablation. `python -m benchmarks.snake_prompt` provides a reproducible version that stores states, seed, full decisions and method.
 
-The implementation follows MLX's [official compilation guide](https://ml-explore.github.io/mlx/build/html/usage/compile.html): use a long-lived compiled callable and normal shape specialization. It does not use `shapeless=True` on shape-dependent Python model code. Current documentation was checked through the official site after Context7 CLI（人话：命令行工具） requests failed with network errors.
+The implementation follows MLX's [official compilation guide](https://ml-explore.github.io/mlx/build/html/usage/compile.html): use a long-lived compiled callable and normal shape specialization. It does not use `shapeless=True` on shape-dependent Python model code. Current documentation was checked through the official site after Context7 CLI requests failed with network errors.

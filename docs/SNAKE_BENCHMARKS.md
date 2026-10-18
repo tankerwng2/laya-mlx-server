@@ -8,14 +8,14 @@ The final **truecolor** campaign completed **8,160 moves with zero deaths and 4 
 
 ## Sustained maximum speed
 
-| Seed | Steps | Actual steps/s | Active tick p50（人话：一半请求比这快） / p99 (ms) | Score / length | Interventions |
+| Seed | Steps | Actual steps/s | Active tick p50 / p99 (ms) | Score / length | Interventions |
 | --- | --- | --- | --- | --- | --- |
 | 101 | 600 | 46.32 | 15.52 / 39.67 | 20 / 26 | 1 |
 | 102 | 600 | 67.91 | 13.84 / 22.96 | 24 / 30 | 0 |
 | 103 | 600 | 74.20 | 12.27 / 21.42 | 23 / 29 | 1 |
 | 104 | 600 | 76.37 | 11.98 / 21.00 | 16 / 22 | 0 |
 
-Combined uncapped model-inference p50 / p95（人话：100 次里最慢的 5 次之外） / p99 was **10.08 / 31.68 / 33.61 ms**. Complete active-tick p50 / p99 was **12.70 / 37.21 ms**. An active tick includes planning, synchronized inference, Rich composition, truecolor ANSI serialization and the game update. No pacing delay is inserted.
+Combined uncapped model-inference p50 / p95 / p99 was **10.08 / 31.68 / 33.61 ms**. Complete active-tick p50 / p99 was **12.70 / 37.21 ms**. An active tick includes planning, synchronized inference, Rich composition, truecolor ANSI serialization and the game update. No pacing delay is inserted.
 
 ## Fixed-budget stability
 
@@ -62,7 +62,7 @@ A separate optimized maximum-speed TTY recording completed **1,296 moves in 20.0
 ## Measurement boundaries and provenance
 
 - Apple M3 Max, 40 GPU cores, 128 GiB unified memory; macOS 27.2, Python 3.12.13.
-- MLX 0.32.2, NumPy 2.5.3, Rich 15.0.0, token（人话：模型眼里的词块）izers 0.23.2, huggingface-hub 1.32.0.
+- MLX 0.32.2, NumPy 2.5.3, Rich 15.0.0, tokenizers 0.23.2, huggingface-hub 1.32.0.
 - Original FP16 weights, with no quantization or custom kernel. Upstream model revision: `052592a15d198d9ad47da779604259b10b47b7aa`.
 - Weight SHA-256 from the previously verified published manifest: `7fc5834af4d8fdfb268d272a9d1a66e5819a0daac98241651c4c888cc43adff1`.
 - Each move calls `Agent.predict` once with three batched questions. Inference timing includes tokenization, synchronized MLX evaluation and output conversion.

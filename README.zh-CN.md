@@ -14,7 +14,7 @@
 
 | 归本仓库 | 归上游 |
 |---|---|
-| `server/laya_mlx_server/`：HTTP 面、MCP 面、共享运行时 | `laya_mlx/`：模型、tokenization、校准、presets、router、snake |
+| `server/laya_mlx_server/`：HTTP 面、MCP 面、共享运行时 | `laya_mlx/`：模型、tokenization、校准（人话：概率说得准不准）、presets、router、snake |
 | `laya-mlx-http` / `laya-mlx-mcp` 两个入口 | `laya-mlx` / `laya-snake` 两个入口 |
 | serve 层的契约测试（13 个） | 模型与内核测试 |
 
@@ -60,7 +60,7 @@ curl -X POST http://127.0.0.1:8080/v1/systemone \
 ```
 
 裸 `"command": "laya-mlx-mcp"` 要求 `.venv/bin` 在 `PATH` 上。`source .venv/bin/activate`
-只对你激活的那个 shell 生效；从 GUI 或 launcher 启动的客户端继承不到，spawn 只会报
+只对你激活的那个 shell 生效；从 GUI（人话：有窗口按钮的图形界面） 或 launcher 启动的客户端继承不到，spawn 只会报
 "command not found"。`uv` 形态没有这个依赖：`cwd` + `uv run` 在任意主机上都能解析到
 workspace 的 venv。
 
@@ -86,7 +86,7 @@ workspace 的 venv。
 
 环境：**Apple M5 Max**（`applegpu_g17s`，128 GiB 统一内存）、macOS 27.0、Python 3.13.15、MLX 0.32.2、laya-mlx **0.2.0**。口径用上游的 `benchmarks.worker`（独立进程、GPU 同步完成计时、排除下载与加载）：
 
-| 桶（mlx / float16，multilingual） | P50 / P95 | 吞吐 |
+| 桶（mlx / float16，multilingual） | P50 / P95 | 吞吐（人话：单位时间干多少活） |
 |---|---|---|
 | short q=10 | **9.04 / 9.37 ms** | **1108.3 q/s** |
 | short q=50 | **37.90 / 41.23 ms** | **1307.0 q/s** |
@@ -103,7 +103,7 @@ multilingual 对**英文**短输入给分极低：同一道 `noul`，`I was char
 
 ## flatten 还是 json
 
-Jev 客户端的 `state` 通常是对象，`serialize_state` 会把它变成字面 JSON 再 tokenization；`flatten` 保留字段名、去掉 JSON 标点。**0.3.5** 的 multilingual 上两种模式已不再翻转判定：三字段中文 state 实测 `noul` flat **0.9997** / json **0.9966**，`dept` 同为 `billing`。上游 0.1.0 时代英文短输入的翻转（0.16 / 0.69）在 0.3.5 不复现。需要与上游逐字节一致时设 `LAYA_STATE_MODE=json`。
+Jev 客户端的 `state` 通常是对象，`serialize_state` 会把它变成字面 JSON（人话：花括号结构化文本格式） 再 tokenization；`flatten` 保留字段名、去掉 JSON 标点。**0.3.5** 的 multilingual 上两种模式已不再翻转判定：三字段中文 state 实测 `noul` flat **0.9997** / json **0.9966**，`dept` 同为 `billing`。上游 0.1.0 时代英文短输入的翻转（0.16 / 0.69）在 0.3.5 不复现。需要与上游逐字节一致时设 `LAYA_STATE_MODE=json`。
 
 ## 大陆网络安装（踩过的坑）
 
