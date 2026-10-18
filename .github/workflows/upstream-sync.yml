@@ -25,6 +25,10 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # Upstream edits to .github/workflows/* are part of the mirrored layer; GitHub
+  # refuses App-token pushes that create/update workflow files without this scope,
+  # which made every scheduled sync fail since upstream touched release.yml.
+  workflows: write
 
 concurrency:
   group: upstream-sync
