@@ -12,9 +12,9 @@ from .presets import (
     triage_questions,
 )
 from .router import DEFAULT_MODELS, RouteDecision, Router
-from .shortlist import embed_fn_from_agent, predict_shortlist, shortlist_choice
+from .shortlist import embed_fn_from_agent, predict_shortlist, predict_tournament, shortlist_choice
 
-__version__ = "0.2.0"
+__version__ = "0.4.0"
 __all__ = [
     "Agent",
     "RLAgent",
@@ -24,6 +24,7 @@ __all__ = [
     "DEFAULT_MODELS",
     "shortlist_choice",
     "predict_shortlist",
+    "predict_tournament",
     "embed_fn_from_agent",
     "detect_language",
     "detect_script",

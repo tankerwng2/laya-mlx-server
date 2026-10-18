@@ -19,7 +19,10 @@ DISCLAIMER = "This email is confidential and intended solely for the named addre
             "My account is locked.\n%s\nPlease unlock it." % DISCLAIMER,
             "My account is locked. Please unlock it.",
         ),
-        ("My account is locked\n%s\nPlease unlock it." % DISCLAIMER, "Please unlock it."),
+        (
+            "My account is locked\n%s\nPlease unlock it." % DISCLAIMER,
+            "My account is locked Please unlock it.",
+        ),
         ("My account is locked. %s" % DISCLAIMER, "My account is locked."),
         # a pure footer is still removed
         ("My account is locked.\n\n%s" % DISCLAIMER, "My account is locked."),

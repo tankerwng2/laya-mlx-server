@@ -8,6 +8,7 @@ import numpy as np
 
 QTYPES = {"choice": 0, "score": 1, "noul": 2}
 QTYPE_NAMES = {v: k for k, v in QTYPES.items()}
+_DEFAULT_NOUL_LABELS = {"false": "false", "true": "true"}
 
 
 def serialize_state(state: Union[str, dict, list]) -> str:
@@ -28,27 +29,59 @@ def render_criterion(value) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(", ", ": "), default=str)
 
 
+def resolve_noul_labels(labels=None):
+    if labels is None:
+        labels = _DEFAULT_NOUL_LABELS
+    if not isinstance(labels, dict) or set(labels) != {"false", "true"}:
+        raise ValueError(
+            "noul labels must map exactly 'false' and 'true' to distinct non-empty strings"
+        )
+    false_label, true_label = labels["false"], labels["true"]
+    if not isinstance(false_label, str) or not isinstance(true_label, str):
+        raise ValueError(
+            "noul labels must map exactly 'false' and 'true' to distinct non-empty strings"
+        )
+    false_label, true_label = false_label.strip(), true_label.strip()
+    if not false_label or not true_label or false_label == true_label:
+        raise ValueError(
+            "noul labels must map exactly 'false' and 'true' to distinct non-empty strings"
+        )
+    return false_label, true_label
+
+
 def render_options(q: Dict) -> List[str]:
-    """Render option texts in label-index order. Noul is always [false, true]."""
+    """Render option texts in label-index order. Noul semantic order is always [false, true]."""
     t, crit = q["t"], q.get("crit")
+    if t != "noul" and "labels" in q:
+        raise ValueError("labels is only supported for noul questions")
     if t == "choice":
-        # only None/"" mean "no description"; 0 and False are legitimate criterion values
+        # only None/"" mean "no description"; 0 and False are legitimate criterion values.
+        # `str(k)` unconditionally: a label with no description is rendered as itself, so an int
+        # label used to come back as an int from a function annotated `-> List[str]` and then
+        # reached `build_sequence`, which calls `.replace` on it and raised an AttributeError
+        # naming neither the question nor the label. With a description the same label already
+        # went through `"%s: %s" %` and was a str, which is why only the undescribed form broke.
+        # `structured._enum_field` stringifies labels the same way; the returned answer still
+        # carries the caller's original label, which is unchanged.
         return [
-            k if v is None or v == "" else "%s: %s" % (k, render_criterion(v))
+            str(k) if v is None or v == "" else "%s: %s" % (k, render_criterion(v))
             for k, v in crit.items()
         ]
     if t == "score":
         return ["level %d: %s" % (i, render_criterion(c)) for i, c in enumerate(crit)]
     crit = crit or {}
+    false_label, true_label = resolve_noul_labels(q.get("labels"))
     false_crit, true_crit = crit.get("false"), crit.get("true")
     return [
-        "false: "
+        false_label
+        + ": "
         + (
             render_criterion(false_crit)
             if false_crit not in (None, "")
             else "no, the statement does not hold"
         ),
-        "true: "
+        true_label
+        + ": "
         + (
             render_criterion(true_crit)
             if true_crit not in (None, "")
@@ -57,7 +90,7 @@ def render_options(q: Dict) -> List[str]:
     ]
 
 
-def build_prefix(tok, q: Dict, head_max_len: int = 192, option_order=None):
+def build_prefix(tok, q: Dict, head_max_len: int = 192, option_order=None, *, return_stats=False):
     """Build the question-only prefix, before state tokens and final truncation."""
     mask_tok = tok.mask_token
     opts = render_options(q)
@@ -71,6 +104,7 @@ def build_prefix(tok, q: Dict, head_max_len: int = 192, option_order=None):
             + tok(" " + opts[i].replace(mask_tok, " "), add_special_tokens=False)["input_ids"][:48]
         )
     opt_budget = head_max_len - sum(len(o) for o in opt_ids)
+    per = None
     if opt_budget < 16:
         per = max(4, (head_max_len - 16) // max(1, len(opt_ids)))
         opt_ids = [o[:per] for o in opt_ids]
@@ -82,27 +116,144 @@ def build_prefix(tok, q: Dict, head_max_len: int = 192, option_order=None):
         markers.append(len(ids))
         ids.extend(o)
     ids.append(tok.sep_token_id)
+    if return_stats:
+        return (
+            ids,
+            markers,
+            {
+                "options": len(opt_ids),
+                "options_distinct": len({tuple(o) for o in opt_ids}),
+                "tokens_per_option": per,
+            },
+        )
     return ids, markers
+
+
+def parallel_layout(markers: List[int], head_len: int, length: int) -> Dict[str, List[int]]:
+    """Position ids and option ids that make the encoder blind to option order.
+
+    In the sequential layout option `s` sits at positions after option `s-1`, and every option
+    attends to every other, so where an option is listed changes its embedding: the slot logits
+    of five identical options spread by 3.59 (`tests/test_option_order.py`). Here every option
+    starts at the same position, the first one after the instruction's [SEP], and the head's
+    closing [SEP] and the state continue after the longest option. Together with
+    `parallel_option_masks`, which stops an option from attending to another, reordering the
+    options only reorders the marker embeddings.
+
+    `option_ids` is 0 for shared tokens (instruction, closing [SEP], state, padding) and `s + 1`
+    for the tokens of slot `s`, which runs from its [MASK] up to the next marker or, for the last
+    slot, up to the [SEP] at `head_len - 1`.
+    """
+    if not markers:
+        return {"position_ids": list(range(length)), "option_ids": [0] * length}
+    start = markers[0]
+    spans = list(zip(markers, markers[1:] + [head_len - 1]))
+    position_ids, option_ids = list(range(start)), [0] * start
+    for s, (a, b) in enumerate(spans):
+        position_ids += range(start, start + b - a)
+        option_ids += [s + 1] * (b - a)
+    after = start + max(b - a for a, b in spans)
+    position_ids += range(after, after + length - len(position_ids))
+    option_ids += [0] * (length - len(option_ids))
+    return {"position_ids": position_ids, "option_ids": option_ids}
+
+
+def uses_parallel_layout(cfg):
+    layout = cfg.get("option_layout", "sequential")
+    if layout not in ("sequential", "parallel"):
+        raise ValueError(f"Unsupported option_layout: {layout!r}")
+    return layout == "parallel"
+
+
+def finish_sequence(tok, prefix, markers, state_ids, max_len, truncate_left=False):
+    """Append the same state slice in cached and uncached preparation."""
+    room = max(0, max_len - len(prefix) - 1)
+    kept = state_ids[max(0, len(state_ids) - room) :] if truncate_left else state_ids[:room]
+    ids = (list(prefix) + kept + [tok.sep_token_id])[:max_len]
+    return (
+        ids,
+        [m for m in markers if m < max_len],
+        {
+            "state_tokens": len(state_ids),
+            "state_tokens_used": len(kept),
+            "state_tokens_dropped": len(state_ids) - len(kept),
+            "truncated": len(kept) < len(state_ids),
+        },
+    )
 
 
 def build_sequence(
     tok,
-    state: Union[str, dict, list],
-    q: Dict,
-    max_len: int = 512,
-    head_max_len: int = 192,
-    option_order: Optional[List[int]] = None,
-    truncate_left: bool = False,
+    state,
+    q,
+    max_len=512,
+    head_max_len=192,
+    option_order=None,
+    truncate_left=False,
+    state_ids=None,
+    return_stats=False,
+    return_truncation_stats=False,
+    return_layout=False,
 ):
-    """Format: [CLS] <type> instructions [SEP] [MASK] opt0 [MASK] opt1 ... [SEP] state [SEP]."""
-    ids, markers = build_prefix(tok, q, head_max_len, option_order)
-    room = max(0, max_len - len(ids) - 1)
-    st = tok(serialize_state(state).replace(tok.mask_token, " "), add_special_tokens=False)[
-        "input_ids"
-    ]
-    st = st[-room:] if truncate_left else st[:room]
-    ids = ids + st + [tok.sep_token_id]
-    return ids[:max_len], [m for m in markers if m < max_len]
+    """Build the upstream sequence; optional diagnostics describe the actual token budgets."""
+    prefix, markers, stats = build_prefix(tok, q, head_max_len, option_order, return_stats=True)
+    if state_ids is None:
+        state_ids = tok(
+            serialize_state(state).replace(tok.mask_token, " "), add_special_tokens=False
+        )["input_ids"]
+    original_markers = list(markers)
+    ids, markers, state_stats = finish_sequence(
+        tok, prefix, markers, state_ids, max_len, truncate_left
+    )
+    result = (ids, markers)
+    if return_stats:
+        result += (stats,)
+    if return_truncation_stats:
+        result += (state_stats,)
+    if return_layout:
+        layout = parallel_layout(original_markers, len(prefix), max(len(prefix), len(ids)))
+        result += ({k: v[: len(ids)] for k, v in layout.items()},)
+    return result
+
+
+def collapsed_options(qids, items) -> Dict[str, Dict[str, Optional[int]]]:
+    """The questions whose options no longer have a token span each, from per-item stats.
+
+    `total` is the number of options the question defines, not the number of markers that
+    reached the sequence: a report counted from the markers would say "43/58" about a request
+    where 28 options never made it into the input at all.
+    """
+    out = {}
+    for qid, item in zip(qids, items):
+        stats = item.get("options")
+        if stats and stats["options_distinct"] < stats["options"]:
+            out[qid] = {
+                "total": stats["options"],
+                "distinct": stats["options_distinct"],
+                "tokens_per_option": stats["tokens_per_option"],
+            }
+    return out
+
+
+def answer_confidence(p: np.ndarray, k: int) -> float:
+    """Probability mass on the answer being reported: max(p).
+
+    This is the quantity temperature scaling fits, and the quantity every calibration figure in
+    this repository is computed on -- both benchmark harnesses take `conf = max(probs)` before
+    calling `ece_score`. The README's gating section relies on the property that goes with it:
+    of the answers returned at confidence c, about c of them are right. That property is
+    conditional, and the condition is not met by default -- it holds only after the temperatures
+    have been fitted and validated on held-out data for this checkpoint and this option count.
+    The shipped temperatures remain uncalibrated even after clamping: the choice:11+
+    value of 0.1006 is bounded to 0.5, which still sharpens logits by 2x. Validate
+    confidence on held-out examples before interpreting it as correctness probability.
+
+    `confidence_from_probs` below reports a different quantity on a different scale and carries
+    no such guarantee, so the two must not be compared against the same threshold.
+    """
+    if k < 1:
+        return 1.0
+    return float(np.clip(np.max(p[:k]), 0.0, 1.0))
 
 
 def confidence_from_probs(p: np.ndarray, k: int) -> float:
@@ -129,6 +280,8 @@ TEMP_MAX = 5.0
 
 def clamp_temperature(t, lo: float = TEMP_MIN, hi: float = TEMP_MAX) -> float:
     """A usable temperature: `t` confined to [lo, hi], falling back to 1.0 if it is not a number."""
+    if isinstance(t, bool):
+        return 1.0
     try:
         t = float(t)
     except (TypeError, ValueError):
