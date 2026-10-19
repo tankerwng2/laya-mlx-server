@@ -2,7 +2,7 @@
 
 <!-- ctx:inherits global=~/.omp/agent/AGENTS.md+RULES.md ws=~/Workspace/AGENTS.md -->
 <!-- ctx:registered 10-20 全局索引行=~/.omp/agent/AGENTS.md#项目索引 -->
-<!-- ctx:detail vault=项目/laya-mlx learn=本项目bank -->
+<!-- ctx:detail learn=本项目bank  -->
 
 预算自述（闸＝`gate-check` 闸2）：laya-mlx/AGENTS.md ≤8 KB / ≤40 行、单条 ≤300 字符。
 
