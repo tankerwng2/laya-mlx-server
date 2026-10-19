@@ -1,6 +1,12 @@
 # laya-mlx（fork）作业须知
 
-- 上游＝`mizorewww/laya-mlx`（remote `upstream`，push 已禁）；本仓库＝镜像层＋serve 层。
+<!-- ctx:inherits global=~/.omp/agent/AGENTS.md+RULES.md ws=~/Workspace/AGENTS.md -->
+<!-- ctx:registered 10-20 全局索引行=~/.omp/agent/AGENTS.md#项目索引 -->
+<!-- ctx:detail vault=项目/laya-mlx learn=本项目bank -->
+
+预算自述（闸＝`gate-check` 闸2）：laya-mlx/AGENTS.md ≤8 KB / ≤40 行、单条 ≤300 字符。
+
+- 上游＝`mizorewww/laya-mlx`（remote `upstream`，push 已禁）；本仓库＝镜像层＋serve（人话：把模型跑起来对外提供接口） 层。
 - **main 有 ruleset `main-protection`**：直接 push 会被拒，必须走 PR，且三项检查全绿＝`test (cpu)`／`test (metal)`／`sync freshness (mirror layer == upstream/main)`。
 - 镜像层判据（`ci.yml` 的 pathspec）：`laya_mlx`（全部）、`benchmarks`、`BENCHMARKS.md`、`NOTICE`、`LICENSE`、`examples`、`experiments`、`scripts`、`docs`、`tests`（除 `test_router.py`/`test_runtime.py`）必须与 `upstream/main` **逐字节一致**；fork-owned＝`Makefile`、`README*.md`、`pyproject.toml`、`uv.lock`、`.github/*`、`server/*`、`tests/test_router.py`、`tests/test_runtime.py`。两份清单必须同步改（`ci.yml` 与 `upstream-sync.yml`）。
 - `laya_mlx/email.py`、`laya_mlx/router.py` 于 10-18 交还镜像层：fork 自分叉点 `0a85951` 起只改了 email_questions 的导入位置与 `_repo_str` 包装，上游已含等价实现；继续标 fork-owned 会让上游新增的镜像层测试（`test_decision_helpers`／`test_router_lifecycle`／`test_upstream_sync`／`test_email`）在 metal 腿炸 41 项。加新文件进 fork-owned 之前先跑一次全量 pytest。
