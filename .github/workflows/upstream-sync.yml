@@ -153,7 +153,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD
+          gh auth setup-git   # 用 GH_TOKEN 配 git 凭据，token 不进 URL（URL 内嵌 token 形状会被 GitHub push protection 拦）
+          git push origin HEAD
           files=$(git diff --name-only main..HEAD | tr '\n' ' ')
           upstreams=$(git log --oneline main..upstream/main | tr '\n' '; ')
           gh label create auto-sync --force 2>/dev/null || true
