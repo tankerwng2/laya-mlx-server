@@ -1,0 +1,1115 @@
+{
+  "created_at": "2026-10-20T01:27:31.257156+00:00",
+  "tokenizers_parallelism": "false",
+  "environment": {
+    "cpu": "Apple M3 Max",
+    "unified_memory_bytes": 137438953472,
+    "machine": "arm64",
+    "os": "macOS-27.2-arm64-arm-64bit",
+    "python": "3.12.13",
+    "packages": {
+      "coremltools": "9.0",
+      "numpy": "2.1.3",
+      "torch": "2.7.0",
+      "transformers": "5.19.0",
+      "tokenizers": "0.23.2",
+      "huggingface-hub": "1.32.0"
+    },
+    "source_sha256": "a7975098521e461d4a9491571ca2781767a11d0139ac6b6fa25f93bd34bcfd64",
+    "upstream_revision": "ffc142012af63d015fa19f05f29f9c5ff329a2cc"
+  },
+  "native_source_sha256": "d62a6e98219380eb19a588a83728ec228275fb83565a04d4319c9c5c3f849369",
+  "source_checkpoint_revision": "052592a15d198d9ad47da779604259b10b47b7aa",
+  "source_weights_sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+  "coreml_manifest": {
+    "format": "laya-coreml",
+    "format_version": 1,
+    "option_layout": "sequential",
+    "source": "../laya-mlx/models/laya-multilingual",
+    "revision": null,
+    "source_weights_sha256": "9d628fd971b700382ac6f65920a86f149777b2e748e0c955fb3b19695aa8f204",
+    "precision": "float32",
+    "attention": "sdpa",
+    "attention_mask_construction": "integer_positions_v2",
+    "minimum_deployment_target": "macOS15 / iOS18",
+    "shape": {
+      "batch_size": 1,
+      "max_length": 1024,
+      "min_length": 16,
+      "default_length": 128,
+      "max_options": 32,
+      "flexible": true,
+      "mode": "enumerated",
+      "lengths": [
+        16,
+        32,
+        48,
+        64,
+        80,
+        96,
+        112,
+        128,
+        192,
+        256,
+        384,
+        512,
+        768,
+        1024
+      ]
+    },
+    "versions": {
+      "coremltools": "9.0",
+      "torch": "2.7.0",
+      "numpy": "2.1.3"
+    },
+    "conversion_seconds": 7.482086459000129,
+    "files": {
+      "batches/b16/model.mlpackage/Data/com.apple.CoreML/model.mlmodel": {
+        "bytes": 392358,
+        "sha256": "d56785ceb82cf85723abd4af4ad8a813228665fecd00b63b292d10c0b47f66ee"
+      },
+      "batches/b16/model.mlpackage/Data/com.apple.CoreML/weights/weight.bin": {
+        "bytes": 1287925568,
+        "sha256": "66996a422fec636fa81c49213731a0514fb197e8030ee70bb59483cbaeef7f47"
+      },
+      "batches/b16/model.mlpackage/Manifest.json": {
+        "bytes": 617,
+        "sha256": "2ebf2cc46700144bcab59b88b1e22590e0bc598c05a182849496bddf3e29409f"
+      },
+      "batches/b2/model.mlpackage/Data/com.apple.CoreML/model.mlmodel": {
+        "bytes": 392358,
+        "sha256": "bdd49830ad6f2f33d5d20bce8d74f229a6b2dbd20cb3359dd588d4c8e8121701"
+      },
+      "batches/b2/model.mlpackage/Data/com.apple.CoreML/weights/weight.bin": {
+        "bytes": 1287925568,
+        "sha256": "66996a422fec636fa81c49213731a0514fb197e8030ee70bb59483cbaeef7f47"
+      },
+      "batches/b2/model.mlpackage/Manifest.json": {
+        "bytes": 617,
+        "sha256": "0018383f1044e179a18a6ac3d75ab6db08660fa4946f18712e02ba14a4f03865"
+      },
+      "batches/b4/model.mlpackage/Data/com.apple.CoreML/model.mlmodel": {
+        "bytes": 392358,
+        "sha256": "470eb1c29c04fe7544f4d7a1203307b2805d9d5429812008347977a90efbb566"
+      },
+      "batches/b4/model.mlpackage/Data/com.apple.CoreML/weights/weight.bin": {
+        "bytes": 1287925568,
+        "sha256": "66996a422fec636fa81c49213731a0514fb197e8030ee70bb59483cbaeef7f47"
+      },
+      "batches/b4/model.mlpackage/Manifest.json": {
+        "bytes": 617,
+        "sha256": "615dfaa004c18b5f375834187c389f4fe79b244c3547e66717b4514060dee6f1"
+      },
+      "encoder/config.json": {
+        "bytes": 1938,
+        "sha256": "83f6916d13ef0f556ac461f28308dc2bffa7ebeadee8ec9e2db5812020ea5bb4"
+      },
+      "model.mlpackage/Data/com.apple.CoreML/model.mlmodel": {
+        "bytes": 392358,
+        "sha256": "aa5bb084a38b842fecf284c76858b7af510314022513078d27327ed964d395c0"
+      },
+      "model.mlpackage/Data/com.apple.CoreML/weights/weight.bin": {
+        "bytes": 1287925568,
+        "sha256": "66996a422fec636fa81c49213731a0514fb197e8030ee70bb59483cbaeef7f47"
+      },
+      "model.mlpackage/Manifest.json": {
+        "bytes": 617,
+        "sha256": "1fc57d43429a63f663576b89109ca25230dc02c2994a1e060a6b1473803ffd10"
+      },
+      "rl_agent_config.json": {
+        "bytes": 472,
+        "sha256": "25061739243b617ad88d1219ba6f8a9c86c5881ca28df024fa2d9b3b2fcc30c6"
+      },
+      "tokenizer/tokenizer.json": {
+        "bytes": 34363188,
+        "sha256": "609d8f4c067cd3950f88594c5a802616cea245823836ef5848ee4fc40aab5b6f"
+      },
+      "tokenizer/tokenizer_config.json": {
+        "bytes": 524,
+        "sha256": "6c6b2d8e3c84ce0e671c129cd6b374b235d6f9863042a5836358d00a89bbb5a1"
+      }
+    },
+    "batch_variants": [
+      {
+        "package": "batches/b2/model.mlpackage",
+        "shape": {
+          "batch_size": 2,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        }
+      },
+      {
+        "package": "batches/b4/model.mlpackage",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        }
+      },
+      {
+        "package": "batches/b16/model.mlpackage",
+        "shape": {
+          "batch_size": 16,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        }
+      }
+    ]
+  },
+  "backend": "coreml",
+  "model": "laya-multilingual",
+  "precision": {
+    "export_compute": "float32",
+    "compute_units": "cpu_gpu",
+    "shape": {
+      "batch_size": 1,
+      "max_length": 1024,
+      "min_length": 16,
+      "default_length": 128,
+      "max_options": 32,
+      "flexible": true,
+      "mode": "enumerated",
+      "lengths": [
+        16,
+        32,
+        48,
+        64,
+        80,
+        96,
+        112,
+        128,
+        192,
+        256,
+        384,
+        512,
+        768,
+        1024
+      ]
+    },
+    "fast_prediction": false,
+    "frequent_reshape": false,
+    "shape_cache_experiment": false,
+    "shape_cache_size": 4
+  },
+  "warmup": 5,
+  "iterations": 30,
+  "timing": "wall clock, completed end-to-end calls; model load excluded",
+  "results": [
+    {
+      "workload": "single",
+      "input_sha256": "2329a9da584293381655601d1e285e354aaa861213367f63e161ae193a5d1f06",
+      "output": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.8668,
+              "technical": 0.0198,
+              "other": 0.1134
+            },
+            "confidence": 0.5919,
+            "answer_confidence": 0.8668,
+            "action": {
+              "act_probability": 1.0
+            }
+          },
+          "refund": {
+            "type": "noul",
+            "noul": 0.9742,
+            "confidence": 0.9742,
+            "answer_confidence": 0.9742,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 72,
+          "output_tokens": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "timing": {
+        "samples_ms": [
+          10.516167,
+          10.109083,
+          10.669,
+          10.131459,
+          10.512709,
+          10.572166,
+          10.022375,
+          10.979875,
+          10.4215,
+          10.418167,
+          11.008291,
+          10.818375,
+          10.534708,
+          9.75175,
+          8.788125,
+          8.164791,
+          7.640917,
+          7.22975,
+          7.42475,
+          7.211333,
+          7.376208,
+          7.35125,
+          7.677958,
+          7.840875,
+          7.421166,
+          7.503625,
+          7.563875,
+          7.480042,
+          7.48825,
+          7.458125
+        ],
+        "p50_ms": 8.476458000000001,
+        "p95_ms": 10.9072,
+        "mean_ms": 8.936222166666665,
+        "min_ms": 7.211333,
+        "max_ms": 11.008291,
+        "decisions_per_second": 223.80822261338514
+      },
+      "process_peak_rss_bytes": 5473501184
+    },
+    {
+      "workload": "batch8",
+      "input_sha256": "1633f1789faf3cdb8f4793093178a2d3d75ecc482b5d1f323b3275f87e7af9dd",
+      "output": [
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.8668,
+                "technical": 0.0198,
+                "other": 0.1134
+              },
+              "confidence": 0.5919,
+              "answer_confidence": 0.8668,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9742,
+              "confidence": 0.9742,
+              "answer_confidence": 0.9742,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 0,
+            "state_tokens": 10,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "technical",
+              "probabilities": {
+                "billing": 0.1681,
+                "technical": 0.4293,
+                "other": 0.4026
+              },
+              "confidence": 0.0633,
+              "answer_confidence": 0.4293,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.0005,
+              "confidence": 0.9995,
+              "answer_confidence": 0.9995,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 64,
+            "output_tokens": 0,
+            "state_tokens": 6,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "other",
+              "probabilities": {
+                "billing": 0.3173,
+                "technical": 0.306,
+                "other": 0.3767
+              },
+              "confidence": 0.0039,
+              "answer_confidence": 0.3767,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.0196,
+              "confidence": 0.9804,
+              "answer_confidence": 0.9804,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 52,
+            "output_tokens": 0,
+            "state_tokens": 0,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.6196,
+                "technical": 0.1714,
+                "other": 0.209
+              },
+              "confidence": 0.1571,
+              "answer_confidence": 0.6196,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9909,
+              "confidence": 0.9909,
+              "answer_confidence": 0.9909,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 132,
+            "output_tokens": 0,
+            "state_tokens": 40,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.8668,
+                "technical": 0.0198,
+                "other": 0.1134
+              },
+              "confidence": 0.5919,
+              "answer_confidence": 0.8668,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9742,
+              "confidence": 0.9742,
+              "answer_confidence": 0.9742,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 0,
+            "state_tokens": 10,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "technical",
+              "probabilities": {
+                "billing": 0.1681,
+                "technical": 0.4293,
+                "other": 0.4026
+              },
+              "confidence": 0.0633,
+              "answer_confidence": 0.4293,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.0005,
+              "confidence": 0.9995,
+              "answer_confidence": 0.9995,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 64,
+            "output_tokens": 0,
+            "state_tokens": 6,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "other",
+              "probabilities": {
+                "billing": 0.3173,
+                "technical": 0.306,
+                "other": 0.3767
+              },
+              "confidence": 0.0039,
+              "answer_confidence": 0.3767,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.0196,
+              "confidence": 0.9804,
+              "answer_confidence": 0.9804,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 52,
+            "output_tokens": 0,
+            "state_tokens": 0,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.6196,
+                "technical": 0.1714,
+                "other": 0.209
+              },
+              "confidence": 0.1571,
+              "answer_confidence": 0.6196,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9909,
+              "confidence": 0.9909,
+              "answer_confidence": 0.9909,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 132,
+            "output_tokens": 0,
+            "state_tokens": 40,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        }
+      ],
+      "timing": {
+        "samples_ms": [
+          41.352833,
+          41.321166,
+          41.19975,
+          40.989375,
+          40.946834,
+          41.177459,
+          41.044042,
+          40.985458,
+          41.651167,
+          40.954875,
+          40.734666,
+          41.388584,
+          41.533916,
+          41.28675,
+          41.276458,
+          41.044125,
+          41.590208,
+          40.752209,
+          40.985042,
+          41.109041,
+          41.951333,
+          41.822041,
+          41.108166,
+          41.056042,
+          41.123333,
+          40.73075,
+          40.791458,
+          41.18125,
+          41.023209,
+          41.10025
+        ],
+        "p50_ms": 41.1086035,
+        "p95_ms": 41.7451477,
+        "mean_ms": 41.17372633333333,
+        "min_ms": 40.73075,
+        "max_ms": 41.951333,
+        "decisions_per_second": 388.5973271029093
+      },
+      "process_peak_rss_bytes": 6916571136
+    },
+    {
+      "workload": "long",
+      "input_sha256": "78f263be37e1101f9dd83b759dd724fb556f3a406d91fdd2c18263d0b015204d",
+      "output": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.5391,
+              "technical": 0.2633,
+              "other": 0.1976
+            },
+            "confidence": 0.0854,
+            "answer_confidence": 0.5391,
+            "action": {
+              "act_probability": 1.0
+            },
+            "window": {
+              "index": 1,
+              "token_start": 32,
+              "token_end": 96,
+              "count": 4
+            }
+          },
+          "refund": {
+            "type": "noul",
+            "noul": 0.9896,
+            "confidence": 0.9896,
+            "answer_confidence": 0.9896,
+            "action": {
+              "act_probability": 1.0
+            },
+            "window": {
+              "index": 0,
+              "token_start": 0,
+              "token_end": 64,
+              "count": 4
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 720,
+          "output_tokens": 0,
+          "state_tokens": 256,
+          "state_tokens_dropped": 0,
+          "truncated": 0,
+          "truncated_questions": [],
+          "windows": 4
+        }
+      },
+      "timing": {
+        "samples_ms": [
+          51.146166,
+          49.497125,
+          45.9,
+          45.485083,
+          46.337333,
+          51.985,
+          48.699209,
+          50.884125,
+          51.524208,
+          47.717,
+          48.269958,
+          49.884416,
+          47.656916,
+          51.354666,
+          55.683334,
+          56.93925,
+          58.071125,
+          58.443417,
+          69.822416,
+          90.817875,
+          117.033,
+          130.023458,
+          110.578208,
+          91.491708,
+          79.512708,
+          79.349917,
+          70.174292,
+          72.319583,
+          59.583375,
+          68.021292
+        ],
+        "p50_ms": 56.311292,
+        "p95_ms": 114.12834359999998,
+        "mean_ms": 65.14020543333332,
+        "min_ms": 45.485083,
+        "max_ms": 130.023458,
+        "decisions_per_second": 30.703004184518075
+      },
+      "process_peak_rss_bytes": 6916571136
+    },
+    {
+      "workload": "structured",
+      "input_sha256": "3e73297ae61fb629b97f7f02ef255cfc7796d789a61225d3a8fb5f6fbd6d3cbc",
+      "output": {
+        "department": "other"
+      },
+      "timing": {
+        "samples_ms": [
+          6.217083,
+          6.418958,
+          5.921292,
+          6.030833,
+          5.919708,
+          5.917958,
+          5.682708,
+          5.945792,
+          5.806708,
+          5.705709,
+          6.123084,
+          5.845375,
+          5.739667,
+          5.994,
+          5.935334,
+          6.811792,
+          6.815917,
+          6.528083,
+          6.21075,
+          6.545125,
+          6.583292,
+          5.791083,
+          6.882708,
+          6.458791,
+          6.017333,
+          6.496708,
+          6.805333,
+          6.868208,
+          6.876541,
+          6.643209
+        ],
+        "p50_ms": 6.166917,
+        "p95_ms": 6.872791149999999,
+        "mean_ms": 6.251302733333334,
+        "min_ms": 5.682708,
+        "max_ms": 6.882708,
+        "decisions_per_second": 159.96665697659753
+      },
+      "process_peak_rss_bytes": 6938181632
+    },
+    {
+      "workload": "stability",
+      "input_sha256": "46f6107b1af4996ce73e65420065e30adb9bac0205a3c89128f760d1cdbfc82f",
+      "output": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.8668,
+              "technical": 0.0198,
+              "other": 0.1134
+            },
+            "confidence": 0.5919,
+            "answer_confidence": 0.8668,
+            "action": {
+              "act_probability": 1.0
+            },
+            "reliability": {
+              "probes": [
+                "reorder",
+                "rename"
+              ],
+              "option_layout": "sequential",
+              "decision": null,
+              "soft_stability": 0.8352,
+              "stability": 1.0,
+              "rename_stability": 1.0,
+              "reorder_stability": 1.0,
+              "n_variants": 3,
+              "distinct_choices": [
+                "billing"
+              ],
+              "variant_choices": {
+                "original": "billing",
+                "reversed": "billing",
+                "letters_reversed": "billing"
+              },
+              "variant_support": {
+                "original": 0.8668,
+                "reversed": 0.9165,
+                "letters_reversed": 0.7224
+              }
+            }
+          },
+          "refund": {
+            "type": "noul",
+            "noul": 0.9742,
+            "confidence": 0.9742,
+            "answer_confidence": 0.9742,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 136,
+          "output_tokens": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "timing": {
+        "samples_ms": [
+          12.734291,
+          13.7445,
+          15.612208,
+          15.5,
+          15.530417,
+          16.393708,
+          16.028625,
+          16.095125,
+          15.966375,
+          16.312667,
+          16.056334,
+          16.276958,
+          16.160459,
+          16.666458,
+          16.424959,
+          16.842459,
+          16.713833,
+          16.845791,
+          16.810041,
+          17.222666,
+          17.112584,
+          17.518125,
+          17.941333,
+          18.0485,
+          17.5045,
+          17.790125,
+          19.076875,
+          17.967583,
+          18.649,
+          18.605042
+        ],
+        "p50_ms": 16.6901455,
+        "p95_ms": 18.6292189,
+        "mean_ms": 16.67171803333333,
+        "min_ms": 12.734291,
+        "max_ms": 19.076875,
+        "decisions_per_second": 119.96364117970398
+      },
+      "process_peak_rss_bytes": 8268021760
+    },
+    {
+      "workload": "mixed_shapes",
+      "input_sha256": "d4b4999da9db590ef39aec8ae7b52c00d878d2ef50b896c09d1453bd4ada0054",
+      "output": [
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "other",
+              "probabilities": {
+                "billing": 0.3173,
+                "technical": 0.306,
+                "other": 0.3767
+              },
+              "confidence": 0.0039,
+              "answer_confidence": 0.3767,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.0196,
+              "confidence": 0.9804,
+              "answer_confidence": 0.9804,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 52,
+            "output_tokens": 0,
+            "state_tokens": 0,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.4044,
+                "technical": 0.3144,
+                "other": 0.2811
+              },
+              "confidence": 0.0109,
+              "answer_confidence": 0.4044,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9871,
+              "confidence": 0.9871,
+              "answer_confidence": 0.9871,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 212,
+            "output_tokens": 0,
+            "state_tokens": 80,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.8668,
+                "technical": 0.0198,
+                "other": 0.1134
+              },
+              "confidence": 0.5919,
+              "answer_confidence": 0.8668,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9742,
+              "confidence": 0.9742,
+              "answer_confidence": 0.9742,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 72,
+            "output_tokens": 0,
+            "state_tokens": 10,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        },
+        {
+          "model": "laya-rl-agent",
+          "answers": {
+            "department": {
+              "type": "choice",
+              "choice": "billing",
+              "probabilities": {
+                "billing": 0.7368,
+                "technical": 0.1016,
+                "other": 0.1616
+              },
+              "confidence": 0.3155,
+              "answer_confidence": 0.7368,
+              "action": {
+                "act_probability": 1.0
+              }
+            },
+            "refund": {
+              "type": "noul",
+              "noul": 0.9947,
+              "confidence": 0.9947,
+              "answer_confidence": 0.9947,
+              "action": {
+                "act_probability": 1.0
+              }
+            }
+          },
+          "usage": {
+            "input_tokens": 92,
+            "output_tokens": 0,
+            "state_tokens": 20,
+            "state_tokens_dropped": 0,
+            "truncated": false,
+            "truncated_questions": []
+          }
+        }
+      ],
+      "timing": {
+        "samples_ms": [
+          82.996625,
+          58.249917,
+          44.091667,
+          45.148,
+          47.168166,
+          49.862958,
+          50.802584,
+          55.237167,
+          58.717208,
+          59.434708,
+          59.809625,
+          58.687042,
+          54.849375,
+          53.532958,
+          51.602084,
+          50.218375,
+          48.382125,
+          48.470709,
+          47.538042,
+          47.368167,
+          47.256625,
+          46.331917,
+          46.521917,
+          46.108875,
+          48.171375,
+          48.453375,
+          49.664792,
+          49.320417,
+          53.2525,
+          54.223875
+        ],
+        "p50_ms": 49.763875,
+        "p95_ms": 59.64091235,
+        "mean_ms": 52.04910566666667,
+        "min_ms": 44.091667,
+        "max_ms": 82.996625,
+        "decisions_per_second": 153.70100787578693
+      },
+      "process_peak_rss_bytes": 8268021760
+    }
+  ]
+}

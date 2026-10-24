@@ -1,0 +1,60 @@
+{
+  "order": [
+    "upstream",
+    "coreml",
+    "coreml",
+    "upstream"
+  ],
+  "precision": "float32; upstream AMP explicitly disabled",
+  "prefix": "single then batch8, matching the initial workload order of the full matrix",
+  "warmup": 5,
+  "iterations": 30,
+  "rows": [
+    {
+      "file": "laya-coreml-r2.json",
+      "backend": "coreml",
+      "p50_ms": 117.910021,
+      "mean_ms": 118.33433336666667,
+      "p95_ms": 130.44317485,
+      "max_numeric_error": 0.0,
+      "input_sha256": "1633f1789faf3cdb8f4793093178a2d3d75ecc482b5d1f323b3275f87e7af9dd",
+      "native_source_sha256": "9f16a897b0f5ed642ac3c4919ef899f9375771863cd60822d60148b3537913f3"
+    },
+    {
+      "file": "laya-coreml-r3.json",
+      "backend": "coreml",
+      "p50_ms": 105.73068749999999,
+      "mean_ms": 107.68129023333333,
+      "p95_ms": 115.52324755,
+      "max_numeric_error": 0.0,
+      "input_sha256": "1633f1789faf3cdb8f4793093178a2d3d75ecc482b5d1f323b3275f87e7af9dd",
+      "native_source_sha256": "9f16a897b0f5ed642ac3c4919ef899f9375771863cd60822d60148b3537913f3"
+    },
+    {
+      "file": "laya-upstream-r1.json",
+      "backend": "upstream",
+      "p50_ms": 145.7017295,
+      "mean_ms": 145.72827223333334,
+      "p95_ms": 148.68788315,
+      "max_numeric_error": 0.0,
+      "input_sha256": "1633f1789faf3cdb8f4793093178a2d3d75ecc482b5d1f323b3275f87e7af9dd",
+      "native_source_sha256": "3766e1f9bb5d5b193b041e5ce199e0d8c96865420a86b637f7db453f7c1a3666"
+    },
+    {
+      "file": "laya-upstream-r4.json",
+      "backend": "upstream",
+      "p50_ms": 140.7744165,
+      "mean_ms": 141.67451806666668,
+      "p95_ms": 150.27779170000002,
+      "max_numeric_error": 0.0,
+      "input_sha256": "1633f1789faf3cdb8f4793093178a2d3d75ecc482b5d1f323b3275f87e7af9dd",
+      "native_source_sha256": "3766e1f9bb5d5b193b041e5ce199e0d8c96865420a86b637f7db453f7c1a3666"
+    }
+  ],
+  "speedup_vs_upstream_run_mean": [
+    1.2148083070903701,
+    1.354744553231057
+  ],
+  "upstream_p50_drift_fraction": 0.034399464449650884,
+  "note": "Descriptive bracketed repeat on the same active desktop, not a confidence interval or a replacement for the full matrix. The original slower isolated row is retained."
+}
