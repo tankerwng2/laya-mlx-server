@@ -1,0 +1,56 @@
+[
+  {
+    "compile_warmup": false,
+    "warmup_calls": 1,
+    "explicit_warmup_seconds": 0.404079833000651,
+    "stable_output": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "refund": {
+          "type": "noul",
+          "noul": 0.9897,
+          "confidence": 0.9897,
+          "answer_confidence": 0.9897,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 39,
+        "output_tokens": 0,
+        "state_tokens": 6,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      }
+    }
+  },
+  {
+    "compile_warmup": true,
+    "warmup_calls": 2,
+    "explicit_warmup_seconds": 0.030293625000922475,
+    "stable_output": {
+      "model": "laya-rl-agent",
+      "answers": {
+        "refund": {
+          "type": "noul",
+          "noul": 0.9897,
+          "confidence": 0.9897,
+          "answer_confidence": 0.9897,
+          "action": {
+            "act_probability": 1.0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 39,
+        "output_tokens": 0,
+        "state_tokens": 6,
+        "state_tokens_dropped": 0,
+        "truncated": false,
+        "truncated_questions": []
+      }
+    }
+  }
+]
