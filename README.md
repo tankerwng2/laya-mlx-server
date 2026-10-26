@@ -61,7 +61,7 @@ make prefetch    # one-time weights (678 MB) → offline afterwards
 make http        # → http://127.0.0.1:8080
 ```
 
-Success looks like: `curl -s localhost:8080/health/ready` reports a resident checkpoint, and the sample `POST /v1/systemone` below returns one probability per question.
+After running, you can access the service at http://127.0.0.1:8080 — `curl -s localhost:8080/health/ready` reports a resident checkpoint, and the sample `POST /v1/systemone` below returns one probability per question.
 
 ## FAQ (symptom → cause → fix)
 
