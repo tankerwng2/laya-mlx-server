@@ -4,6 +4,93 @@
 
 A service layer on top of [laya-mlx](https://github.com/mizorewww/laya-mlx): **HTTP** speaking the TypeSafe Jev wire protocol, plus **MCP over stdio**, shipped as its own distribution, `laya-mlx-server`. One forward pass per batch of questions, **0 output tokens**, fully local — no PyTorch runtime, no cloud API.
 
+> **Who is this for**: anyone who wants a cheap, fully-local "System One" judge on Apple Silicon — yes/no, pick-one, score-against-rubric — callable over HTTP or MCP by agents and scripts. **Status**: serve layer only; model, weight conversion, benchmarks and the Snake demo stay upstream, deliberately not duplicated.
+> **Analogy**: a vending machine bolted onto the Laya model. Upstream is the factory (weights, kernels, benchmarks); this repo is the counter — coin slot (HTTP / MCP stdio), receipt (JSON probabilities).
+
+## 目录（跳转 / Contents）
+
+- [What can I use it for](#what-can-i-use-it-for-30-second-picker)
+- [Three steps (copy-paste)](#three-steps-copy-paste)
+- [FAQ](#faq-symptom--cause--fix)
+- [Usage example](#usage-example)
+- [Calling the API](#calling-the-api) · [MCP](#mcp) · [Configuration](#configuration)
+- [Measured on this machine](#measured-on-this-machine) · [Picking a checkpoint](#picking-a-checkpoint)
+- [Where to look next](#where-to-look-next) · [Quality gates](#quality-gates)
+
+## What can I use it for (30-second picker)
+
+| When you need it | What you run / call | What you get |
+|---|---|---|
+| A cheap pre-filter for agent actions (block? refund? which team?) | `POST /v1/systemone` with `state` + `questions` | one probability per question: `noul` (yes/no), `choice` (one of `criteria`), `score` (ordinal rubric) — one forward pass, **0 output tokens** |
+| Wire it into an agent as MCP tools | `uv run laya-mlx-mcp` (stdio: no port, no token) | `laya_predict` / `laya_preset` / `laya_status` |
+| Check readiness before a batch | `GET /health/ready` (not `/health/live`) | whether a checkpoint is resident — the first call pays the model load, so warm it before timing |
+| Keep a safety gate off the cloud bill | `make http` → http://127.0.0.1:8080 | local judging, no PyTorch runtime, no cloud API |
+| Compare with published numbers | upstream [BENCHMARKS.md](https://github.com/mizorewww/laya-mlx/blob/main/BENCHMARKS.md) | full method and every timing sample (measured on an M3 Max) — not restated here |
+
+```mermaid
+flowchart LR
+%% 图1 · 全景：两个门共用一颗内核
+    A["Caller: omp agent / script"] -->|"HTTP POST /v1/systemone<br/>(state + typed questions)"| S["laya-mlx-server (this repo)<br/>HTTP surface · MCP surface · shared runtime"]
+    S --> M["laya-mlx kernel (upstream)<br/>weights + one MLX forward pass"]
+    M --> R["JSON: probability per question + usage<br/>(0 output tokens)"]
+    A2["MCP client (stdio: no port, no token)"] --> S
+```
+
+**How to read this map (3 sentences)**: ① two front doors (HTTP with bearer token, MCP over stdio) share one runtime, so weights load once and every question batch reuses them. ② The kernel in the middle belongs to upstream — this repo never forks it, so upstream syncs cannot conflict. ③ The only number you get is a probability: cheap first-pass triage, not ground truth.
+
+```mermaid
+flowchart TD
+%% 图2 · 主流程：校验→查常驻→一次前向，含 401/400 拒收
+    R["POST /v1/systemone arrives<br/>(state + typed questions)"] --> V{"Valid JSON · bearer token matches?"}
+    V -->|no| E4["401 / 400 — rejected before the model is touched"]
+    V -->|yes| C{"Checkpoint resident in memory?<br/>(weights already loaded from a previous call?)"}
+    C -->|no · first call| LD["Load weights (678 MB) — one-time cost"]
+    C -->|yes| F["One forward pass<br/>noul / choice / score scored in the same batch"]
+    LD --> F
+    F --> J["JSON: one probability per question + usage<br/>(0 output tokens)"]
+```
+
+**How to read this map (3 sentences)**: ① auth and validation run before the model, so junk requests cost no GPU time. ② The first call pays the weight load; every later call reuses the resident checkpoint — warm with `/health/ready` before timing anything. ③ One exit only: probabilities, no generated text — the caller decides what a number means.
+
+## Three steps (copy-paste)
+
+```bash
+git clone git@github.com:tankerwng2/laya-mlx-server.git && cd laya-mlx-server
+make install     # one venv with laya-mlx + laya-mlx-server
+make prefetch    # one-time weights (678 MB) → offline afterwards
+make http        # → http://127.0.0.1:8080
+```
+
+Success looks like: `curl -s localhost:8080/health/ready` reports a resident checkpoint, and the sample `POST /v1/systemone` below returns one probability per question.
+
+## FAQ (symptom → cause → fix)
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Won't install on Intel / Linux | `mlx` publishes darwin/arm64 wheels only | Apple Silicon + macOS 14+ is a hard requirement; no workaround |
+| First request is slow, later ones fast | Checkpoint loads lazily on first use | Warm with `GET /health/ready` before measuring; never time against `/health/live` (process up ≠ model resident) |
+| `401` from the API | Bearer token missing/mismatched | `-H "Authorization: Bearer $LAYA_API_KEY"`; keep the key in env, never in the repo |
+| English prompts score near zero | Every figure here was measured with **Chinese** input; language routing lives upstream | Recalibrate thresholds on your own language before trusting them |
+| Probabilities look over-confident | Model output ≠ correctness (see LICENSE note) | Use it as a cheap filter; escalate the boundary band (roughly 0.3–0.7) to a bigger model or a human |
+
+## Usage example
+
+> [!example] Scenario: triage a refund email in one pass, no chat generation
+> ```bash
+> curl -X POST http://127.0.0.1:8080/v1/systemone \
+>   -H "Authorization: Bearer $LAYA_API_KEY" -H 'Content-Type: application/json' \
+>   -d '{"state":{"message":"I was charged twice, please refund the duplicate."},
+>        "questions":{"refund":{"type":"noul","instructions":"Does the customer want a refund?"},
+>                     "dept":{"type":"choice","instructions":"Who should handle this?","criteria":["billing","technical"]}}}'
+> ```
+> **What you get**: `refund` → yes/no probability, `dept` → probability per department, in one forward pass. Route the ticket mechanically from those numbers; only escalate when a probability sits in the grey band.
+
+## Where to look next
+
+- Model, Python API, quick start = upstream [laya-mlx README](https://github.com/mizorewww/laya-mlx#readme); timings/method = upstream `BENCHMARKS.md`
+- Boundary between this repo and upstream = the table below; serve-layer contract tests = 13 tests in this repo
+- 中文版=`README.zh-CN.md`；license & attribution notes=`LICENSE`、`NOTICE`
+
 The model, weight conversion, benchmarks and the Snake demo belong to upstream and are deliberately not copied here:
 
 - [Upstream README](https://github.com/mizorewww/laya-mlx#readme) — the model, Python API, quick start
@@ -67,6 +154,16 @@ inherit it, and the spawn fails with a plain "command not found". The `uv` form 
 dependency: `cwd` plus `uv run` resolves the sibling workspace venv on any host.
 
 Three tools: `laya_predict`, `laya_preset` (`triage` / `email` / `guard` / `moderation` / `router`), `laya_status`.
+
+```mermaid
+flowchart LR
+%% 图3 · MCP 接入：客户端经 uv 拉起服务，stdio 无端口
+    M["你的 agent（omp / Claude 等）"] -->|"stdio：生一个子进程（no port, no token）"| U["uv run laya-mlx-mcp<br/>cwd＝仓库根，venv 自动定位"]
+    U --> S["laya 服务<br/>权重进内存"]
+    S --> T["三个工具：<br/>laya_predict / laya_preset / laya_status"]
+```
+
+**看图三句话**：① 主干＝agent 按 mcp.json 用 `uv run` 拉起服务，通道＝stdio：不开端口、不发 token；② `cwd` 指仓库根，uv 自己找到 venv，换机器不用改路径；③ 最脆的一跳＝裸 `"command": "laya-mlx-mcp"`：GUI/启动器拉起的客户端不继承你 shell 里 activate 的 PATH，报 command not found——用 uv 形态即愈。
 
 ## Configuration
 
