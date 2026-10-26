@@ -1,5 +1,43 @@
 # Local benchmarks
 
+The current v0.4.12 migration is tracked in the [qualification report](docs/QUALIFICATION_0_4_12.md), including the final FP32 matrix, alternating-order repeats, correctness gates and memory limitations. Historical experiments below retain their original scope.
+
+## Initial v0.4.12 feature matrix (before bounded shape cache)
+
+Pinned upstream: `ffc142012af63d015fa19f05f29f9c5ff329a2cc`. These new measurements use 3 warmup calls and 20 timed calls per workload, isolated sequential processes, the same local checkpoints and input hashes, and completed end-to-end calls. Downloads, loading and lazy graph initialization are outside the steady-state timer. Raw reports retain every sample and P95.
+
+Core ML uses the new B=1/2/4/16 adaptive native bundles, not the existing single-graph Hub bundles. MLX FP32 versus upstream FP32 is a same-precision comparison. Core ML and MLX FP16 use reduced-precision weights/compute; upstream FP16 uses MPS autocast with FP32 stored weights, so these are not identical arithmetic paths. Upstream automatic precision is also recorded separately. Do not attribute all differences versus FP32 solely to the runtime.
+
+P50 latency in milliseconds:
+
+| Checkpoint | Workload | Upstream FP32 | Upstream FP16 autocast | MLX FP32 | MLX FP16 | Core ML adaptive FP16 |
+|---|---|---:|---:|---:|---:|---:|
+| laya | single | 26.86 | 31.59 | 15.05 | 13.54 | 15.97 |
+| laya | batch8 | 113.44 | 117.50 | 96.41 | 84.48 | 106.16 |
+| laya | long | 130.75 | 165.14 | 96.50 | 85.87 | 96.35 |
+| laya | structured | 16.89 | 25.04 | 11.14 | 9.59 | 9.06 |
+| laya | stability | 30.36 | 39.01 | 19.73 | 18.09 | 24.65 |
+| laya-multilingual | single | 14.72 | 20.75 | 8.14 | 7.53 | 11.57 |
+| laya-multilingual | batch8 | 49.33 | 55.19 | 36.58 | 31.97 | 41.02 |
+| laya-multilingual | long | 81.06 | 98.93 | 51.62 | 38.12 | 46.35 |
+| laya-multilingual | structured | 11.75 | 16.16 | 7.87 | 5.68 | 5.68 |
+| laya-multilingual | stability | 16.99 | 22.62 | 12.38 | 11.27 | 15.12 |
+| laya-typed-decisions | single | 23.86 | 31.43 | 17.20 | 13.58 | 15.47 |
+| laya-typed-decisions | batch8 | 113.70 | 118.53 | 102.94 | 84.28 | 105.97 |
+| laya-typed-decisions | long | 130.09 | 167.42 | 112.32 | 86.65 | 95.83 |
+| laya-typed-decisions | structured | 16.29 | 24.67 | 13.33 | 9.68 | 9.06 |
+| laya-typed-decisions | stability | 30.49 | 39.55 | 23.64 | 18.01 | 24.10 |
+
+`single` has two questions; `batch8` has eight heterogeneous states and two questions per state. `long` uses overlapping windows, preserving the official default window batching policy. `structured` makes one enum decision; `stability` uses OptionStabilityHook with `variants="fast"` and a fixed seed.
+
+All fifteen adaptive Core ML workload outputs agree with the upstream FP32 reference on categorical values, structure and integer diagnostics, with float differences within 0.02. Each adaptive checkpoint separately passes all 63 reference questions and 100 mixed repeated calls, including complete public-output comparison. These finite checks do not establish universal numerical equality or calibration quality.
+
+The smaller batch speedups were repeated in fresh processes: Core ML remained 1.07–1.20× faster than upstream FP32 and 1.11–1.35× faster than upstream FP16 autocast. See [paired repeated batch measurements](benchmarks/results/v0412-batch-repeat/paired-summary.json) and [full feature comparison](benchmarks/results/v0412-features/summary.json). Raw results and reproduction code are in `benchmarks/features.py` and `benchmarks/features_report.py`.
+
+Additional Core ML graphs load lazily and increase disk/resident memory. Their counts are bounded by the bundle manifest; context-manager exit releases them. Existing B=1-only bundles remain supported and do not gain adaptive throughput automatically. See the sibling Core ML conversion guide for composition and the per-checkpoint validation reports for RSS samples. The 341-entry public API audit and real-logit calibration compatibility campaign subsequently passed. A later mixed-shape audit exposed a Core ML reshape penalty; the bounded-cache final campaign is tracked in `docs/UPSTREAM_0412_PROGRESS.json`. These initial timings predate that cache and the dense FP32 exports.
+
+## Historical benchmark, before v0.4.12
+
 Measured on **Apple M3 Max**, 40-core GPU, **128 GiB unified memory**, macOS-27.2-arm64-64bit, Python 3.12.13.
 
 These are local measurements of the native MLX port and the pinned upstream PyTorch runtime on the same Mac. They are not comparisons with the upstream T4 or third-party API figures.
