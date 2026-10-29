@@ -1,4 +1,3 @@
-# Derived from Laya (Apache-2.0); see NOTICE. Modified for laya-mlx.
 """Dependency-free language/script detection used to route between Laya checkpoints.
 
 Routing only needs one decision: *is this English Latin text, or is it something the English
@@ -1516,8 +1515,10 @@ def analyse(state: Union[str, bytes, Mapping, list, None]) -> Dict[str, object]:
     """Full detection result for a state.
 
     Returns `script`, `script_profile`, `language` (best effort, may be None),
-    `is_english`, `non_latin_fraction` and `mixed_segment` (the line or field that made a mostly
-    English state non-English, else None).
+    `is_english`, `non_latin_fraction` and `mixed_segment`. `mixed_segment` names the line or field
+    the segment scan itself singled out, else None: a state flipped non-English by the per-value
+    read below is reported with `mixed_segment` still None, because that read keeps the offending
+    value in its own local and never writes it back.
 
     String values are what get read. When a state has several of them, one non-English value is
     enough: joining every value into one window let a long English note fill the 4000 characters,

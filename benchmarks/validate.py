@@ -22,6 +22,7 @@ from .common import (
     save_json,
     softmax,
 )
+from .features_report import compare
 
 
 def validate_model(name, root, repeats, optimize=False):
@@ -30,6 +31,8 @@ def validate_model(name, root, repeats, optimize=False):
     from laya.common import collate_items as torch_collate
 
     reference = load_reference(root / name)
+    reference.amp_enabled = False
+    assert reference.dtype_for(64) == torch.float32
     prepared = []
     for case_name, state, questions in parity_cases():
         ref_items = []
@@ -104,6 +107,16 @@ def validate_model(name, root, repeats, optimize=False):
             )
             action_error = float(np.max(np.abs(softmax(act) - softmax(entry["act"]))))
             result = agent.predict(entry["state"], entry["questions"])
+            public_errors, public_diffs = compare(entry["result"], result)
+            public_max_error = max(public_errors, default=0)
+            public_tolerance = 1e-4 if dtype == "float32" else 0.02
+            assert not public_diffs and public_max_error <= public_tolerance, (
+                name,
+                dtype,
+                entry["name"],
+                public_max_error,
+                public_diffs,
+            )
             for key in ("input_tokens", "output_tokens"):
                 assert result["usage"][key] == entry["result"]["usage"][key]
             expected[entry["name"]] = digest(result)
@@ -120,6 +133,8 @@ def validate_model(name, root, repeats, optimize=False):
                     "action_probability_max_abs_error": action_error,
                     "argmax_agreements": agreement,
                     "public_result_equal": result == entry["result"],
+                    "public_output_max_abs_error": public_max_error,
+                    "public_output_differences": public_diffs,
                 }
             )
             max_probability_error = max(max_probability_error, error)
