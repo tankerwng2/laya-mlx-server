@@ -44,23 +44,26 @@ def main():
     selected = [frames[i] for i in np.linspace(0, len(frames) - 1, args.states, dtype=int)]
     policy = LayaPolicy(args.model)
     agent = policy.agent
-    original_prepare, original_forward = agent.prepare, agent.forward
+    original_forward = agent.forward
+    original_encode = agent._encode_state
     cached_prepare = PrefixPreparation(agent)
     compiled = mx.compile(agent.model)
     mode = "eager"
     shapes = set()
     input_identity_checks = 0
 
-    def prepare(state, questions):
+    def encode(state, ids, internal, **kwargs):
         nonlocal input_identity_checks
+        agent._prefix_cache = cached_prepare.cache if "prefix" in mode else None
         if mode == "validate":
-            original = original_prepare(state, questions)
-            assert cached_prepare(state, questions) == original
+            agent._prefix_cache = None
+            original = original_encode(state, ids, internal, **kwargs)
+            agent._prefix_cache = cached_prepare.cache
+            cached = original_encode(state, ids, internal, **kwargs)
+            assert cached == original
             input_identity_checks += 1
             return original
-        if "prefix" in mode:
-            return cached_prepare(state, questions)
-        return original_prepare(state, questions)
+        return original_encode(state, ids, internal, **kwargs)
 
     def forward(batch):
         shapes.add(tuple(batch["input_ids"].shape))
@@ -87,7 +90,7 @@ def main():
             mx.eval(result)
         return result
 
-    agent.prepare, agent.forward = prepare, forward
+    agent._encode_state, agent.forward = encode, forward
     variants = [
         "eager",
         "prefix",
