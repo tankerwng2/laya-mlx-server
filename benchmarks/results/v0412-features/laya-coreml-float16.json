@@ -1,0 +1,120 @@
+{
+  "environment": {
+    "cpu": "Apple M3 Max",
+    "unified_memory_bytes": 137438953472,
+    "machine": "arm64",
+    "os": "macOS-27.2-arm64-arm-64bit",
+    "python": "3.12.13",
+    "packages": {
+      "numpy": "2.1.3",
+      "torch": "2.7.0",
+      "transformers": "5.19.0",
+      "tokenizers": "0.23.2",
+      "huggingface-hub": "1.32.0"
+    },
+    "source_sha256": "c3cc54f27f0574464e3cf74cecbad4611f2c07160d20ceccfea8c25b9a5fae4d",
+    "upstream_revision": "ffc142012af63d015fa19f05f29f9c5ff329a2cc"
+  },
+  "backend": "coreml",
+  "model": "laya",
+  "precision": {
+    "export_compute": "float16",
+    "compute_units": "cpu_gpu",
+    "shape": {
+      "batch_size": 1,
+      "max_length": 512,
+      "min_length": 16,
+      "default_length": 128,
+      "max_options": 32,
+      "flexible": true,
+      "mode": "enumerated",
+      "lengths": [
+        16,
+        32,
+        64,
+        96,
+        128,
+        192,
+        256,
+        384,
+        512
+      ]
+    }
+  },
+  "warmup": 3,
+  "iterations": 20,
+  "timing": "wall clock, completed end-to-end calls; model load excluded",
+  "results": [
+    {
+      "workload": "single",
+      "input_sha256": "2329a9da584293381655601d1e285e354aaa861213367f63e161ae193a5d1f06",
+      "output": {
+        "model": "laya-rl-agent",
+        "answers": {
+          "department": {
+            "type": "choice",
+            "choice": "billing",
+            "probabilities": {
+              "billing": 0.7613,
+              "technical": 0.132,
+              "other": 0.1067
+            },
+            "confidence": 0.3503,
+            "answer_confidence": 0.7613,
+            "action": {
+              "act_probability": 1.0
+            }
+          },
+          "refund": {
+            "type": "noul",
+            "noul": 0.8649,
+            "confidence": 0.8649,
+            "answer_confidence": 0.8649,
+            "action": {
+              "act_probability": 1.0
+            }
+          }
+        },
+        "usage": {
+          "input_tokens": 72,
+          "output_tokens": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "truncated": false,
+          "truncated_questions": []
+        }
+      },
+      "timing": {
+        "samples_ms": [
+          804.941125,
+          800.047916,
+          783.270458,
+          783.736917,
+          797.163958,
+          799.084,
+          799.288166,
+          787.191958,
+          813.232166,
+          797.040667,
+          801.781458,
+          800.985292,
+          800.149584,
+          802.026,
+          801.899667,
+          795.957,
+          797.9955,
+          788.207292,
+          800.246542,
+          801.159541
+        ],
+        "p50_ms": 799.668041,
+        "p95_ms": 805.35567705,
+        "mean_ms": 797.77026035,
+        "min_ms": 783.270458,
+        "max_ms": 813.232166,
+        "decisions_per_second": 2.5069874115419575
+      },
+      "process_peak_rss_bytes": 2279145472
+    }
+  ]
+}

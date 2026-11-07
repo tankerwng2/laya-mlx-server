@@ -1,0 +1,3798 @@
+{
+  "rows": [
+    {
+      "file": "laya-coreml-adaptive-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 24.773249999999997,
+      "p95_ms": 25.01890835,
+      "speedup_vs_upstream_fp32": 1.0842012251117639,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 105.6911245,
+      "p95_ms": 106.35090145000001,
+      "speedup_vs_upstream_fp32": 1.07328607805663,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 173.73841650000003,
+      "p95_ms": 183.0611524,
+      "speedup_vs_upstream_fp32": 0.7525589223958421,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 9.058229,
+      "p95_ms": 9.5437955,
+      "speedup_vs_upstream_fp32": 1.8646925905715122,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 24.6941255,
+      "p95_ms": 25.49275835,
+      "speedup_vs_upstream_fp32": 1.2294329272765703,
+      "max_numeric_error": 0.0024,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float32.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 16.6390205,
+      "p95_ms": 17.35591875,
+      "speedup_vs_upstream_fp32": 1.6142289144964992,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float32.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 119.6936045,
+      "p95_ms": 120.3544003,
+      "speedup_vs_upstream_fp32": 0.9477265972051163,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float32.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 107.7354585,
+      "p95_ms": 110.95244555000001,
+      "speedup_vs_upstream_fp32": 1.2136059689206227,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float32.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 9.75375,
+      "p95_ms": 10.33299585,
+      "speedup_vs_upstream_fp32": 1.7317249775727284,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-float32.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 26.9013335,
+      "p95_ms": 27.53437915,
+      "speedup_vs_upstream_fp32": 1.1285600767709154,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 15.970542,
+      "p95_ms": 20.099303850000002,
+      "speedup_vs_upstream_fp32": 1.6817956460087577,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 106.164333,
+      "p95_ms": 115.18569375000001,
+      "speedup_vs_upstream_fp32": 1.0685020975924184,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 96.348688,
+      "p95_ms": 101.89819375,
+      "speedup_vs_upstream_fp32": 1.3570334813484957,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 9.064125,
+      "p95_ms": 9.3615747,
+      "speedup_vs_upstream_fp32": 1.8634796519244823,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-adaptive-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 24.6493125,
+      "p95_ms": 25.2497128,
+      "speedup_vs_upstream_fp32": 1.231668063764456,
+      "max_numeric_error": 0.0024,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b16-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 16,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "batch8",
+      "p50_ms": 105.593354,
+      "p95_ms": 106.76240000000001,
+      "speedup_vs_upstream_fp32": 1.074279850036774,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-fast-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": true
+      },
+      "workload": "single",
+      "p50_ms": 24.332749999999997,
+      "p95_ms": 24.9522396,
+      "speedup_vs_upstream_fp32": 1.1038287082224576,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-fast-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": true
+      },
+      "workload": "batch8",
+      "p50_ms": 128.325875,
+      "p95_ms": 128.9607167,
+      "speedup_vs_upstream_fp32": 0.8839745881335311,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-fast-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": true
+      },
+      "workload": "long",
+      "p50_ms": 163.2454165,
+      "p95_ms": 163.89148125,
+      "speedup_vs_upstream_fp32": 0.8009314950658968,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-fast-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": true
+      },
+      "workload": "structured",
+      "p50_ms": 15.4675835,
+      "p95_ms": 16.392900599999997,
+      "speedup_vs_upstream_fp32": 1.0920136619918683,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-fast-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": true
+      },
+      "workload": "stability",
+      "p50_ms": 23.795354,
+      "p95_ms": 24.27741605,
+      "speedup_vs_upstream_fp32": 1.2758696928820643,
+      "max_numeric_error": 0.0024,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "single",
+      "p50_ms": 24.8260625,
+      "p95_ms": 25.393162150000002,
+      "speedup_vs_upstream_fp32": 1.0818948030925162,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "batch8",
+      "p50_ms": 131.970812,
+      "p95_ms": 135.33294855,
+      "speedup_vs_upstream_fp32": 0.8595598585844877,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "long",
+      "p50_ms": 164.2066875,
+      "p95_ms": 164.74940355,
+      "speedup_vs_upstream_fp32": 0.796242817455288,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "structured",
+      "p50_ms": 15.766208500000001,
+      "p95_ms": 16.2824372,
+      "speedup_vs_upstream_fp32": 1.0713300220531776,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-b4-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "stability",
+      "p50_ms": 24.668416999999998,
+      "p95_ms": 25.314105950000002,
+      "speedup_vs_upstream_fp32": 1.2307141962129147,
+      "max_numeric_error": 0.0024,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-cpu-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "single",
+      "p50_ms": 448.0755,
+      "p95_ms": 458.6445496,
+      "speedup_vs_upstream_fp32": 0.059943442567156655,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "single",
+      "p50_ms": 799.668041,
+      "p95_ms": 805.35567705,
+      "speedup_vs_upstream_fp32": 0.033587922266359524,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-fp32-b16-dense.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 16,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 137.2971665,
+      "p95_ms": 168.19779170000004,
+      "speedup_vs_upstream_fp32": 0.8262137915278827,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-fp32-b16-k4.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 16,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 4,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 172.11429149999998,
+      "p95_ms": 207.6712747,
+      "speedup_vs_upstream_fp32": 0.6590784037245392,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-uniform-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "single",
+      "p50_ms": 32.480292000000006,
+      "p95_ms": 41.7258652,
+      "speedup_vs_upstream_fp32": 0.8269380090548445,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-uniform-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "batch8",
+      "p50_ms": 238.3244995,
+      "p95_ms": 283.55117115,
+      "speedup_vs_upstream_fp32": 0.4759762959242048,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-uniform-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "long",
+      "p50_ms": 124.59533300000001,
+      "p95_ms": 126.92197145,
+      "speedup_vs_upstream_fp32": 1.0493843738111763,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-uniform-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "structured",
+      "p50_ms": 9.2521875,
+      "p95_ms": 10.2407774,
+      "speedup_vs_upstream_fp32": 1.8256020535684128,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-uniform-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "stability",
+      "p50_ms": 41.4893125,
+      "p95_ms": 42.90816845,
+      "speedup_vs_upstream_fp32": 0.73174919444616,
+      "max_numeric_error": 0.0024,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-coreml-v2-float16.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      },
+      "workload": "single",
+      "p50_ms": 805.34875,
+      "p95_ms": 840.7910668,
+      "speedup_vs_upstream_fp32": 0.03335100228317235,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-fp32-paired-adaptive.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 120.486542,
+      "p95_ms": 120.9522465,
+      "speedup_vs_upstream_fp32": 0.9414894860207706,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-fp32-paired-b4.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 4,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 148.6493125,
+      "p95_ms": 152.08203980000002,
+      "speedup_vs_upstream_fp32": 0.7631169669889997,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-fp32-paired-dense.json",
+      "model": "laya",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 16,
+          "max_length": 512,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 100.9540835,
+      "p95_ms": 101.66532720000001,
+      "speedup_vs_upstream_fp32": 1.1236475887575168,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-fp32-paired-upstream.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "batch8",
+      "p50_ms": 135.323375,
+      "p95_ms": 137.98241844999998,
+      "speedup_vs_upstream_fp32": 0.8382647306867717,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float16.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "single",
+      "p50_ms": 13.540229499999999,
+      "p95_ms": 14.309440200000001,
+      "speedup_vs_upstream_fp32": 1.983658253355307,
+      "max_numeric_error": 0.0027,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float16.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "batch8",
+      "p50_ms": 84.47702050000001,
+      "p95_ms": 87.9506396,
+      "speedup_vs_upstream_fp32": 1.3428126587395444,
+      "max_numeric_error": 0.0006,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float16.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "long",
+      "p50_ms": 85.869625,
+      "p95_ms": 97.00436839999999,
+      "speedup_vs_upstream_fp32": 1.5226384824668795,
+      "max_numeric_error": 0.0002,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float16.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "structured",
+      "p50_ms": 9.5902295,
+      "p95_ms": 9.79056875,
+      "speedup_vs_upstream_fp32": 1.7612521681571853,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float16.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "stability",
+      "p50_ms": 18.085729,
+      "p95_ms": 21.095197900000002,
+      "speedup_vs_upstream_fp32": 1.6786589581210687,
+      "max_numeric_error": 0.0027,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float32.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "single",
+      "p50_ms": 15.049417,
+      "p95_ms": 15.401975,
+      "speedup_vs_upstream_fp32": 1.7847327906456443,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float32.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "batch8",
+      "p50_ms": 96.4124165,
+      "p95_ms": 96.61996219999999,
+      "speedup_vs_upstream_fp32": 1.1765788745685053,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float32.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "long",
+      "p50_ms": 96.5039165,
+      "p95_ms": 107.79583960000001,
+      "speedup_vs_upstream_fp32": 1.3548506655685835,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float32.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "structured",
+      "p50_ms": 11.13525,
+      "p95_ms": 11.41165655,
+      "speedup_vs_upstream_fp32": 1.5168777081789813,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-mlx-float32.json",
+      "model": "laya",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "stability",
+      "p50_ms": 19.730292,
+      "p95_ms": 20.328616649999997,
+      "speedup_vs_upstream_fp32": 1.5387390617432322,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float16.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 11.573542,
+      "p95_ms": 12.6686872,
+      "speedup_vs_upstream_fp32": 1.2715874275999517,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float16.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 41.0165,
+      "p95_ms": 41.56917645,
+      "speedup_vs_upstream_fp32": 1.2026501529872127,
+      "max_numeric_error": 0.0023,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float16.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 46.3528955,
+      "p95_ms": 47.390899999999995,
+      "speedup_vs_upstream_fp32": 1.7487234535326925,
+      "max_numeric_error": 0.0012,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float16.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 5.676042,
+      "p95_ms": 6.4323270500000005,
+      "speedup_vs_upstream_fp32": 2.0699760502124547,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float16.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 15.1186455,
+      "p95_ms": 15.81884135,
+      "speedup_vs_upstream_fp32": 1.123841318985884,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float32.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 8.650500000000001,
+      "p95_ms": 11.404950300000001,
+      "speedup_vs_upstream_fp32": 1.7012624125773075,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float32.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 46.53175,
+      "p95_ms": 47.145075649999995,
+      "speedup_vs_upstream_fp32": 1.0601041224540233,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float32.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 49.762375,
+      "p95_ms": 51.9329295,
+      "speedup_vs_upstream_fp32": 1.6289093014551659,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float32.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 5.677146,
+      "p95_ms": 6.33655595,
+      "speedup_vs_upstream_fp32": 2.069573514579333,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-coreml-adaptive-float32.json",
+      "model": "laya-multilingual",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 13.9005835,
+      "p95_ms": 15.944375,
+      "speedup_vs_upstream_fp32": 1.2223198040571461,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float16.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "single",
+      "p50_ms": 7.5326455,
+      "p95_ms": 8.09929965,
+      "speedup_vs_upstream_fp32": 1.9537319922993852,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float16.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "batch8",
+      "p50_ms": 31.9723125,
+      "p95_ms": 32.279923249999996,
+      "speedup_vs_upstream_fp32": 1.5428505523333667,
+      "max_numeric_error": 0.0015,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float16.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "long",
+      "p50_ms": 38.1204585,
+      "p95_ms": 38.358916050000005,
+      "speedup_vs_upstream_fp32": 2.1263751457763815,
+      "max_numeric_error": 0.0006,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float16.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "structured",
+      "p50_ms": 5.679917,
+      "p95_ms": 6.51192115,
+      "speedup_vs_upstream_fp32": 2.068563854014064,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float16.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "stability",
+      "p50_ms": 11.2692295,
+      "p95_ms": 12.81746215,
+      "speedup_vs_upstream_fp32": 1.5077302756146724,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float32.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "single",
+      "p50_ms": 8.1394585,
+      "p95_ms": 10.88579105,
+      "speedup_vs_upstream_fp32": 1.808077343228668,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float32.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "batch8",
+      "p50_ms": 36.5816245,
+      "p95_ms": 38.0542268,
+      "speedup_vs_upstream_fp32": 1.3484502307982524,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float32.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "long",
+      "p50_ms": 51.619187499999995,
+      "p95_ms": 53.87109970000001,
+      "speedup_vs_upstream_fp32": 1.570315214667027,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float32.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "structured",
+      "p50_ms": 7.8671255,
+      "p95_ms": 9.458826750000002,
+      "speedup_vs_upstream_fp32": 1.493464290101893,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-mlx-float32.json",
+      "model": "laya-multilingual",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "stability",
+      "p50_ms": 12.377333,
+      "p95_ms": 14.067849350000001,
+      "speedup_vs_upstream_fp32": 1.3727479498208537,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-auto.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "single",
+      "p50_ms": 13.860333,
+      "p95_ms": 14.88496215,
+      "speedup_vs_upstream_fp32": 1.06179054283905,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-auto.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "batch8",
+      "p50_ms": 54.0642085,
+      "p95_ms": 55.3194524,
+      "speedup_vs_upstream_fp32": 0.9124058479465209,
+      "max_numeric_error": 0.0009,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-auto.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "long",
+      "p50_ms": 81.36625000000001,
+      "p95_ms": 83.75352980000001,
+      "speedup_vs_upstream_fp32": 0.996216434946922,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-auto.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "structured",
+      "p50_ms": 11.714938,
+      "p95_ms": 12.54089195,
+      "speedup_vs_upstream_fp32": 1.0029307026635566,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-auto.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "stability",
+      "p50_ms": 18.911625,
+      "p95_ms": 25.6519774,
+      "speedup_vs_upstream_fp32": 0.8984399013834082,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float16.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "single",
+      "p50_ms": 20.746125,
+      "p95_ms": 22.54982085,
+      "speedup_vs_upstream_fp32": 0.709374425344492,
+      "max_numeric_error": 0.0002,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float16.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "batch8",
+      "p50_ms": 55.190521000000004,
+      "p95_ms": 55.402136049999996,
+      "speedup_vs_upstream_fp32": 0.8937857281687919,
+      "max_numeric_error": 0.0009,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float16.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "long",
+      "p50_ms": 98.92925,
+      "p95_ms": 104.8553753,
+      "speedup_vs_upstream_fp32": 0.819357222459485,
+      "max_numeric_error": 0.0001,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float16.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "structured",
+      "p50_ms": 16.160625500000002,
+      "p95_ms": 16.52745835,
+      "speedup_vs_upstream_fp32": 0.7270307080626303,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float16.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "stability",
+      "p50_ms": 22.615812,
+      "p95_ms": 25.34075,
+      "speedup_vs_upstream_fp32": 0.7512866882692516,
+      "max_numeric_error": 0.0003,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float32.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "single",
+      "p50_ms": 14.716770499999999,
+      "p95_ms": 15.55716215,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float32.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "batch8",
+      "p50_ms": 49.328500000000005,
+      "p95_ms": 49.67472565,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float32.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "long",
+      "p50_ms": 81.0583955,
+      "p95_ms": 87.18751730000001,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float32.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "structured",
+      "p50_ms": 11.749271,
+      "p95_ms": 12.725430950000002,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-multilingual-upstream-float32.json",
+      "model": "laya-multilingual",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "stability",
+      "p50_ms": 16.990958499999998,
+      "p95_ms": 19.9697232,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 15.4679995,
+      "p95_ms": 16.03879855,
+      "speedup_vs_upstream_fp32": 1.5427617191221141,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 105.973167,
+      "p95_ms": 106.78484614999999,
+      "speedup_vs_upstream_fp32": 1.072871234470137,
+      "max_numeric_error": 0.0013,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 95.82825,
+      "p95_ms": 96.4976247,
+      "speedup_vs_upstream_fp32": 1.3575370102240205,
+      "max_numeric_error": 0.0008,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 9.057020999999999,
+      "p95_ms": 9.3463958,
+      "speedup_vs_upstream_fp32": 1.7990141018774277,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float16",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 24.097979000000002,
+      "p95_ms": 24.4798625,
+      "speedup_vs_upstream_fp32": 1.2652789887483924,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "single",
+      "p50_ms": 16.2873335,
+      "p95_ms": 18.520462500000004,
+      "speedup_vs_upstream_fp32": 1.4651531203680457,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "batch8",
+      "p50_ms": 121.7345,
+      "p95_ms": 122.66104615,
+      "speedup_vs_upstream_fp32": 0.9339633587848967,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "long",
+      "p50_ms": 106.8408125,
+      "p95_ms": 113.77614340000001,
+      "speedup_vs_upstream_fp32": 1.2176095721847866,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "structured",
+      "p50_ms": 9.523354000000001,
+      "p95_ms": 9.6882181,
+      "speedup_vs_upstream_fp32": 1.7109212258622328,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-coreml-adaptive-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "coreml",
+      "precision": {
+        "export_compute": "float32",
+        "compute_units": "cpu_gpu",
+        "shape": {
+          "batch_size": 1,
+          "max_length": 1024,
+          "min_length": 16,
+          "default_length": 128,
+          "max_options": 32,
+          "flexible": true,
+          "mode": "enumerated",
+          "lengths": [
+            16,
+            32,
+            64,
+            96,
+            128,
+            192,
+            256,
+            384,
+            512,
+            768,
+            1024
+          ]
+        },
+        "fast_prediction": false
+      },
+      "workload": "stability",
+      "p50_ms": 25.393917000000002,
+      "p95_ms": 26.12671845,
+      "speedup_vs_upstream_fp32": 1.2007074962086393,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "single",
+      "p50_ms": 13.584354,
+      "p95_ms": 13.70570035,
+      "speedup_vs_upstream_fp32": 1.7566854853753076,
+      "max_numeric_error": 0.0006,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "batch8",
+      "p50_ms": 84.278458,
+      "p95_ms": 85.9464327,
+      "speedup_vs_upstream_fp32": 1.3490465440172148,
+      "max_numeric_error": 0.0014,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "long",
+      "p50_ms": 86.653667,
+      "p95_ms": 87.30731315,
+      "speedup_vs_upstream_fp32": 1.5012682152274064,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "structured",
+      "p50_ms": 9.6813955,
+      "p95_ms": 9.83650895,
+      "speedup_vs_upstream_fp32": 1.6829917236621519,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float16",
+        "compute": "float16"
+      },
+      "workload": "stability",
+      "p50_ms": 18.005875,
+      "p95_ms": 18.311938950000002,
+      "speedup_vs_upstream_fp32": 1.6933732184634183,
+      "max_numeric_error": 0.0006,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "single",
+      "p50_ms": 17.202917,
+      "p95_ms": 17.93410415,
+      "speedup_vs_upstream_fp32": 1.387173901960929,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "batch8",
+      "p50_ms": 102.93802099999999,
+      "p95_ms": 105.59602325000002,
+      "speedup_vs_upstream_fp32": 1.1045050351220567,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "long",
+      "p50_ms": 112.3191665,
+      "p95_ms": 126.64479345,
+      "speedup_vs_upstream_fp32": 1.158220809980815,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "structured",
+      "p50_ms": 13.331479000000002,
+      "p95_ms": 13.77005,
+      "speedup_vs_upstream_fp32": 1.2221981147028023,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-mlx-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "mlx",
+      "precision": {
+        "weights": "float32",
+        "compute": "float32"
+      },
+      "workload": "stability",
+      "p50_ms": 23.6444165,
+      "p95_ms": 26.848055900000006,
+      "speedup_vs_upstream_fp32": 1.2895503892007656,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-auto.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "single",
+      "p50_ms": 23.316,
+      "p95_ms": 26.56873155,
+      "speedup_vs_upstream_fp32": 1.0234790487219076,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-auto.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "batch8",
+      "p50_ms": 117.879,
+      "p95_ms": 118.57275975,
+      "speedup_vs_upstream_fp32": 0.9645107483097073,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-auto.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "long",
+      "p50_ms": 130.5393545,
+      "p95_ms": 131.81835805,
+      "speedup_vs_upstream_fp32": 0.996560742147687,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-auto.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "structured",
+      "p50_ms": 16.2999995,
+      "p95_ms": 16.58498545,
+      "speedup_vs_upstream_fp32": 0.9996140490679157,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-auto.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "stability",
+      "p50_ms": 30.592062499999997,
+      "p95_ms": 31.6620768,
+      "speedup_vs_upstream_fp32": 0.9966855454744185,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "single",
+      "p50_ms": 31.4337705,
+      "p95_ms": 32.2408768,
+      "speedup_vs_upstream_fp32": 0.7591656082110798,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "batch8",
+      "p50_ms": 118.5269585,
+      "p95_ms": 119.0814285,
+      "speedup_vs_upstream_fp32": 0.9592379990076265,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "long",
+      "p50_ms": 167.4165625,
+      "p95_ms": 169.8097806,
+      "speedup_vs_upstream_fp32": 0.7770461539610216,
+      "max_numeric_error": 0.0001,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "structured",
+      "p50_ms": 24.665729499999998,
+      "p95_ms": 26.54138815,
+      "speedup_vs_upstream_fp32": 0.6605808476088252,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float16.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "stability",
+      "p50_ms": 39.545354,
+      "p95_ms": 40.16290835,
+      "speedup_vs_upstream_fp32": 0.7710303086425777,
+      "max_numeric_error": 0.0005,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "single",
+      "p50_ms": 23.8634375,
+      "p95_ms": 25.84752565,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "batch8",
+      "p50_ms": 113.6955625,
+      "p95_ms": 114.11095,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "long",
+      "p50_ms": 130.090396,
+      "p95_ms": 131.55359855,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "structured",
+      "p50_ms": 16.2937085,
+      "p95_ms": 16.476244050000002,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-typed-decisions-upstream-float32.json",
+      "model": "laya-typed-decisions",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "stability",
+      "p50_ms": 30.4906665,
+      "p95_ms": 32.8805208,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-auto.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "single",
+      "p50_ms": 24.737792,
+      "p95_ms": 27.346585700000002,
+      "speedup_vs_upstream_fp32": 1.0857552686998095,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-auto.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "batch8",
+      "p50_ms": 117.95847950000001,
+      "p95_ms": 121.0057274,
+      "speedup_vs_upstream_fp32": 0.961667300060442,
+      "max_numeric_error": 0.001,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-auto.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "long",
+      "p50_ms": 130.8219375,
+      "p95_ms": 135.527859,
+      "speedup_vs_upstream_fp32": 0.9994378465767642,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-auto.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "structured",
+      "p50_ms": 16.519937499999997,
+      "p95_ms": 19.1827607,
+      "speedup_vs_upstream_fp32": 1.0224501454681654,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-auto.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "auto",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 5
+      },
+      "workload": "stability",
+      "p50_ms": 30.3162085,
+      "p95_ms": 31.6563809,
+      "speedup_vs_upstream_fp32": 1.0014369376038563,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float16.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "single",
+      "p50_ms": 31.585625,
+      "p95_ms": 32.465125,
+      "speedup_vs_upstream_fp32": 0.8503611373844906,
+      "max_numeric_error": 0.0002,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float16.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "batch8",
+      "p50_ms": 117.503334,
+      "p95_ms": 120.0448396,
+      "speedup_vs_upstream_fp32": 0.9653922883583883,
+      "max_numeric_error": 0.001,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float16.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "long",
+      "p50_ms": 165.143354,
+      "p95_ms": 168.73706220000003,
+      "speedup_vs_upstream_fp32": 0.7917266564659939,
+      "max_numeric_error": 0.0004,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float16.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "structured",
+      "p50_ms": 25.0434375,
+      "p95_ms": 30.97952115,
+      "speedup_vs_upstream_fp32": 0.6744606246646452,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float16.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float16",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1
+      },
+      "workload": "stability",
+      "p50_ms": 39.005042,
+      "p95_ms": 40.4620399,
+      "speedup_vs_upstream_fp32": 0.7783550393305562,
+      "max_numeric_error": 0.0013,
+      "semantic_differences": [],
+      "float_tolerance": 0.02,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float32.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "single",
+      "p50_ms": 26.859188,
+      "p95_ms": 29.62337325,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float32.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "batch8",
+      "p50_ms": 113.4368125,
+      "p95_ms": 116.6703125,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float32.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "long",
+      "p50_ms": 130.74839550000002,
+      "p95_ms": 132.5340577,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float32.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "structured",
+      "p50_ms": 16.8908125,
+      "p95_ms": 17.873919400000002,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    },
+    {
+      "file": "laya-upstream-float32.json",
+      "model": "laya",
+      "backend": "upstream",
+      "precision": {
+        "requested": "float32",
+        "weights": "float32",
+        "autocast": "torch.float16",
+        "amp_min_rows": 1000000
+      },
+      "workload": "stability",
+      "p50_ms": 30.359771,
+      "p95_ms": 31.58901075,
+      "speedup_vs_upstream_fp32": 1.0,
+      "max_numeric_error": 0.0,
+      "semantic_differences": [],
+      "float_tolerance": 0.0001,
+      "parity_passed": true,
+      "parity_passed_at_0_02": true
+    }
+  ],
+  "note": "FP16 upstream is autocast with FP32 weights; native FP16 is not identical arithmetic. Use FP32/FP32 for matched precision. Core ML partial runs remain partial. Full nested outputs compared: categories, structure and integer diagnostics exact, floats <=0.0001 for FP32 and <=0.02 for reduced precision. This finite workload suite does not establish universal numerical equivalence."
+}
