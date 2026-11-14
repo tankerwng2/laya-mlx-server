@@ -5,7 +5,16 @@ import json
 from pathlib import Path
 
 from . import __version__
-from .agent import DTYPES, Agent
+
+
+def _read_json(path, option):
+    """Name the input file on decoding/read errors before loading a checkpoint."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8-sig"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, RecursionError) as error:
+        raise ValueError(
+            "%s file %s cannot be read as UTF-8 JSON: %s" % (option, path, error)
+        ) from error
 
 
 def main(argv=None):
@@ -17,7 +26,7 @@ def main(argv=None):
         sub.add_argument("--model", default="convaiinnovations/laya")
         sub.add_argument("--subfolder")
         sub.add_argument("--revision")
-        sub.add_argument("--dtype", choices=DTYPES, default="float16")
+        sub.add_argument("--dtype", choices=("float32", "float16", "bfloat16"), default="float16")
         if command == "predict":
             source = sub.add_mutually_exclusive_group(required=True)
             source.add_argument("--state", help="Plain text input")
@@ -42,8 +51,17 @@ def main(argv=None):
         )
         print(json.dumps({"output": str(result), "dtype": args.dtype}))
     else:
-        state = args.state if args.state is not None else json.loads(args.state_file.read_text())
-        questions = json.loads(args.questions.read_text())
+        try:
+            state = (
+                args.state
+                if args.state is not None
+                else _read_json(args.state_file, "--state-file")
+            )
+            questions = _read_json(args.questions, "--questions")
+        except ValueError as error:
+            parser.error(str(error))
+        from .agent import Agent
+
         agent = Agent(
             args.model,
             device=args.device,

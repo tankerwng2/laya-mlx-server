@@ -1,0 +1,40 @@
+{
+  "version": "0.5.0",
+  "native_source_sha256": "ff54d9a38ff67fbc313c82ef92dfe3956d13647a0bca2ce266af42efa2a1e209",
+  "qualification_source_sha256": "f622efca650c0f832884264d2acff292cb6a97d536767e339e7f6b231f8cf3f4",
+  "runtime_change_since_qualification": "Only __version__ 0.4.0 to 0.5.0",
+  "artifacts": {
+    "laya_mlx-0.5.0.tar.gz": "a06e85e5f83eb1dbff647411aa406a553c90c44c72b52357580be49a64ecd068",
+    "laya_mlx-0.5.0-py3-none-any.whl": "de7990580c4be3974663caa21c98684cb02969127ecb0b559609fe2dc78a1d7f"
+  },
+  "tests_passed": 319,
+  "strict_twine": "passed",
+  "publication_status": "published_and_verified",
+  "offline_wheel_smoke": "wheel-v050-smoke.json",
+  "offline_real_models": 3,
+  "installed_native_source_matches": true,
+  "release_commit": "daf1f89c7a597d510e3411cdf4dde3ec6a01d2ea",
+  "github_release": "https://github.com/mizorewww/laya-mlx/releases/tag/v0.5.0",
+  "pypi_project": "https://pypi.org/project/laya-mlx/0.5.0/",
+  "public_artifacts": [
+    {
+      "filename": "laya_mlx-0.5.0-py3-none-any.whl",
+      "sha256": "de7990580c4be3974663caa21c98684cb02969127ecb0b559609fe2dc78a1d7f",
+      "pypi_url": "https://files.pythonhosted.org/packages/f9/4c/6e869dd0d7be5b30532a7b044bcd8c3f31d3c5ad1df657301d2596ac4bb2/laya_mlx-0.5.0-py3-none-any.whl",
+      "github_url": "https://github.com/mizorewww/laya-mlx/releases/download/v0.5.0/laya_mlx-0.5.0-py3-none-any.whl"
+    },
+    {
+      "filename": "laya_mlx-0.5.0.tar.gz",
+      "sha256": "a06e85e5f83eb1dbff647411aa406a553c90c44c72b52357580be49a64ecd068",
+      "pypi_url": "https://files.pythonhosted.org/packages/2c/d7/7e6d51f58e6799fb86bf41b0dce11daf79f22c99bb640816445285bc43df/laya_mlx-0.5.0.tar.gz",
+      "github_url": "https://github.com/mizorewww/laya-mlx/releases/download/v0.5.0/laya_mlx-0.5.0.tar.gz"
+    }
+  ],
+  "public_wheel_source_matches": true,
+  "public_install_smoke": "pypi-v050-smoke.json",
+  "ci_run": "https://github.com/mizorewww/laya-mlx/actions/runs/39351904377",
+  "release_run": "https://github.com/mizorewww/laya-mlx/actions/runs/39352243769",
+  "post_release_ci": "https://github.com/mizorewww/laya-mlx/actions/runs/39354961828",
+  "ci_timing_note": "Post-release documentation CI intermittently fails unchanged upstream 100 ms idle-window assertions. Isolation did not eliminate it. The same failure was reproduced directly against the original pinned upstream tests and laya.serve on the same runner; 254 native/integration tests passed. No runtime, assertions or timeouts changed. See docs/CI_TIMING.md; latest documentation CI can remain red.",
+  "upstream_timing_reproduction": "https://github.com/mizorewww/laya-mlx/actions/runs/39355649931"
+}

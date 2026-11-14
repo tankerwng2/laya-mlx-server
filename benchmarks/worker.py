@@ -80,6 +80,9 @@ def main():
         import torch
 
         agent = load_reference(model_path)
+        # v0.4.12 enables row-gated MPS autocast by default. This legacy
+        # matrix explicitly compares FP32; do not mislabel automatic FP16.
+        agent.amp_enabled = False
         from laya.common import QTYPES, build_sequence, collate_items
 
         synchronize = torch.mps.synchronize

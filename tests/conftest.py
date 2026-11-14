@@ -1,19 +1,27 @@
 import json
 import os
 
-import mlx.core as mx
 import pytest
-from mlx.utils import tree_flatten
-from tokenizers import Tokenizer, models, pre_tokenizers
 
-from laya_mlx.model import DecisionModel, EncoderConfig
 
-if os.environ.get("LAYA_MLX_TEST_DEVICE") == "cpu":
-    mx.set_default_device(mx.cpu)
+def pytest_sessionstart(session):
+    if os.environ.get("LAYA_MLX_TEST_DEVICE") == "cpu":
+        import mlx.core as mx
+
+        mx.set_default_device(mx.cpu)
 
 
 @pytest.fixture
 def tiny_checkpoint(tmp_path):
+    import mlx.core as mx
+    from mlx.utils import tree_flatten
+    from tokenizers import Tokenizer, models, pre_tokenizers
+
+    from laya_mlx.model import DecisionModel, EncoderConfig
+
+    if os.environ.get("LAYA_MLX_TEST_DEVICE") == "cpu":
+        mx.set_default_device(mx.cpu)
+
     cfg = {
         "model_type": "modernbert",
         "vocab_size": 128,
