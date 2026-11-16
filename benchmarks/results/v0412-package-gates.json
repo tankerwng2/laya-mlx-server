@@ -1,0 +1,28 @@
+{
+  "upstream_revision": "ffc142012af63d015fa19f05f29f9c5ff329a2cc",
+  "package_version": "0.4.0",
+  "published": false,
+  "native_source_sha256": "f622efca650c0f832884264d2acff292cb6a97d536767e339e7f6b231f8cf3f4",
+  "artifacts_sha256": {
+    "laya_mlx-0.4.0-py3-none-any.whl": "a6d6e8e5b19f818a467f661995f00f34c979754d0314de15f9101d2c2929cd54",
+    "laya_mlx-0.4.0.tar.gz": "d81a0c928b20b4fdf36242694f13ddd02a4e7f7f07e525d3ea0558afcb8ee9ad"
+  },
+  "full_tests": {
+    "passed": 319,
+    "skipped": 1,
+    "skip_reason": "Real LlamaIndex optional dependency absent from base environment; both selector tests separately passed in actual dependency environment",
+    "log": "/tmp/mlx-v0412-last-tests.log"
+  },
+  "strict_twine": "passed",
+  "twine_log": "/tmp/laya-v0412-final-twine.log",
+  "offline_installed_wheel": "wheel-v0412-smoke.json",
+  "installed_source_matches_checkout": true,
+  "real_optional_frameworks": "v0412-real-integrations-wheel.json",
+  "official_sdk_http": {
+    "extended_tournament": "passed",
+    "strict": "passed",
+    "auth_and_limits": "passed",
+    "log": "/tmp/laya-v0412-final-mlx-sdk.log"
+  },
+  "scope": "Local macOS verification; no claim that remote CI has run and no release/push performed"
+}

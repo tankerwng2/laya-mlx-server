@@ -1,0 +1,58 @@
+{
+  "versions": {
+    "laya-coreml": "0.4.0",
+    "laya-mlx": "0.4.0",
+    "agno": "1.8.4",
+    "langchain-core": "1.6.12",
+    "langgraph": "1.2.16",
+    "llama-index-core": "0.14.25",
+    "crewai": "1.15.28"
+  },
+  "checks": [
+    {
+      "package": "laya_mlx",
+      "integration": "langchain",
+      "passed": true
+    },
+    {
+      "package": "laya_mlx",
+      "integration": "llamaindex",
+      "passed": true
+    },
+    {
+      "package": "laya_mlx",
+      "integration": "crewai",
+      "passed": true
+    },
+    {
+      "package": "laya_mlx",
+      "integration": "agno",
+      "passed": true
+    },
+    {
+      "package": "laya_coreml",
+      "integration": "langchain",
+      "passed": true
+    },
+    {
+      "package": "laya_coreml",
+      "integration": "llamaindex",
+      "passed": true
+    },
+    {
+      "package": "laya_coreml",
+      "integration": "crewai",
+      "passed": true
+    },
+    {
+      "package": "laya_coreml",
+      "integration": "agno",
+      "passed": true
+    }
+  ],
+  "scope": "Real framework types; deterministic native decision runner; no external model/tool execution",
+  "package_paths": {
+    "laya_mlx": "/tmp/laya-v0412-integrations/lib/python3.12/site-packages/laya_mlx/__init__.py",
+    "laya_coreml": "/tmp/laya-v0412-integrations/lib/python3.12/site-packages/laya_coreml/__init__.py"
+  }
+}

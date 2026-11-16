@@ -1,0 +1,250 @@
+[
+  {
+    "model": "laya",
+    "upstream_precision": {
+      "requested": "float32",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1000000
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 512,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 105.8870625,
+    "upstream_p50_ms": 113.579208,
+    "speedup": 1.0726448096527372,
+    "max_float_error": 0.0012000000000000066,
+    "semantic_differences": [],
+    "passed": true
+  },
+  {
+    "model": "laya",
+    "upstream_precision": {
+      "requested": "float16",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 512,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 105.8870625,
+    "upstream_p50_ms": 117.879166,
+    "speedup": 1.113253717846786,
+    "max_float_error": 0.0013999999999999568,
+    "semantic_differences": [],
+    "passed": true
+  },
+  {
+    "model": "laya-multilingual",
+    "upstream_precision": {
+      "requested": "float32",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1000000
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 1024,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512,
+          768,
+          1024
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 40.881896,
+    "upstream_p50_ms": 49.1097915,
+    "speedup": 1.201260125019642,
+    "max_float_error": 0.0022999999999999965,
+    "semantic_differences": [],
+    "passed": true
+  },
+  {
+    "model": "laya-multilingual",
+    "upstream_precision": {
+      "requested": "float16",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 1024,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512,
+          768,
+          1024
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 40.881896,
+    "upstream_p50_ms": 55.000812999999994,
+    "speedup": 1.3453586643828848,
+    "max_float_error": 0.0013999999999999846,
+    "semantic_differences": [],
+    "passed": true
+  },
+  {
+    "model": "laya-typed-decisions",
+    "upstream_precision": {
+      "requested": "float32",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1000000
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 1024,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512,
+          768,
+          1024
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 105.1644995,
+    "upstream_p50_ms": 113.803229,
+    "speedup": 1.082144920967365,
+    "max_float_error": 0.0012999999999999678,
+    "semantic_differences": [],
+    "passed": true
+  },
+  {
+    "model": "laya-typed-decisions",
+    "upstream_precision": {
+      "requested": "float16",
+      "weights": "float32",
+      "autocast": "torch.float16",
+      "amp_min_rows": 1
+    },
+    "coreml_precision": {
+      "export_compute": "float16",
+      "compute_units": "cpu_gpu",
+      "shape": {
+        "batch_size": 1,
+        "max_length": 1024,
+        "min_length": 16,
+        "default_length": 128,
+        "max_options": 32,
+        "flexible": true,
+        "mode": "enumerated",
+        "lengths": [
+          16,
+          32,
+          64,
+          96,
+          128,
+          192,
+          256,
+          384,
+          512,
+          768,
+          1024
+        ]
+      },
+      "fast_prediction": false
+    },
+    "native_p50_ms": 105.1644995,
+    "upstream_p50_ms": 117.860833,
+    "speedup": 1.1207283214427317,
+    "max_float_error": 0.0012999999999999678,
+    "semantic_differences": [],
+    "passed": true
+  }
+]

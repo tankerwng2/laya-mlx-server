@@ -23,3 +23,11 @@ behavior adapted from upstream revision
 1adc59f7e371deb601fcfa18a14e25db238addcc (v0.4.1). Parallel option layout and masks
 are reimplemented in MLX and checked against that revision. Sequential model
 parity remains checked against the original reference above.
+
+Unreleased host API migration: NandhaKishorM/laya v0.4.12,
+commit ffc142012af63d015fa19f05f29f9c5ff329a2cc (Apache-2.0).
+Host extraction incorporates the laya-coreml port with native MLX backend adaptations.
+
+Additional applicable host behavior adapted from NandhaKishorM/laya v0.4.17,
+commit fe9a6c35023a7d94102e7feaaeaae8857d9d1b07 (Apache-2.0).
+See docs/MIGRATION_0_4_17.md for source mapping and native backend boundaries.

@@ -1,0 +1,573 @@
+{
+  "order": [
+    "upstream",
+    "coreml",
+    "coreml",
+    "upstream"
+  ],
+  "torch": "2.14.0",
+  "precision": "float32",
+  "warmup": 5,
+  "timed_calls_per_process_workload": 30,
+  "rows": [
+    {
+      "model": "laya",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          23.4145415,
+          23.493833000000002
+        ],
+        "coreml": [
+          15.341583,
+          17.187229000000002
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 23.434354,
+        "coreml": 15.7632705
+      },
+      "pooled_p95_ms": {
+        "upstream": 26.26592325,
+        "coreml": 19.4766809
+      },
+      "pooled_mean_ms": {
+        "upstream": 23.854431366666667,
+        "coreml": 16.326670116666666
+      },
+      "p50_speedup": 1.486642889240529,
+      "throughput_ratio": 1.4610714368703681,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          114.721958,
+          113.95029099999999
+        ],
+        "coreml": [
+          107.279104,
+          106.4116665
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 114.4909585,
+        "coreml": 106.46000000000001
+      },
+      "pooled_p95_ms": {
+        "upstream": 128.93495479999999,
+        "coreml": 115.58741844999999
+      },
+      "pooled_mean_ms": {
+        "upstream": 115.68511038333334,
+        "coreml": 107.07649928333333
+      },
+      "p50_speedup": 1.0754363939507796,
+      "throughput_ratio": 1.080396829907755,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          130.62368750000002,
+          130.9882915
+        ],
+        "coreml": [
+          106.1176875,
+          103.706375
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 130.7858545,
+        "coreml": 104.279417
+      },
+      "pooled_p95_ms": {
+        "upstream": 133.49520415,
+        "coreml": 108.50142114999998
+      },
+      "pooled_mean_ms": {
+        "upstream": 131.06979241666667,
+        "coreml": 104.71725065
+      },
+      "p50_speedup": 1.25418666753766,
+      "throughput_ratio": 1.2516542556559822,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          16.661604,
+          16.283521
+        ],
+        "coreml": [
+          9.829520500000001,
+          10.099541
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 16.465604,
+        "coreml": 9.9247295
+      },
+      "pooled_p95_ms": {
+        "upstream": 17.34617115,
+        "coreml": 10.627203849999999
+      },
+      "pooled_mean_ms": {
+        "upstream": 16.4665882,
+        "coreml": 9.916972216666666
+      },
+      "p50_speedup": 1.6590481382893105,
+      "throughput_ratio": 1.6604451278310446,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          30.160687000000003,
+          30.368854
+        ],
+        "coreml": [
+          23.501417,
+          23.502833
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 30.2749995,
+        "coreml": 23.501417
+      },
+      "pooled_p95_ms": {
+        "upstream": 31.227275,
+        "coreml": 24.14185595
+      },
+      "pooled_mean_ms": {
+        "upstream": 30.2480673,
+        "coreml": 23.521982633333334
+      },
+      "p50_speedup": 1.2882201741282238,
+      "throughput_ratio": 1.2859488832856731,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          103.530708,
+          102.859271
+        ],
+        "coreml": [
+          74.9473335,
+          76.21270799999999
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 103.0398965,
+        "coreml": 75.428875
+      },
+      "pooled_p95_ms": {
+        "upstream": 106.25729824999999,
+        "coreml": 76.9890566
+      },
+      "pooled_mean_ms": {
+        "upstream": 103.3202174,
+        "coreml": 75.49476253333333
+      },
+      "p50_speedup": 1.366053736052672,
+      "throughput_ratio": 1.368574639258993,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          14.6868125,
+          14.799834
+        ],
+        "coreml": [
+          7.7037705,
+          8.476458000000001
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 14.7458125,
+        "coreml": 7.9006875
+      },
+      "pooled_p95_ms": {
+        "upstream": 15.830571149999999,
+        "coreml": 10.67646875
+      },
+      "pooled_mean_ms": {
+        "upstream": 14.73465635,
+        "coreml": 8.376886766666667
+      },
+      "p50_speedup": 1.8663961205907713,
+      "throughput_ratio": 1.758965682648617,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          49.8815005,
+          76.99083350000001
+        ],
+        "coreml": [
+          40.9233125,
+          41.1086035
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 57.6895205,
+        "coreml": 40.98525
+      },
+      "pooled_p95_ms": {
+        "upstream": 97.11789585,
+        "coreml": 41.70773715
+      },
+      "pooled_mean_ms": {
+        "upstream": 65.0340847,
+        "coreml": 41.08090128333333
+      },
+      "p50_speedup": 1.4075678567289451,
+      "throughput_ratio": 1.5830734640280288,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          77.2914165,
+          87.0802295
+        ],
+        "coreml": [
+          47.354354,
+          56.311292
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 82.474396,
+        "coreml": 48.2630415
+      },
+      "pooled_p95_ms": {
+        "upstream": 96.40093714999999,
+        "coreml": 92.44603299999994
+      },
+      "pooled_mean_ms": {
+        "upstream": 83.07620696666666,
+        "coreml": 56.27874438333333
+      },
+      "p50_speedup": 1.708852020857409,
+      "throughput_ratio": 1.4761560137306344,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          11.585541500000001,
+          11.3777915
+        ],
+        "coreml": [
+          5.448104,
+          6.166917
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 11.451521,
+        "coreml": 5.7988955
+      },
+      "pooled_p95_ms": {
+        "upstream": 12.590953849999998,
+        "coreml": 6.818531549999999
+      },
+      "pooled_mean_ms": {
+        "upstream": 11.574521483333333,
+        "coreml": 5.891028433333333
+      },
+      "p50_speedup": 1.9747762310943522,
+      "throughput_ratio": 1.964770941834361,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          17.2545625,
+          19.1592085
+        ],
+        "coreml": [
+          15.450041500000001,
+          16.6901455
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 17.7890415,
+        "coreml": 15.939062499999999
+      },
+      "pooled_p95_ms": {
+        "upstream": 21.373694399999998,
+        "coreml": 18.6072399
+      },
+      "pooled_mean_ms": {
+        "upstream": 18.323913933333333,
+        "coreml": 15.73957015
+      },
+      "p50_speedup": 1.1160657347318892,
+      "throughput_ratio": 1.1641940509622706,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          64.261416,
+          66.5298335
+        ],
+        "coreml": [
+          35.400999999999996,
+          49.763875
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 64.9550415,
+        "coreml": 46.220395999999994
+      },
+      "pooled_p95_ms": {
+        "upstream": 69.15889165,
+        "coreml": 58.753083
+      },
+      "pooled_mean_ms": {
+        "upstream": 65.53035485,
+        "coreml": 45.0434098
+      },
+      "p50_speedup": 1.4053328643051868,
+      "throughput_ratio": 1.4548266914286758,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          30.452520999999997,
+          25.4059995
+        ],
+        "coreml": [
+          25.223271,
+          22.149791999999998
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 27.265938,
+        "coreml": 23.836979
+      },
+      "pooled_p95_ms": {
+        "upstream": 38.82219935,
+        "coreml": 48.2941381
+      },
+      "pooled_mean_ms": {
+        "upstream": 28.405309733333333,
+        "coreml": 27.20334095
+      },
+      "p50_speedup": 1.1438504015127084,
+      "throughput_ratio": 1.0441846016466345,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          174.68518749999998,
+          159.4450205
+        ],
+        "coreml": [
+          164.70885399999997,
+          151.4336045
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 167.85222900000002,
+        "coreml": 159.362458
+      },
+      "pooled_p95_ms": {
+        "upstream": 210.7093396,
+        "coreml": 198.9555351
+      },
+      "pooled_mean_ms": {
+        "upstream": 170.76870343333334,
+        "coreml": 162.71693816666667
+      },
+      "p50_speedup": 1.0532733437131097,
+      "throughput_ratio": 1.049483264357024,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          176.08489550000002,
+          150.3731045
+        ],
+        "coreml": [
+          152.03077100000002,
+          141.22106250000002
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 161.4310415,
+        "coreml": 145.1521875
+      },
+      "pooled_p95_ms": {
+        "upstream": 196.68921905,
+        "coreml": 186.21121104999997
+      },
+      "pooled_mean_ms": {
+        "upstream": 165.19836111666666,
+        "coreml": 151.44010075
+      },
+      "p50_speedup": 1.1121502491996547,
+      "throughput_ratio": 1.0908495193712202,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          16.5709375,
+          16.3941045
+        ],
+        "coreml": [
+          9.535645500000001,
+          9.4689585
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 16.490396,
+        "coreml": 9.502333
+      },
+      "pooled_p95_ms": {
+        "upstream": 18.66154375,
+        "coreml": 9.982823199999999
+      },
+      "pooled_mean_ms": {
+        "upstream": 16.810172966666666,
+        "coreml": 9.577074983333333
+      },
+      "p50_speedup": 1.7354049789667443,
+      "throughput_ratio": 1.755251263660445,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          38.3426245,
+          34.4187295
+        ],
+        "coreml": [
+          31.9328335,
+          30.182854
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 35.874354,
+        "coreml": 31.747584
+      },
+      "pooled_p95_ms": {
+        "upstream": 63.26606909999996,
+        "coreml": 56.78573364999998
+      },
+      "pooled_mean_ms": {
+        "upstream": 39.484170166666665,
+        "coreml": 36.3290452
+      },
+      "p50_speedup": 1.1299868991605786,
+      "throughput_ratio": 1.0868485518762454,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          133.33881250000002,
+          114.5933125
+        ],
+        "coreml": [
+          116.202542,
+          103.0516875
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 124.7819795,
+        "coreml": 108.303167
+      },
+      "pooled_p95_ms": {
+        "upstream": 141.6577649,
+        "coreml": 143.8904806
+      },
+      "pooled_mean_ms": {
+        "upstream": 124.76230838333333,
+        "coreml": 112.88135763333334
+      },
+      "p50_speedup": 1.1521544840881708,
+      "throughput_ratio": 1.1052516642171533,
+      "max_numeric_error": 0.0,
+      "parity_passed": true
+    }
+  ],
+  "note": "All runs retained; pooled medians and mean-based throughput ratios use both runs. Shared desktop load remains uncontrolled. Model loading and warmup excluded."
+}
