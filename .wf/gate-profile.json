@@ -1,0 +1,9 @@
+{
+  "name": "default",
+  "gates": ["plain-language", "doc-layers", "diagram", "regressions", "tests-pair", "coverage"],
+  "budget": { "rules_bytes": 3072, "rules_lines": 40, "agents_bytes": 16384, "agents_lines": 130, "item_chars": 300 },
+  "audit_days": 7,
+  "gate_timeout_seconds": 180,
+  "exempt_scopes": ["foreign", "mirror"],
+  "lang": "zh"
+}
