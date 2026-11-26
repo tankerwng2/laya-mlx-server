@@ -1,4 +1,4 @@
-"""Layout wiring, permutation equivariance, and parity with pinned upstream v0.4.1."""
+"""Layout wiring, permutation equivariance, and parity with pinned upstream v0.4.12."""
 
 import importlib.util
 import itertools
@@ -121,13 +121,13 @@ def test_all_permutations_preserve_option_logits_and_action(dtype, atol):
     assert sequential_difference > 1e-4  # proves the permutation test is sensitive
 
 
-def test_parallel_model_matches_upstream_v041():
+def test_parallel_model_matches_upstream_v0412():
     torch = pytest.importorskip("torch")
     transformers = pytest.importorskip("transformers")
-    path = Path(__file__).parents[1] / ".cache/upstream-v0.4.1/laya/common.py"
+    path = Path(__file__).parents[1] / ".upstream/laya/common.py"
     if not path.exists():
-        pytest.skip("Check out upstream 1adc59f into .cache/upstream-v0.4.1 for new-layout parity")
-    spec = importlib.util.spec_from_file_location("upstream_v041_common", path)
+        pytest.skip("Check out upstream ffc14201 into .upstream for parallel-layout parity")
+    spec = importlib.util.spec_from_file_location("upstream_v0412_common", path)
     upstream = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(upstream)
     cfg = transformers.ModernBertConfig(

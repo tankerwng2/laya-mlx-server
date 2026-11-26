@@ -1,0 +1,8 @@
+# wf 生成：.wf 下密钥/审计/裁决属运行产物，NEVER 进 git（issue#20）
+env.json
+.env*
+deploy-audit.json
+wf-verdict.json
+verdicts.jsonl
+upgrade-backup/
+*.lock

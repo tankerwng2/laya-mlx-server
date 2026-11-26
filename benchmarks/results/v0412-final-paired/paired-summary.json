@@ -1,0 +1,573 @@
+{
+  "order": [
+    "upstream",
+    "coreml",
+    "coreml",
+    "upstream"
+  ],
+  "torch": "2.14.0",
+  "precision": "float32",
+  "warmup": 5,
+  "timed_calls_per_process_workload": 30,
+  "rows": [
+    {
+      "model": "laya",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          22.781875499999998,
+          23.460042
+        ],
+        "coreml": [
+          15.796021,
+          15.9772085
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 22.961146,
+        "coreml": 15.9156875
+      },
+      "pooled_mean_ms": {
+        "upstream": 23.372966716666667,
+        "coreml": 15.981525066666666
+      },
+      "p50_speedup": 1.4426738398828198,
+      "throughput_ratio": 1.4624991431773078,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 25.889553850000002,
+        "coreml": 17.7913066
+      }
+    },
+    {
+      "model": "laya",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          130.14054199999998,
+          128.8797295
+        ],
+        "coreml": [
+          123.072625,
+          119.7333125
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 129.498625,
+        "coreml": 122.5260205
+      },
+      "pooled_mean_ms": {
+        "upstream": 129.50540763333333,
+        "coreml": 122.33732435
+      },
+      "p50_speedup": 1.0569071326363693,
+      "throughput_ratio": 1.0585927747023947,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 140.9531056,
+        "coreml": 138.35955415
+      }
+    },
+    {
+      "model": "laya",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          131.108104,
+          133.363854
+        ],
+        "coreml": [
+          106.9559375,
+          106.7326665
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 131.6907295,
+        "coreml": 106.909729
+      },
+      "pooled_mean_ms": {
+        "upstream": 132.22204093333332,
+        "coreml": 107.50530486666666
+      },
+      "p50_speedup": 1.231793689234775,
+      "throughput_ratio": 1.2299117806076785,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 136.735708,
+        "coreml": 114.05482084999998
+      }
+    },
+    {
+      "model": "laya",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          16.342958000000003,
+          16.511875
+        ],
+        "coreml": [
+          9.7989585,
+          10.0885
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 16.392417000000002,
+        "coreml": 9.8206665
+      },
+      "pooled_mean_ms": {
+        "upstream": 16.583066666666667,
+        "coreml": 10.051995116666667
+      },
+      "p50_speedup": 1.6691756104333655,
+      "throughput_ratio": 1.6497288820973643,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 17.473718749999996,
+        "coreml": 11.260364599999999
+      }
+    },
+    {
+      "model": "laya",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          30.2852915,
+          30.3193335
+        ],
+        "coreml": [
+          23.4444795,
+          24.197563000000002
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 30.3106665,
+        "coreml": 23.589021000000002
+      },
+      "pooled_mean_ms": {
+        "upstream": 30.5083278,
+        "coreml": 23.73159175
+      },
+      "p50_speedup": 1.2849480485010376,
+      "throughput_ratio": 1.2855575859128792,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 32.313320499999996,
+        "coreml": 24.6940482
+      }
+    },
+    {
+      "model": "laya",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          102.89602099999999,
+          101.210083
+        ],
+        "coreml": [
+          78.76106250000001,
+          78.72702050000001
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 102.722521,
+        "coreml": 78.72702050000001
+      },
+      "pooled_mean_ms": {
+        "upstream": 102.80646323333333,
+        "coreml": 79.89620416666666
+      },
+      "p50_speedup": 1.3047937080255692,
+      "throughput_ratio": 1.286750281889174,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 107.42347085,
+        "coreml": 87.68503575
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          13.711917,
+          14.4987915
+        ],
+        "coreml": [
+          10.853479,
+          7.953041499999999
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 14.2305,
+        "coreml": 8.744833
+      },
+      "pooled_mean_ms": {
+        "upstream": 14.474966633333333,
+        "coreml": 9.305738116666667
+      },
+      "p50_speedup": 1.6273038032858946,
+      "throughput_ratio": 1.5554882860295118,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 16.590535449999997,
+        "coreml": 12.02956665
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          52.246041500000004,
+          52.9049165
+        ],
+        "coreml": [
+          44.9353535,
+          46.619979
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 52.7273335,
+        "coreml": 46.319708500000004
+      },
+      "pooled_mean_ms": {
+        "upstream": 53.13340828333333,
+        "coreml": 46.39097078333333
+      },
+      "p50_speedup": 1.1383347436221452,
+      "throughput_ratio": 1.1453394353718143,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 58.453241649999995,
+        "coreml": 51.5228976
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          76.95754199999999,
+          80.29079150000001
+        ],
+        "coreml": [
+          48.565833,
+          49.506896
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 78.427896,
+        "coreml": 49.0986875
+      },
+      "pooled_mean_ms": {
+        "upstream": 78.70903191666666,
+        "coreml": 49.360899933333336
+      },
+      "p50_speedup": 1.597352189913427,
+      "throughput_ratio": 1.594562336241252,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 86.67556839999999,
+        "coreml": 53.0451848
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          10.7926455,
+          11.563999500000001
+        ],
+        "coreml": [
+          5.5356665,
+          5.908292
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 11.0426245,
+        "coreml": 5.5765835
+      },
+      "pooled_mean_ms": {
+        "upstream": 11.403284683333334,
+        "coreml": 5.796931233333333
+      },
+      "p50_speedup": 1.9801773792143524,
+      "throughput_ratio": 1.9671243670724474,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 13.251153849999998,
+        "coreml": 6.993477400000001
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          16.3769165,
+          17.224417000000003
+        ],
+        "coreml": [
+          15.3975625,
+          15.461563
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 16.812770999999998,
+        "coreml": 15.4340005
+      },
+      "pooled_mean_ms": {
+        "upstream": 17.102579183333333,
+        "coreml": 15.520476416666666
+      },
+      "p50_speedup": 1.0893333196406205,
+      "throughput_ratio": 1.1019364821151834,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 19.29466425,
+        "coreml": 17.76079645
+      }
+    },
+    {
+      "model": "laya-multilingual",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          62.5491255,
+          64.97231249999999
+        ],
+        "coreml": [
+          47.238792000000004,
+          43.888354500000005
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 64.0101665,
+        "coreml": 45.4584375
+      },
+      "pooled_mean_ms": {
+        "upstream": 63.867145083333334,
+        "coreml": 45.68945351666667
+      },
+      "p50_speedup": 1.4081030941725614,
+      "throughput_ratio": 1.397853118554718,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 66.4301122,
+        "coreml": 57.22443605
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "single",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          24.764229,
+          23.258708499999997
+        ],
+        "coreml": [
+          17.503479499999997,
+          15.7500415
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 24.1406875,
+        "coreml": 16.8769375
+      },
+      "pooled_mean_ms": {
+        "upstream": 24.715760433333333,
+        "coreml": 16.8792965
+      },
+      "p50_speedup": 1.4303950287189247,
+      "throughput_ratio": 1.4642648426333014,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 29.11507914999999,
+        "coreml": 18.9614649
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "batch8",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          139.27052099999997,
+          134.464479
+        ],
+        "coreml": [
+          118.696854,
+          123.7719585
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 135.795875,
+        "coreml": 121.608229
+      },
+      "pooled_mean_ms": {
+        "upstream": 135.69177073333333,
+        "coreml": 122.30693408333333
+      },
+      "p50_speedup": 1.1166668252359797,
+      "throughput_ratio": 1.1094364497836262,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 158.22230384999997,
+        "coreml": 135.05703684999997
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "long",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          158.89070850000002,
+          130.9794375
+        ],
+        "coreml": [
+          108.5510415,
+          109.201396
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 139.462021,
+        "coreml": 108.821875
+      },
+      "pooled_mean_ms": {
+        "upstream": 145.70625831666666,
+        "coreml": 110.9600528
+      },
+      "p50_speedup": 1.2815623788875168,
+      "throughput_ratio": 1.3131415733849279,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 175.02763509999997,
+        "coreml": 122.10028065
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "structured",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          17.0606245,
+          16.3347705
+        ],
+        "coreml": [
+          9.6850625,
+          10.1120415
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 16.4477295,
+        "coreml": 9.770937499999999
+      },
+      "pooled_mean_ms": {
+        "upstream": 16.946126366666668,
+        "coreml": 10.143088216666667
+      },
+      "p50_speedup": 1.6833317683180353,
+      "throughput_ratio": 1.6707067911350266,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 19.170506549999995,
+        "coreml": 11.7282753
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "stability",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          32.358792,
+          30.468353999999998
+        ],
+        "coreml": [
+          24.805042,
+          26.037125
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 30.956667,
+        "coreml": 24.870354499999998
+      },
+      "pooled_mean_ms": {
+        "upstream": 31.88127985,
+        "coreml": 25.7193958
+      },
+      "p50_speedup": 1.244721582074755,
+      "throughput_ratio": 1.2395812132569615,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 35.010282999999994,
+        "coreml": 30.332747899999998
+      }
+    },
+    {
+      "model": "laya-typed-decisions",
+      "workload": "mixed_shapes",
+      "backend": "coreml",
+      "run_p50_ms": {
+        "upstream": [
+          110.45293749999999,
+          103.272375
+        ],
+        "coreml": [
+          84.570458,
+          78.2515415
+        ]
+      },
+      "pooled_p50_ms": {
+        "upstream": 106.422229,
+        "coreml": 82.3355415
+      },
+      "pooled_mean_ms": {
+        "upstream": 109.26711105,
+        "coreml": 84.09699173333334
+      },
+      "p50_speedup": 1.2925430143676166,
+      "throughput_ratio": 1.29929868831075,
+      "max_numeric_error": 0.0,
+      "parity_passed": true,
+      "pooled_p95_ms": {
+        "upstream": 125.9111878,
+        "coreml": 99.59286075
+      }
+    }
+  ],
+  "note": "All runs retained; pooled medians and mean-based throughput ratios use both runs. Shared desktop load remains uncontrolled. Model loading and warmup excluded."
+}

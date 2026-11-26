@@ -1,9 +1,9 @@
 """Public MLX inference runtime; prompt and result formats follow upstream Laya."""
 
 import json
-import math
 import warnings
 from pathlib import Path, PurePosixPath
+from typing import Dict, List, Optional, Union
 
 import mlx.core as mx
 import numpy as np
@@ -11,28 +11,24 @@ from huggingface_hub import snapshot_download
 
 from .common import (
     QTYPES,
-    TEMP_MAX,
-    TEMP_MIN,
-    answer_confidence,
     build_sequence,
-    clamp_temperature,
-    collapsed_options,
-    confidence_from_probs,
-    render_options,
-    resolve_noul_labels,
+    encode_text,
+    read_temperatures,
     serialize_state,
-    temp_bucket,
     uses_parallel_layout,
 )
-from .confidence import apply_confidence_gate, check_min_confidence
 from .model import DecisionModel, EncoderConfig, sanitize_weights
 from .prepared import PrefixCache
+from .revisions import resolve_revision, snapshot_revision, verify_digests
+from .runtime import RuntimeMixin
 from .tokenizer import Tokenizer
 
 DTYPES = {"float32": mx.float32, "float16": mx.float16, "bfloat16": mx.bfloat16}
 
 
-def resolve_model(model_id_or_path, *, token=None, subfolder=None, revision=None):
+def resolve_model(
+    model_id_or_path, *, token=None, subfolder=None, revision=None, local_files_only=False
+):
     if subfolder:
         part = PurePosixPath(subfolder)
         if part.is_absolute() or ".." in part.parts:
@@ -54,7 +50,13 @@ def resolve_model(model_id_or_path, *, token=None, subfolder=None, revision=None
             )
         ]
         path = Path(
-            snapshot_download(value, token=token, revision=revision, allow_patterns=patterns)
+            snapshot_download(
+                value,
+                token=token,
+                revision=revision,
+                allow_patterns=patterns,
+                local_files_only=local_files_only,
+            )
         )
     if subfolder:
         path /= subfolder
@@ -97,21 +99,52 @@ def collate_items(items, pad_id, *, pad_to_multiple=None, max_length=None):
     return batch
 
 
-class Agent:
+class Agent(RuntimeMixin):
+    @property
+    def config(self):
+        """Checkpoint metadata for upstream hooks, including option layout."""
+        return self.cfg
+
     def __init__(
         self,
         model_id_or_path="convaiinnovations/laya",
         device=None,
         token=None,
         subfolder=None,
+        fast=False,
+        compile=False,
+        revision=None,
+        expected_sha256=None,
+        lang_temperatures=None,
+        hooks=None,
+        on_predict_start=None,
+        on_predict_end=None,
+        hooks_raise=True,
+        hooks_concurrent=True,
+        hooks_timeout=None,
+        calibration=None,
+        backend=None,
+        compile_warmup=True,
+        compile_cache=False,
+        compile_mode="default",
         *,
         dtype="float16",
-        revision=None,
         batch_size=16,
-        compile=False,
         pad_to_multiple=None,
         cache_prompts=False,
+        local_files_only=False,
     ):
+        if (
+            fast
+            or backend not in (None, "auto", "mlx")
+            or compile_cache
+            or compile_mode != "default"
+        ):
+            raise ValueError(
+                "This distribution uses MLX; PyTorch/CUDA/ONNX backend options require official laya"
+            )
+        if device == "mps":
+            device = "gpu"
         if dtype not in DTYPES:
             raise ValueError(f"dtype must be one of {list(DTYPES)}")
         if device not in (None, "gpu", "metal", "cpu"):
@@ -132,10 +165,18 @@ class Agent:
         self.pad_to_multiple = pad_to_multiple
         self._prefix_cache = PrefixCache() if cache_prompts else None
         self.model_id = str(model_id_or_path)
-        self.revision = revision
+        self.model_id_or_path = self.model_id
+        self.subfolder = subfolder
+        revision = resolve_revision(str(model_id_or_path), revision)
         self.model_dir = resolve_model(
-            model_id_or_path, token=token, subfolder=subfolder, revision=revision
+            model_id_or_path,
+            token=token,
+            subfolder=subfolder,
+            revision=revision,
+            local_files_only=local_files_only,
         )
+        verify_digests(str(self.model_dir), expected_sha256)
+        self.revision = snapshot_revision(str(self.model_dir))
         self.cfg = json.loads((self.model_dir / "rl_agent_config.json").read_text())
         self.encoder_cfg = json.loads((self.model_dir / "encoder/config.json").read_text())
         if "encoder" not in self.cfg or "head_layers" not in self.cfg:
@@ -146,37 +187,12 @@ class Agent:
         head_max_len = self.cfg.get("head_max_len", 192)
         if not 4 < head_max_len < max_len <= enc_cfg.max_position_embeddings:
             raise ValueError("Expected 4 < head_max_len < max_len <= max_position_embeddings")
-        self.temperature_raw = self.cfg.get("temperature", [1.0, 1.0, 1.0])
-        self.temperature_by_options_raw = self.cfg.get("temperature_by_options", {})
-        if len(self.temperature_raw) != 3 or any(
-            isinstance(t, bool) or not math.isfinite(float(t)) or float(t) <= 0
-            for t in [*self.temperature_raw, *self.temperature_by_options_raw.values()]
-        ):
-            raise ValueError("Calibration temperatures must be finite and positive")
-        # Keep what the checkpoint shipped for inspection, but only ever apply clamped values:
-        # some buckets are fitted to sharpen rather than soften (see clamp_temperature).
-        self.temperature = [clamp_temperature(t) for t in self.temperature_raw]
-        self.temperature_by_options = {
-            k: clamp_temperature(v) for k, v in self.temperature_by_options_raw.items()
-        }
-        rejected = [
-            "%s=%.4g" % (k, float(v))
-            for k, v in self.temperature_by_options_raw.items()
-            if clamp_temperature(v) != float(v)
-        ]
-        rejected += [
-            "temperature[%d]=%.4g" % (i, float(t))
-            for i, t in enumerate(self.temperature_raw)
-            if clamp_temperature(t) != float(t)
-        ]
-        if rejected:
-            warnings.warn(
-                "laya-mlx: this checkpoint ships temperatures outside [%g, %g] which would "
-                "distort confidence; clamping %s. Treat confidence from the affected buckets "
-                "as uncalibrated." % (TEMP_MIN, TEMP_MAX, ", ".join(rejected)),
-                RuntimeWarning,
-                stacklevel=2,
-            )
+        (
+            self.temperature,
+            self.temperature_by_options,
+            self.temperature_raw,
+            self.temperature_by_options_raw,
+        ) = read_temperatures(self.cfg)
         self.tok = Tokenizer(self.model_dir / "tokenizer")
         with mx.stream(self.device):
             self.model = DecisionModel(enc_cfg, self.cfg)
@@ -187,119 +203,26 @@ class Agent:
             mx.eval(self.model.parameters())
         # Frozen inference instance: changing weights or module structure requires a new Agent.
         self._inference = mx.compile(self.model) if compile else self.model
-
-    @staticmethod
-    def _to_internal(qdef):
-        if not isinstance(qdef, dict):
-            raise ValueError("Each question must be a dictionary")
-        kind = qdef.get("type")
-        if not isinstance(kind, str) or kind not in QTYPES:
-            raise ValueError(f"Unknown question type {kind!r}; expected choice, score, or noul")
-        if "instructions" not in qdef:
-            raise ValueError("Question is missing instructions")
-        instructions = qdef["instructions"]
-        if instructions is None or (
-            isinstance(instructions, (str, dict, list)) and not instructions
-        ):
-            raise ValueError("instructions must not be empty or None")
-        if isinstance(instructions, str) and not instructions.strip():
-            raise ValueError("instructions must not be blank")
-        if not isinstance(instructions, (str, dict, list, int, float)):
-            raise ValueError("instructions must be JSON-serializable text or structured data")
-        criteria = qdef.get("criteria")
-        if kind == "choice":
-            if isinstance(criteria, list):
-                if not all(isinstance(c, str) for c in criteria):
-                    raise ValueError("Choice labels must be strings")
-                if len(set(criteria)) != len(criteria):
-                    raise ValueError("Choice labels must be unique")
-                criteria = dict.fromkeys(criteria)
-            if not isinstance(criteria, dict) or not criteria:
-                raise ValueError("Choice criteria must be a nonempty dictionary or list")
-            if not all(isinstance(k, str) for k in criteria):
-                raise ValueError("Choice labels must be strings")
-        elif kind == "score":
-            if not isinstance(criteria, list) or not criteria:
-                raise ValueError("Score criteria must be a nonempty list")
-            if any(level is None for level in criteria):
-                raise ValueError("Score criteria must not contain a null level")
-        elif criteria is not None and not isinstance(criteria, dict):
-            raise ValueError("Noul criteria must be a dictionary with false/true descriptions")
-        elif criteria is not None:
-            criteria = {str(k).lower(): v for k, v in criteria.items()}
-            if not set(criteria) <= {"false", "true"}:
-                raise ValueError(
-                    "Noul criteria must be keyed only 'false'/'true'; use labels to change display text"
+        self._init_host(
+            lang_temperatures=lang_temperatures,
+            calibration=calibration,
+            hooks=hooks,
+            on_predict_start=on_predict_start,
+            on_predict_end=on_predict_end,
+            hooks_raise=hooks_raise,
+            hooks_concurrent=hooks_concurrent,
+            hooks_timeout=hooks_timeout,
+        )
+        if compile and compile_warmup:
+            try:
+                self.warmup()
+            except Exception as error:
+                warnings.warn(
+                    "laya-mlx compile warm-up failed (%s: %s); keeping the compiled model. "
+                    "Later requests and explicit warmup() calls may still raise."
+                    % (type(error).__name__, error),
+                    RuntimeWarning,
                 )
-        if "labels" in qdef:
-            if kind != "noul":
-                raise ValueError("labels is only supported for noul questions")
-            resolve_noul_labels(qdef["labels"])
-        if not isinstance(instructions, str):
-            instructions = json.dumps(instructions, ensure_ascii=False)
-        q = {"t": kind, "ins": instructions, "crit": criteria}
-        if "labels" in qdef:
-            q["labels"] = qdef["labels"]
-        return q
-
-    @staticmethod
-    def _question(qid, definition):
-        if (
-            qid is None
-            or not isinstance(qid, (str, int))
-            or (isinstance(qid, str) and not qid.strip())
-        ):
-            raise ValueError("Question id must be a nonempty string or integer")
-        try:
-            return Agent._to_internal(definition)
-        except (ValueError, TypeError) as error:
-            raise ValueError(f"Question {qid!r}: {error}") from error
-
-    def prepare(self, state, questions):
-        """Construct CPU inputs and per-question token-budget diagnostics."""
-        if state is None:
-            raise ValueError("state must not be None")
-        if not isinstance(questions, dict):
-            raise ValueError("questions must be a dictionary keyed by question id")
-        if self._prefix_cache is not None:
-            return self._prefix_cache.prepare(self, state, questions)
-        if not questions:
-            return [], []
-        state_ids = self.tok(
-            serialize_state(state).replace(self.tok.mask_token, " "), add_special_tokens=False
-        )["input_ids"]
-        items, internal = [], []
-        for qid, definition in questions.items():
-            q = self._question(qid, definition)
-            parallel = uses_parallel_layout(self.cfg)
-            sequence = build_sequence(
-                self.tok,
-                state,
-                q,
-                self.cfg.get("max_len", 512),
-                self.cfg.get("head_max_len", 192),
-                truncate_left=isinstance(state, list),
-                state_ids=state_ids,
-                return_stats=True,
-                return_truncation_stats=True,
-                return_layout=parallel,
-            )
-            ids, markers, stats, state_stats = sequence[:4]
-            if len(markers) != len(render_options(q)):
-                raise ValueError(f"Question {qid!r} has too many options for the token budget")
-            items.append(
-                {
-                    "ids": ids,
-                    "markers": markers,
-                    "qtype": QTYPES[q["t"]],
-                    "options": stats,
-                    "state_stats": state_stats,
-                }
-            )
-            if parallel:
-                items[-1]["layout"] = sequence[4]
-            internal.append(q)
-        return items, internal
 
     def forward(self, batch):
         """Run one prepared batch and return evaluated MLX logits on this agent's device."""
@@ -309,86 +232,195 @@ class Agent:
             mx.eval(result)
         return result
 
-    def system_one(self, state, questions, *, min_confidence=None):
-        if min_confidence is not None:
-            min_confidence = check_min_confidence(min_confidence)
-        items, internal = self.prepare(state, questions)
-        answers = {}
-        question_ids = list(questions)
-        for start in range(0, len(items), self.batch_size):
-            chunk = items[start : start + self.batch_size]
-            batch = collate_items(
-                chunk,
-                self.tok.pad_token_id,
-                pad_to_multiple=self.pad_to_multiple,
-                max_length=self.cfg.get("max_len", 512),
+    def _encode_state(
+        self,
+        state: Union[str, dict, list],
+        ids: List[str],
+        internal: Dict[str, Dict],
+        max_len: Optional[int] = None,
+        head_max_len: Optional[int] = None,
+    ) -> List[Dict]:
+        """Tokenize one state against every (already validated + normalized) question.
+
+        `max_len` / `head_max_len` override the agent config for this call (a start hook may set
+        `ctx.max_len` / `ctx.head_max_len`).
+        """
+        max_len = self.cfg.get("max_len", 512) if max_len is None else max_len
+        head_max_len = self.cfg.get("head_max_len", 192) if head_max_len is None else head_max_len
+        # A chronological conversation list is serialized newest-last, so the default
+        # right-truncation (st[:room]) would silently drop the newest turn. Truncate
+        # from the left for lists so the most recent intent is preserved.
+        truncate_left = isinstance(state, list)
+        # Tokenize the shared state once. The ids are identical for every question, so
+        # re-serializing and re-tokenizing it inside build_sequence per question was pure
+        # duplicated work. Tokenize in full and let build_sequence slice per question, so
+        # left-truncation for conversation lists keeps its meaning.
+        state_ids = encode_text(
+            self.tok,
+            serialize_state(state).replace(self.tok.mask_token, " "),
+            add_special_tokens=False,
+        )["input_ids"]
+        items = []
+        for qid in ids:
+            q = internal[qid]
+            cache = getattr(self, "_prefix_cache", None)
+            sequence_builder = cache.build_sequence if cache is not None else build_sequence
+            seq, markers, stats, state_stats, *layout = sequence_builder(
+                self.tok,
+                state,
+                q,
+                max_len,
+                head_max_len,
+                option_order=q.get("option_order"),
+                truncate_left=truncate_left,
+                state_ids=state_ids,
+                return_stats=True,
+                return_truncation_stats=True,
+                return_layout=self.parallel_options,
             )
-            logits, act = self.forward(batch)
-            logits, act = np.asarray(logits), np.asarray(act)
-            if not np.isfinite(logits).all() or not np.isfinite(act).all():
-                raise FloatingPointError("Non-finite model outputs; retry with dtype='float32'")
-            act = np.exp(act - act.max(axis=-1, keepdims=True))
-            act /= act.sum(axis=-1, keepdims=True)
-            for row, item in enumerate(chunk):
-                qid, q = question_ids[start + row], internal[start + row]
-                k, qt = len(item["markers"]), item["qtype"]
-                scale = self.temperature_by_options.get(temp_bucket(qt, k), self.temperature[qt])
-                z = logits[row, :k] / scale
-                p = np.exp(z - z.max())
-                p /= p.sum()
-                answer = {
-                    "type": q["t"],
-                    "confidence": round(confidence_from_probs(p, k), 4),
-                    "answer_confidence": round(answer_confidence(p, k), 4),
-                    "action": {"act_probability": round(float(act[row, 0]), 4)},
+            n_opts = stats["options"]
+            if len(markers) != n_opts:
+                # The markers are placed at absolute positions and `build_sequence` then drops the
+                # ones past `max_len`, so this is about the question fitting in the sequence --
+                # `head_max_len` is how much of it the options were given, and `max_len` is the
+                # ceiling that dropped them. Naming only `head_max_len` pointed at the wrong knob
+                # in both directions: lowering it shortens the option block and can make the
+                # call succeed, while raising it makes the overflow worse.
+                #
+                # The count reported is the markers that SURVIVED, not `len(seq)`: `build_sequence`
+                # truncates to `max_len` first, so `len(seq)` is always exactly `max_len` here and
+                # would state the ceiling as though it were the requirement.
+                raise ValueError(
+                    "question %r: only %d of its %d option markers fit in max_len=%d with "
+                    "head_max_len=%d spent on the question; lower head_max_len, raise max_len, "
+                    "or use fewer options" % (qid, len(markers), n_opts, max_len, head_max_len)
+                )
+            item = {
+                "ids": seq,
+                "markers": markers,
+                "qtype": QTYPES[q["t"]],
+                "options": stats,
+                "state_stats": state_stats,
+            }
+            if layout:
+                item["layout"] = layout[0]
+            items.append(item)
+        return items
+
+    @staticmethod
+    def _question(qid, definition):
+        Agent._check_question(qid, definition)
+        return Agent._to_internal(definition)
+
+    def _forward(self, batch):
+        width = batch["marker_pos"].shape[1]
+        rows = len(batch["input_ids"])
+        logits, actions = [], []
+        for start in range(0, rows, self.batch_size):
+            items = []
+            for row in range(start, min(rows, start + self.batch_size)):
+                n = int(batch["attention_mask"][row].sum())
+                count = int(batch["marker_mask"][row].sum())
+                item = {
+                    "ids": batch["input_ids"][row, :n],
+                    "markers": batch["marker_pos"][row, :count],
+                    "qtype": batch["qtype"][row],
                 }
-                if q["t"] == "choice":
-                    labels = list(q["crit"])
-                    answer.update(
-                        choice=labels[int(p.argmax())],
-                        probabilities={label: round(float(v), 4) for label, v in zip(labels, p)},
-                    )
-                elif q["t"] == "score":
-                    answer.update(
-                        score=round(float((np.arange(k) * p).sum()), 4),
-                        legend={str(i): value for i, value in enumerate(q["crit"])},
-                        probabilities={str(i): round(float(v), 4) for i, v in enumerate(p)},
-                    )
-                else:
-                    answer.update(
-                        noul=round(float(p[1]), 4),
-                        confidence=round(max(float(p[1]), 1.0 - float(p[1])), 4),
-                    )
-                answers[qid] = answer
-        stats = [item["state_stats"] for item in items]
-        dropped = max((s["state_tokens_dropped"] for s in stats), default=0)
-        usage = {
-            "input_tokens": sum(len(item["ids"]) for item in items),
-            "output_tokens": 0,
-            "state_tokens": stats[0]["state_tokens"] if stats else 0,
-            "state_tokens_dropped": dropped,
-            "truncated": dropped > 0,
-            "truncated_questions": [qid for qid, s in zip(question_ids, stats) if s["truncated"]],
-        }
-        collapsed = collapsed_options(question_ids, items)
-        if collapsed:
-            usage["options"] = collapsed
-        result = {
-            "model": "laya-rl-agent",
-            "answers": answers,
-            "usage": usage,
-        }
+                if "option_ids" in batch:
+                    item["layout"] = {k: batch[k][row, :n] for k in ("position_ids", "option_ids")}
+                items.append(item)
+            arrays = collate_items(
+                items,
+                self.tok.pad_token_id,
+                pad_to_multiple=getattr(self, "pad_to_multiple", None),
+                max_length=getattr(self, "encoder_cfg", {}).get(
+                    "max_position_embeddings", self.cfg.get("max_len", 512)
+                ),
+            )
+            out, act = self.forward(arrays)
+            out, act = np.asarray(out), np.asarray(act)
+            if not np.isfinite(out).all() or not np.isfinite(act).all():
+                raise FloatingPointError("Non-finite model outputs; retry with dtype='float32'")
+            # A chunk can have fewer option columns than the logical host batch.
+            padded = np.full((len(items), width), -1e4, dtype=out.dtype)
+            take = min(width, out.shape[1])
+            padded[:, :take] = out[:, :take]
+            logits.append(padded)
+            act = np.exp(act - act.max(axis=-1, keepdims=True))
+            actions.append(act / act.sum(axis=-1, keepdims=True))
+        return np.concatenate(logits), np.concatenate(actions)
 
-        apply_confidence_gate([result], min_confidence)
-        return result
-
-    predict = system_one
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._inference = None
+        self.model = None
+        clear_cache()
+        return False
 
 
 RLAgent = Agent
 
 
 def load(
-    model_id_or_path="convaiinnovations/laya", device=None, token=None, subfolder=None, **kwargs
+    model_id_or_path="convaiinnovations/laya",
+    device=None,
+    token=None,
+    subfolder=None,
+    fast=False,
+    compile=False,
+    revision=None,
+    expected_sha256=None,
+    lang_temperatures=None,
+    hooks=None,
+    on_predict_start=None,
+    on_predict_end=None,
+    hooks_raise=True,
+    hooks_concurrent=True,
+    hooks_timeout=None,
+    calibration=None,
+    backend=None,
+    onnx_path=None,
+    compile_warmup=True,
+    compile_cache=False,
+    compile_mode="default",
+    **kwargs,
 ):
-    return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, **kwargs)
+    if onnx_path is not None:
+        raise ValueError("ONNX inference requires official laya; this distribution uses MLX")
+    from .router import DEFAULT_MODELS, canonical_name
+
+    name = canonical_name(str(model_id_or_path))
+    if name in DEFAULT_MODELS and not Path(model_id_or_path).expanduser().exists():
+        model_id_or_path, bundled_subfolder = DEFAULT_MODELS[name]
+        if subfolder is None:
+            subfolder = bundled_subfolder
+    return Agent(
+        model_id_or_path,
+        device=device,
+        token=token,
+        subfolder=subfolder,
+        fast=fast,
+        compile=compile,
+        revision=revision,
+        expected_sha256=expected_sha256,
+        lang_temperatures=lang_temperatures,
+        hooks=hooks,
+        on_predict_start=on_predict_start,
+        on_predict_end=on_predict_end,
+        hooks_raise=hooks_raise,
+        hooks_concurrent=hooks_concurrent,
+        hooks_timeout=hooks_timeout,
+        calibration=calibration,
+        backend=backend,
+        compile_warmup=compile_warmup,
+        compile_cache=compile_cache,
+        compile_mode=compile_mode,
+        **kwargs,
+    )
+
+
+def clear_cache():
+    """Release unused native allocations; live/in-flight arrays remain referenced."""
+    import gc
+
+    gc.collect()
+    mx.clear_cache()
